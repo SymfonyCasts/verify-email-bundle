@@ -1,0 +1,5 @@
+ARG MARIADB_VERSION=latest
+
+FROM mysql:${MARIADB_VERSION}
+
+CMD ["mysqld"]

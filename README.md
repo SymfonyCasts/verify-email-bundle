@@ -1,0 +1,3 @@
+# Registration verification system prototype - Symfony
+
+making the donuts, check back later...

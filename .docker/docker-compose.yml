@@ -1,0 +1,85 @@
+version: '3.7'
+
+networks:
+  app:
+    driver: bridge
+
+  db:
+    external:
+      name: mariadb_app
+
+services:
+  workspace:
+    build:
+      context: ./workspace
+      args:
+        - PHP_VERSION=${PHP_VERSION}
+    image: ${COMPOSE_PROJECT_NAME}_workspace:latest
+    volumes:
+      - ${PROJECT_PATH}:/var/htdocs
+    tty: true
+    networks:
+      - app
+      - db
+
+  php-cli:
+    build:
+      context: ./php-cli
+      args:
+        - PHP_VERSION=${PHP_VERSION}
+        - XDEBUG_ENABLE=${XDEBUG_ENABLE}
+        - XDEBUG_HOST=${XDEBUG_HOST}
+        - XDEBUG_PORT=${XDEBUG_PORT}
+        - XDEBUG_IDEKEY=${XDEBUG_IDEKEY}
+    environment:
+      - FUNC_TEST_ENV_FILE=.env.test.local
+    image: ${COMPOSE_PROJECT_NAME}_cli:latest
+    volumes:
+      - ${PROJECT_PATH}:/var/htdocs
+    networks:
+      - app
+      - db
+
+  mysql:
+    build:
+      context: ./mariadb
+      args:
+        - MARIADB_VERSION=${MARIADB_VERSION}
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MARIADB_ROOT_PW}
+      - MYSQL_DATABASE=maker_test
+    networks:
+      - app
+
+  php-fpm:
+    build:
+      context: ./php-fpm
+      args:
+        - PHP_VERSION=${PHP_VERSION}
+        - XDEBUG_ENABLE=${XDEBUG_ENABLE}
+        - XDEBUG_HOST=${XDEBUG_HOST}
+        - XDEBUG_PORT=${XDEBUG_PORT}
+        - XDEBUG_IDEKEY=${XDEBUG_IDEKEY}
+    image: ${COMPOSE_PROJECT_NAME}_fpm:latest
+    volumes:
+      - ${PROJECT_PATH}:/var/htdocs
+    networks:
+      - app
+      - db
+
+  nginx:
+    build:
+      context: ./nginx
+    image: ${COMPOSE_PROJECT_NAME}_nginx:latest
+    volumes:
+      - ${PROJECT_PATH}/public:/var/htdocs/public
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/params:/etc/nginx/params
+      - ./nginx/sites:/etc/nginx/sites-available
+    depends_on:
+      - php-fpm
+    networks:
+      - app
+    ports:
+      - "80:80"
+      - "443:443"
