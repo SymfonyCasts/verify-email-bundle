@@ -1,4 +1,28 @@
 {
+    "amphp/amp": {
+        "version": "v2.4.0"
+    },
+    "amphp/byte-stream": {
+        "version": "v1.7.2"
+    },
+    "composer/semver": {
+        "version": "1.5.1"
+    },
+    "composer/xdebug-handler": {
+        "version": "1.4.0"
+    },
+    "dama/doctrine-test-bundle": {
+        "version": "4.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "4.0",
+            "ref": "56eaa387b5e48ebcc7c95a893b47dfa1ad51449c"
+        },
+        "files": [
+            "config/packages/test/dama_doctrine_test_bundle.yaml"
+        ]
+    },
     "doctrine/annotations": {
         "version": "1.0",
         "recipe": {
@@ -20,6 +44,9 @@
     "doctrine/common": {
         "version": "2.12.0"
     },
+    "doctrine/data-fixtures": {
+        "version": "1.4.2"
+    },
     "doctrine/dbal": {
         "version": "v2.10.1"
     },
@@ -36,6 +63,18 @@
             "config/packages/prod/doctrine.yaml",
             "src/Entity/.gitignore",
             "src/Repository/.gitignore"
+        ]
+    },
+    "doctrine/doctrine-fixtures-bundle": {
+        "version": "3.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "3.0",
+            "ref": "fc52d86631a6dfd9fdf3381d0b7e3df2069e51b3"
+        },
+        "files": [
+            "src/DataFixtures/AppFixtures.php"
         ]
     },
     "doctrine/doctrine-migrations-bundle": {
@@ -90,6 +129,12 @@
     "egulias/email-validator": {
         "version": "2.1.15"
     },
+    "felixfbecker/advanced-json-rpc": {
+        "version": "v3.0.4"
+    },
+    "felixfbecker/language-server-protocol": {
+        "version": "v1.4.0"
+    },
     "jdorn/sql-formatter": {
         "version": "v1.2.17"
     },
@@ -105,6 +150,9 @@
     "monolog/monolog": {
         "version": "2.0.2"
     },
+    "netresearch/jsonmapper": {
+        "version": "v1.6.0"
+    },
     "nikic/php-parser": {
         "version": "v4.3.0"
     },
@@ -113,6 +161,9 @@
     },
     "ocramius/proxy-manager": {
         "version": "2.7.0"
+    },
+    "openlss/lib-array2xml": {
+        "version": "1.0.0"
     },
     "php": {
         "version": "7.4"
@@ -140,6 +191,15 @@
     },
     "psr/log": {
         "version": "1.1.2"
+    },
+    "roave/security-advisories": {
+        "version": "dev-master"
+    },
+    "sebastian/diff": {
+        "version": "4.0.0"
+    },
+    "seferov/symfony-psalm-plugin": {
+        "version": "v1.0.0"
     },
     "sensio/framework-extra-bundle": {
         "version": "5.2",
@@ -524,10 +584,22 @@
     "twig/twig": {
         "version": "v3.0.1"
     },
+    "vimeo/psalm": {
+        "version": "3.8.5"
+    },
     "webimpress/safe-writer": {
         "version": "2.0.0"
     },
     "webmozart/assert": {
         "version": "1.6.0"
+    },
+    "webmozart/glob": {
+        "version": "4.1.0"
+    },
+    "webmozart/path-util": {
+        "version": "2.3.0"
+    },
+    "weirdan/doctrine-psalm-plugin": {
+        "version": "0.9.0"
     }
 }
