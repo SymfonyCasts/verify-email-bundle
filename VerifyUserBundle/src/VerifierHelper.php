@@ -39,7 +39,7 @@ class VerifierHelper implements VerifierHelperInterface
      */
     public function isValidSignature(string $signature, string $userId): bool
     {
-        $timestamp = substr($signature, 0, 10);
+        $timestamp = (int) substr($signature, 0, 10);
         $time = new \DateTimeImmutable();
         $expiresAt = $time->setTimestamp($timestamp);
 
