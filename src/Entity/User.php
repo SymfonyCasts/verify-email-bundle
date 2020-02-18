@@ -29,6 +29,15 @@ class User implements UserInterface
      */
     private $roles = [];
 
+    // NOT IN REGISTRATION TEMPLATE - START
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $verified = false;
+
+    // NOT IN REGISTRATION TEMPLATE - END
+
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
@@ -95,6 +104,22 @@ class User implements UserInterface
 
         return $this;
     }
+
+    // NOT IN REGISTRATION TEMPLATE - START
+
+    public function isVerified(): bool
+    {
+        return $this->verified;
+    }
+
+    public function setVerified(bool $verified): self
+    {
+        $this->verified = $verified;
+
+        return $this;
+    }
+
+    // NOT IN REGISTRATION TEMPLATE - END
 
     /**
      * @see UserInterface
