@@ -36,6 +36,15 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->_em->flush();
     }
 
+    // NOT IN REGISTRATION TEMPLATE - START
+    public function markAsVerifiedUser(UserInterface $user): void
+    {
+        $user->setVerified(true);
+        $this->_em->persist($user);
+        $this->_em->flush();
+    }
+    // NOT IN REGISTRATION TEMPLATE - END
+
     // /**
     //  * @return User[] Returns an array of User objects
     //  */

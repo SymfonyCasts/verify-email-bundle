@@ -4,6 +4,9 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\RegistrationFormType;
+// NOT IN REGISTRATION TEMPLATE - START
+use App\Repository\UserRepository;
+// NOT IN REGISTRATION TEMPLATE - END
 use App\Security\LoginFormAuthenticator;
 // NOT IN REGISTRATION TEMPLATE - START
 use JRushlow\Bundle\VerifyUser\VerifierHelperInterface;
@@ -85,13 +88,22 @@ class RegistrationController extends AbstractController
      */
     public function verifyUserEmail(string $token): Response
     {
-        $userId = $this->getUser()->getId();
+        $this->denyAccessUnlessGranted('ROLE_USER');
 
-        $isValid = $this->helper->isValidSignature($token, $userId);
+        $user = $this->getUser();
 
-        if (!$isValid) {
+        if (!$this->helper->isValidSignature($token, $user->getId())) {
             throw new \Exception("Invalid signature.");
         }
+
+        if (true === $user->isVerified()) {
+            $this->addFlash('success', 'You\'ve already been verified.');
+            return $this->redirectToRoute('app_register');
+        }
+
+        /** @var UserRepository $repo */
+        $repo = $this->getDoctrine()->getRepository(User::class);
+        $repo->markAsVerifiedUser($user);
 
         $this->addFlash('success', 'Your e-mail address has been verified.');
 
