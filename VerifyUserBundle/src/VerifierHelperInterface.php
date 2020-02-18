@@ -9,7 +9,7 @@ use JRushlow\Bundle\VerifyUser\Model\SignatureComponents;
  */
 interface VerifierHelperInterface
 {
-    public function getSignature(string $userId, \DateTimeInterface $expires): SignatureComponents;
+    public function generateSignature(string $userId, \DateTimeInterface $expires): SignatureComponents;
 
     public function isValidSignature(string $signature, string $userId): bool;
 }

@@ -58,7 +58,7 @@ class RegistrationController extends AbstractController
                 ->modify(sprintf('+%d seconds', 3600))
             ;
 
-            $signature = $this->helper->getSignature($user->getId(), $expiresAt)->getSignature();
+            $signature = $this->helper->generateSignature($user->getId(), $expiresAt)->getSignature();
 
             $uri = $this->generateUrl('app_validate_user', ['token' => $signature]);
 

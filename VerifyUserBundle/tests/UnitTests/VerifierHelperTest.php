@@ -24,7 +24,7 @@ class VerifierHelperTest extends TestCase
         ;
 
         $helper = new VerifierHelper($generator);
-        $helper->getSignature($userId, $expiresAt);
+        $helper->generateSignature($userId, $expiresAt);
     }
 
     public function testCreatesComponentsWithoutProvidingExpireDate(): void
@@ -39,7 +39,7 @@ class VerifierHelperTest extends TestCase
         ;
 
         $helper = new VerifierHelper($generator);
-        $helper->getSignature($userId);
+        $helper->generateSignature($userId);
     }
 
     public function testIsValid(): void

@@ -23,7 +23,7 @@ class VerifierHelper implements VerifierHelperInterface
     /**
      * @param string $userId Identifiable string that's unique to a user. (email, id, etc..)
      */
-    public function getSignature(string $userId, \DateTimeInterface $expiresAt = null): SignatureComponents
+    public function generateSignature(string $userId, \DateTimeInterface $expiresAt = null): SignatureComponents
     {
         if (null === $expiresAt) {
             $expiresAt = (new \DateTimeImmutable('now'))
