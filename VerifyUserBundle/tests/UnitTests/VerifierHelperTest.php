@@ -47,14 +47,15 @@ class VerifierHelperTest extends TestCase
         $expiresAt = new \DateTimeImmutable('2020-01-01 12:00');
         $userId = 'test-user';
 
-        $signature = $expiresAt->getTimestamp() . \hash_hmac('sha256', \json_encode([$expiresAt, $userId]), '1234', false);
+        $token = \hash_hmac('sha256', \json_encode([$expiresAt, $userId]), '1234', false);
+        $signature = $expiresAt->getTimestamp() . $token;
 
         $mockGenerator = $this->createMock(TokenGenerator::class);
         $mockGenerator
             ->expects($this->once())
             ->method('getToken')
             ->with($expiresAt, $userId)
-            ->willReturn($signature)
+            ->willReturn($token)
         ;
 
         $helper = new VerifierHelper($mockGenerator);

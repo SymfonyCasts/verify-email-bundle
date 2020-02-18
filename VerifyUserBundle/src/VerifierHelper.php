@@ -45,6 +45,6 @@ class VerifierHelper implements VerifierHelperInterface
 
         $expected = $this->generator->getToken($expiresAt, $userId);
 
-        return hash_equals(substr($expected, 10), substr($signature, 10));
+        return hash_equals($expected, substr($signature, 10));
     }
 }
