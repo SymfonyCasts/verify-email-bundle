@@ -8,7 +8,7 @@ use JRushlow\Bundle\VerifyUser\Model\SignatureComponents;
 /**
  * @author Jesse Rushlow <jr@rushlow.dev>
  */
-class VerifierHelper
+class VerifierHelper implements VerifierHelperInterface
 {
     /**
      * @var TokenGenerator
