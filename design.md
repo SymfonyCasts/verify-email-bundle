@@ -1,45 +1,51 @@
-# Goal for the verification bundle:
-Provide a simple, yet flexible, means of user email verification after registration.
-The bundle's simplicity must not be so much where it is useless without heavy modification.
-That said, the flexibility of the bundle should not be to the point that it covers
-every use case. But flexible enough to work out of the box with Symfony's
- existing
- registration components provided by the maker-bundle.
+# Verification Bundle:
+Provides a simple, yet flexible, means of user email verification after
+ registration utilizing signed url's and Symfony's Maker Bundle.
 
 ## Synopsis
 
 A user registers with the application providing a password, email, and any
  other required information. At the time of registration, the user is
-  authenticated and an email is sent to the user with a signed URL. When the
-   user goes to the link in the email, if not already authenticated, the user is
-   redirected to do so. After authentication is complete, the user is directed 
-   back to the URL provided, and the account is marked as validated. 
+ authenticated and an email is sent to the user with a signed URL. When the
+ user opens the link, the users account is flagged as being verified.
    
-## Design theory
+## Internal Design Theory
 
-The signed URI segment consists of a 2 part variable length string as shown
- below.
+The signed URI segment is a variable length string comprised of 2 parts, an
+ embedded timestamp and token. The end user will see a URI segment similar to:
 
 `$uri = 15820587088b382b4961e07f823f853e0117aae8a9ca71aa5c5c028499cc5f11df9b4ee93d`
 
-The first part of the URI segment is the time the URI expires in the form of
+The first part of the segment is the time the URI expires in the form of
  a UNIX time stamp. As the length of the time stamp can be guessed based on
-  the context of it's intended use, it's safe to assume that the length will
-   be 10 characters long until the year 2283? `1582058708` can be extracted from
-   the signed URI above using PHP's `substr` function as demonstrated below.
+ the context of it's intended usage, it's safe to assume that the length will
+ be the first 10 characters. After the year 2283ish, the timestamp would become
+ the first 11 characters. Using the example URI string above, `1582058708` is
+  extracted from the URI using PHP's `substr()` function as demonstrated below.
    
 ```
-$timestamp = (int) substr($uri, 0, 10);
+$expiresAt = (int) substr($uri, 0, 10);
 ```
 
-The second part of the URI segment is a hashed token. The token consists of
- JSON encoded data comprised of the expired unix timestamp and a unique user
- identifier. The JSON encoded data is then passed to PHP's `hash_hmac` function
- using the `sha256` encryption algorithm. Below is a full example of how the
-  token is generated.
+The second part of the URI segment is a hashed token. As the bundle knows the
+ length of the timestamp as explained above. Extracting the token from the
+  URI segment is also done using the `substr()` function. 
   
 ```
-$signingKey = 'some-super-secret-valud';
+$token = substr($uri, 10);
+echo $token;
+8b382b4961e07f823f853e0117aae8a9ca71aa5c5c028499cc5f11df9b4ee93d
+```
+  
+The token is created using PHP's `hash_hmac` function. Using the `sha256` encryption
+algorithm, a JSON encoded data string comprised of the unix timestamp
+and a unique user identifier, and finally the application's `app_secret`. The
+token generated is a secure one-way encrypted string perfect, and safe
+, for signing a URI. Below is a full example of how the token is generated
+within the bundle...
+  
+```
+$signingKey = 'some-super-secret-value';
 
 $expires = (new \DateTimeImmutable('now'))
    ->modify(sprintf('+%d seconds', 900));
@@ -49,17 +55,17 @@ $encodedData = \json_encode([$expires->getTimestamp(), $userId]);
 $token = \hash_hmac('sha256', $encodedData, $signingKey, false);
 ```
 
-As the expires timestamp is a known length within the context of it's
- intended usage, one can extract the token from the URI by again using the
-  `substr` method.
+---
+_@TODO - Hold off, lets code out some details_
  
-```
-$token = substr($uri, 10);
-
-echo $token;
-
-8b382b4961e07f823f853e0117aae8a9ca71aa5c5c028499cc5f11df9b4ee93d
-```
+As a developer, you will only need to deal with the bundle's helper method,
+ `VerifierHelper::generateSignature()` which returns the `SignatureComponents
+ ::class`. which has the `getSignature()` method. Internally this method
+  creates a
+  signing token and returns the final signed URI segment which is emailed to the
+  user as a fully, formed URI.
+ 
+ ---
 
 ## In Practice
 
@@ -138,7 +144,7 @@ While the above scenario is somewhat far fetched one way to mitigate such
 The above was added to get you thinking about other ways this strategy could be
 abused. If you think of possible security vector, please report it to XYZ...
 
-## Future features
+## Going forward
 _Idea's not promises..._
 
 - Event based verification for advanced applications using Symfony's Event
