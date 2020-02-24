@@ -9,8 +9,8 @@
             <argument>%kernel.secret%</argument>
         </service>
 
-        <service id="SymfonyCasts\Bundle\VerifyUser\VerifierHelperInterface" alias="symfonycasts.verify_user.helper" />
-        <service id="symfonycasts.verify_user.helper" class="SymfonyCasts\Bundle\VerifyUser\VerifierHelper">
+        <service id="SymfonyCasts\Bundle\VerifyUser\VerifyHelperInterface" alias="symfonycasts.verify_user.helper" />
+        <service id="symfonycasts.verify_user.helper" class="SymfonyCasts\Bundle\VerifyUser\VerifyHelper">
             <argument type="service" id="symfonycasts.verify_user.token_generator" />
         </service>
     </services>
