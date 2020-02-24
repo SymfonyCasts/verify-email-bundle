@@ -21,7 +21,7 @@ class VerifierHelper implements VerifierHelperInterface
     }
 
     /**
-     * @param string $userId Identifiable string that's unique to a user. (email, id, etc..)
+     * @inheritDoc
      */
     public function generateSignature(string $userId, \DateTimeInterface $expiresAt = null): SignatureComponents
     {
@@ -34,8 +34,7 @@ class VerifierHelper implements VerifierHelperInterface
     }
 
     /**
-     * @param string $signature Timestamp + hashed token
-     * @param string $userId    User identifier used to create hashed token (email, id, etc..)
+     * @inheritDoc
      */
     public function isValidSignature(string $signature, string $userId): bool
     {
