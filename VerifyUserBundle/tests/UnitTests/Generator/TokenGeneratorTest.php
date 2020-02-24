@@ -1,8 +1,8 @@
 <?php
 
-namespace JRushlow\Bundle\Tests\UnitTests\Generator;
+namespace SymfonyCasts\Bundle\VerifyUser\Tests\UnitTests\Generator;
 
-use JRushlow\Bundle\VerifyUser\Generator\TokenGenerator;
+use SymfonyCasts\Bundle\VerifyUser\Generator\TokenGenerator;
 use PHPUnit\Framework\TestCase;
 
 /**

@@ -1,14 +1,14 @@
 <?php
 
-namespace JRushlow\Bundle\VerifyUser;
+namespace SymfonyCasts\Bundle\VerifyUser;
 
-use JRushlow\Bundle\VerifyUser\Generator\TokenGenerator;
-use JRushlow\Bundle\VerifyUser\Model\SignatureComponents;
+use SymfonyCasts\Bundle\VerifyUser\Generator\TokenGenerator;
+use SymfonyCasts\Bundle\VerifyUser\Model\SignatureComponents;
 
 /**
  * @author Jesse Rushlow <jr@rushlow.dev>
  */
-class VerifierHelper implements VerifierHelperInterface
+class VerifyHelper implements VerifyHelperInterface
 {
     /**
      * @var TokenGenerator

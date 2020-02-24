@@ -1,6 +1,6 @@
 <?php
 
-namespace JRushlow\Bundle\VerifyUser\Generator;
+namespace SymfonyCasts\Bundle\VerifyUser\Generator;
 
 /**
  * @author Jesse Rushlow <jr@rushlow.dev>

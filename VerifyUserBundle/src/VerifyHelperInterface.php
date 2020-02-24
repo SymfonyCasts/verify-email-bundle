@@ -1,13 +1,13 @@
 <?php
 
-namespace JRushlow\Bundle\VerifyUser;
+namespace SymfonyCasts\Bundle\VerifyUser;
 
-use JRushlow\Bundle\VerifyUser\Model\SignatureComponents;
+use SymfonyCasts\Bundle\VerifyUser\Model\SignatureComponents;
 
 /**
  * @author Jesse Rushlow <jr@rushlow.dev>
  */
-interface VerifierHelperInterface
+interface VerifyHelperInterface
 {
     /**
      * Create a

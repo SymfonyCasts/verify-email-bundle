@@ -1,6 +1,6 @@
 <?php
 
-namespace JRushlow\Bundle\VerifyUser\DependencyInjection;
+namespace SymfonyCasts\Bundle\VerifyUser\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -10,7 +10,7 @@ use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 /**
  * @author Jesse Rushlow <jr@rushlow.dev>
  */
-final class JRushlowVerifyUserExtension extends Extension
+final class SymfonyCastsVerifyUserExtension extends Extension
 {
     public function load(array $configs, ContainerBuilder $container)
     {

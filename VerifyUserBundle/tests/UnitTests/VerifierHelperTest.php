@@ -1,9 +1,9 @@
 <?php
 
-namespace JRushlow\Bundle\Tests\UnitTests;
+namespace SymfonyCasts\Bundle\VerifyUser\Tests\UnitTests;
 
-use JRushlow\Bundle\VerifyUser\Generator\TokenGenerator;
-use JRushlow\Bundle\VerifyUser\VerifierHelper;
+use SymfonyCasts\Bundle\VerifyUser\Generator\TokenGenerator;
+use SymfonyCasts\Bundle\VerifyUser\VerifyHelper;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -23,7 +23,7 @@ class VerifierHelperTest extends TestCase
             ->with($expiresAt, $userId)
         ;
 
-        $helper = new VerifierHelper($generator);
+        $helper = new VerifyHelper($generator);
         $helper->generateSignature($userId, $expiresAt);
     }
 
@@ -38,7 +38,7 @@ class VerifierHelperTest extends TestCase
             ->with(self::isInstanceOf(\DateTimeInterface::class), $userId)
         ;
 
-        $helper = new VerifierHelper($generator);
+        $helper = new VerifyHelper($generator);
         $helper->generateSignature($userId);
     }
 
@@ -58,7 +58,7 @@ class VerifierHelperTest extends TestCase
             ->willReturn($token)
         ;
 
-        $helper = new VerifierHelper($mockGenerator);
+        $helper = new VerifyHelper($mockGenerator);
         self::assertTrue($helper->isValidSignature($signature, $userId));
     }
 }

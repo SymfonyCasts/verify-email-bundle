@@ -1,6 +1,6 @@
 <?php
 
-namespace JRushlow\Bundle\VerifyUser\Model;
+namespace SymfonyCasts\Bundle\VerifyUser\Model;
 
 /**
  * @author Jesse Rushlow <jr@rushlow.dev>
