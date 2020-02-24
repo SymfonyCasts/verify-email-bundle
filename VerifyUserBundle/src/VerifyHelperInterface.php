@@ -20,4 +20,9 @@ interface VerifyHelperInterface
      * @param string $userId    User identifier used to create hashed token (email, id, etc..)
      */
     public function isValidSignature(string $signature, string $userId): bool;
+
+    /**
+     * Get the lifetime of a signed URI in seconds
+     */
+    public function getSignatureLifetime(): int;
 }

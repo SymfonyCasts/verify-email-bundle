@@ -15,9 +15,15 @@ class VerifyHelper implements VerifyHelperInterface
      */
     private $generator;
 
-    public function __construct(TokenGenerator $generator)
+    /**
+     * @var int The length of time in seconds that a signed URI is valid for after it is created
+     */
+    private $lifetime;
+
+    public function __construct(TokenGenerator $generator, int $lifetime)
     {
         $this->generator = $generator;
+        $this->lifetime = $lifetime;
     }
 
     /**
@@ -45,5 +51,13 @@ class VerifyHelper implements VerifyHelperInterface
         $expected = $this->generator->getToken($expiresAt, $userId);
 
         return hash_equals($expected, substr($signature, 10));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getSignatureLifetime(): int
+    {
+        return $this->lifetime;
     }
 }

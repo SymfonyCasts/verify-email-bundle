@@ -16,5 +16,12 @@ final class SymfonyCastsVerifyUserExtension extends Extension
     {
         $loader = new XmlFileLoader($container, new FileLocator(\dirname(__DIR__) . '/Resources/config'));
         $loader->load('verify_user_services.xml');
+
+        $configuration = $this->getConfiguration($configs, $container);
+
+        $config = $this->processConfiguration($configuration, $configs);
+
+        $helperDefinition = $container->getDefinition('symfonycasts.verify_user.helper');
+        $helperDefinition->replaceArgument(1, $config['lifetime']);
     }
 }

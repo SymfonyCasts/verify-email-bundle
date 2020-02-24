@@ -23,7 +23,7 @@ class VerifierHelperTest extends TestCase
             ->with($expiresAt, $userId)
         ;
 
-        $helper = new VerifyHelper($generator);
+        $helper = new VerifyHelper($generator, 100);
         $helper->generateSignature($userId, $expiresAt);
     }
 
@@ -38,7 +38,7 @@ class VerifierHelperTest extends TestCase
             ->with(self::isInstanceOf(\DateTimeInterface::class), $userId)
         ;
 
-        $helper = new VerifyHelper($generator);
+        $helper = new VerifyHelper($generator, 100);
         $helper->generateSignature($userId);
     }
 
@@ -58,7 +58,7 @@ class VerifierHelperTest extends TestCase
             ->willReturn($token)
         ;
 
-        $helper = new VerifyHelper($mockGenerator);
+        $helper = new VerifyHelper($mockGenerator, 100);
         self::assertTrue($helper->isValidSignature($signature, $userId));
     }
 }
