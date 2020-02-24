@@ -9,7 +9,7 @@ use App\Repository\UserRepository;
 // NOT IN REGISTRATION TEMPLATE - END
 use App\Security\LoginFormAuthenticator;
 // NOT IN REGISTRATION TEMPLATE - START
-use JRushlow\Bundle\VerifyUser\VerifierHelperInterface;
+use SymfonyCasts\Bundle\VerifyUser\VerifyHelperInterface;
 // NOT IN REGISTRATION TEMPLATE - END
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,11 +22,11 @@ class RegistrationController extends AbstractController
 {
     // NOT IN REGISTRATION TEMPLATE - START
     /**
-     * @var VerifierHelperInterface
+     * @var VerifyHelperInterface
      */
     private $helper;
 
-    public function __construct(VerifierHelperInterface $helper)
+    public function __construct(VerifyHelperInterface $helper)
     {
         $this->helper = $helper;
     }

@@ -50,13 +50,13 @@
     "autoload": {
         "psr-4": {
             "App\\": "src/",
-            "JRushlow\\Bundle\\VerifyUser\\": "VerifyUserBundle/src/"
+            "SymfonyCasts\\Bundle\\VerifyUser\\": "VerifyUserBundle/src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
             "App\\Tests\\": "tests/",
-            "JRushlow\\Bundle\\Tests\\": "VerifyUserBundle/tests/"
+            "JRushlow\\Bundle\\VerifyBundle\\Tests\\": "VerifyUserBundle/tests/"
         }
     },
     "replace": {
