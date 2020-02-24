@@ -9,6 +9,7 @@ use App\Repository\UserRepository;
 // NOT IN REGISTRATION TEMPLATE - END
 use App\Security\LoginFormAuthenticator;
 // NOT IN REGISTRATION TEMPLATE - START
+use SymfonyCasts\Bundle\VerifyUser\Controller\VerifyUserControllerTrait;
 use SymfonyCasts\Bundle\VerifyUser\VerifyHelperInterface;
 // NOT IN REGISTRATION TEMPLATE - END
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,6 +22,9 @@ use Symfony\Component\Security\Guard\GuardAuthenticatorHandler;
 class RegistrationController extends AbstractController
 {
     // NOT IN REGISTRATION TEMPLATE - START
+
+    use VerifyUserControllerTrait;
+
     /**
      * @var VerifyHelperInterface
      */
@@ -57,14 +61,13 @@ class RegistrationController extends AbstractController
             // do anything else you need here, like send an email
 
             // NOT IN REGISTRATION TEMPLATE - START
-            $expiresAt = (new \DateTimeImmutable('now'))
-                ->modify(sprintf('+%d seconds', 3600))
-            ;
+            $signature = $this->getSignature($user->getId());
 
-            $signature = $this->helper->generateSignature($user->getId(), $expiresAt)->getSignature();
-
+            // URI to be used in email template
             $uri = $this->generateUrl('app_validate_user', ['token' => $signature]);
 
+            //@TODO send email here
+            //@TODO remove flash, used for dev purposes only
             $this->addFlash('success', $uri);
 
             // NOT IN REGISTRATION TEMPLATE - END
