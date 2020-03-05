@@ -55,5 +55,15 @@
         <RawObjectIteration errorLevel="info" />
 
         <InvalidStringClass errorLevel="info" />
+        <PossiblyUndefinedMethod>
+            <errorLevel type="suppress">
+                <file name="src/DependencyInjection/Configuration.php"/>
+            </errorLevel>
+        </PossiblyUndefinedMethod>
+        <PossiblyNullArgument>
+            <errorLevel type="suppress">
+                <file name="src/DependencyInjection/SymfonyCastsVerifyUserExtension.php"/>
+            </errorLevel>
+        </PossiblyNullArgument>
     </issueHandlers>
 </psalm>
