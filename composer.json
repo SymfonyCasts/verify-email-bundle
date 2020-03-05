@@ -1,92 +1,29 @@
 {
-    "type": "project",
+    "type": "symfony-bundle",
     "license": "proprietary",
+    "minimum-stability": "dev",
     "require": {
         "php": "^7.2.5",
-        "ext-ctype": "*",
-        "ext-iconv": "*",
-        "sensio/framework-extra-bundle": "^5.1",
-        "symfony/asset": "5.0.*",
-        "symfony/console": "5.0.*",
-        "symfony/dotenv": "5.0.*",
-        "symfony/expression-language": "5.0.*",
-        "symfony/flex": "^1.3.1",
-        "symfony/form": "5.0.*",
-        "symfony/framework-bundle": "5.0.*",
-        "symfony/http-client": "5.0.*",
-        "symfony/intl": "5.0.*",
-        "symfony/mailer": "5.0.*",
-        "symfony/monolog-bundle": "^3.1",
-        "symfony/notifier": "5.0.*",
-        "symfony/orm-pack": "*",
-        "symfony/process": "5.0.*",
-        "symfony/security-bundle": "5.0.*",
-        "symfony/serializer-pack": "*",
-        "symfony/string": "5.0.*",
-        "symfony/translation": "5.0.*",
-        "symfony/twig-pack": "*",
-        "symfony/validator": "5.0.*",
-        "symfony/web-link": "5.0.*",
-        "symfony/yaml": "5.0.*"
+        "symfony/framework-bundle": "^5.0"
     },
     "require-dev": {
-        "dama/doctrine-test-bundle": "^6.3",
-        "doctrine/doctrine-fixtures-bundle": "^3.3",
         "roave/security-advisories": "dev-master",
-        "seferov/symfony-psalm-plugin": "^1.0",
-        "symfony/debug-pack": "*",
-        "symfony/maker-bundle": "^1.14",
-        "symfony/profiler-pack": "*",
-        "symfony/test-pack": "^1.0",
-        "vimeo/psalm": "^3.8",
-        "weirdan/doctrine-psalm-plugin": "^0.9.0"
-    },
-    "config": {
-        "preferred-install": {
-            "*": "dist"
-        },
-        "sort-packages": true
+        "doctrine/orm": "^2.7",
+        "friendsofphp/php-cs-fixer": "^2.16",
+        "symfony/phpunit-bridge": "^5.0",
+        "vimeo/psalm": "^3.8"
     },
     "autoload": {
         "psr-4": {
-            "App\\": "src/",
-            "SymfonyCasts\\Bundle\\VerifyUser\\": "VerifyUserBundle/src/"
+            "SymfonyCasts\\Bundle\\VerifyUser\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "App\\Tests\\": "tests/",
-            "JRushlow\\Bundle\\VerifyBundle\\Tests\\": "VerifyUserBundle/tests/"
+            "SymfonyCasts\\Bundle\\VerifyUser\\Tests\\": "tests/"
         }
-    },
-    "replace": {
-        "paragonie/random_compat": "2.*",
-        "symfony/polyfill-ctype": "*",
-        "symfony/polyfill-iconv": "*",
-        "symfony/polyfill-php72": "*",
-        "symfony/polyfill-php71": "*",
-        "symfony/polyfill-php70": "*",
-        "symfony/polyfill-php56": "*"
-    },
-    "scripts": {
-        "auto-scripts": {
-            "cache:clear": "symfony-cmd",
-            "assets:install %PUBLIC_DIR%": "symfony-cmd"
-        },
-        "post-install-cmd": [
-            "@auto-scripts"
-        ],
-        "post-update-cmd": [
-            "@auto-scripts"
-        ]
     },
     "conflict": {
-        "symfony/symfony": "*"
-    },
-    "extra": {
-        "symfony": {
-            "allow-contrib": false,
-            "require": "5.0.*"
-        }
+        "symfony/framework-bundle": "<4.4"
     }
 }

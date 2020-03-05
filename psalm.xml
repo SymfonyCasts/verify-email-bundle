@@ -8,9 +8,7 @@
 >
     <projectFiles>
         <directory name="src" />
-        <directory name="VerifyUserBundle/src" />
         <ignoreFiles>
-            <file name="src/Kernel.php" />
             <directory name="vendor" />
         </ignoreFiles>
     </projectFiles>
@@ -34,9 +32,9 @@
 
         <MissingClosureReturnType errorLevel="info" />
         <MissingReturnType errorLevel="info">
-            <errorLevel type="suppress">
-                <file name="VerifyUserBundle/src/DependencyInjection/JRushlowVerifyUserExtension.php" />
-            </errorLevel>
+<!--            <errorLevel type="suppress">-->
+<!--                <file name="VerifyUserBundle/src/DependencyInjection/JRushlowVerifyUserExtension.php" />-->
+<!--            </errorLevel>-->
         </MissingReturnType>
         <MissingPropertyType errorLevel="info" />
         <InvalidDocblock errorLevel="info" />
@@ -58,8 +56,4 @@
 
         <InvalidStringClass errorLevel="info" />
     </issueHandlers>
-    <plugins>
-        <pluginClass class="Weirdan\DoctrinePsalmPlugin\Plugin"/>
-        <pluginClass class="Seferov\SymfonyPsalmPlugin\Plugin"/>
-    </plugins>
 </psalm>

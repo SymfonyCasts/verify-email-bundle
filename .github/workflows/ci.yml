@@ -4,15 +4,15 @@ jobs:
   verifier:
     name: ResetPassword
     runs-on: ubuntu-latest
-    services:
-      mysql:
-        image: mysql:5.7
-        env:
-          MYSQL_ALLOW_EMPTY_PASSWORD: false
-          MYSQL_ROOT_PASSWORD: password
-        ports:
-          - 3306
-        options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
+#    services:
+#      mysql:
+#        image: mysql:5.7
+#        env:
+#          MYSQL_ALLOW_EMPTY_PASSWORD: false
+#          MYSQL_ROOT_PASSWORD: password
+#        ports:
+#          - 3306
+#        options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
     env:
       APP_ENV: test
     strategy:
@@ -22,15 +22,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2.0.0
 
-      - name: Ping MySQL
-        run: |
-          while ! mysqladmin ping -h"127.0.0.1" -P"3306" --silent; do
-            sleep 1
-          done
-
-      - name: Test MySQL
-        run: |
-          mysql -h"127.0.0.1" -P${{ job.services.mysql.ports['3306'] }} -uroot -ppassword -e "SHOW DATABASES"
+#      - name: Ping MySQL
+#        run: |
+#          while ! mysqladmin ping -h"127.0.0.1" -P"3306" --silent; do
+#            sleep 1
+#          done
+#
+#      - name: Test MySQL
+#        run: |
+#          mysql -h"127.0.0.1" -P${{ job.services.mysql.ports['3306'] }} -uroot -ppassword -e "SHOW DATABASES"
 
       #      - name: Validate composer .json and .lock
 #        run: composer validate
@@ -43,7 +43,8 @@ jobs:
       - uses: actions/cache@v1
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          # As no lock file is committed, key is composer.json temporarily until artifacts are setup
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
           restore-keys: |
             ${{ runner.os }}-composer-
 
@@ -65,8 +66,11 @@ jobs:
 #        run: bin/console doctrine:fixtures:load -n
 #        env:
 #          DATABASE_URL: mysql://root:password@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/forgot_pw_ci?serverVersion=5.7
+      - name: Psalm Static Analysis
+        run: vendor/bin/psalm -c psalm.xml
 
       - name: Unit Tests
-        run: bin/phpunit -c $GITHUB_WORKSPACE/phpunit.xml.dist
-        env:
-          DATABASE_URL: mysql://root:password@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/forgot_pw_ci?serverVersion=5.7
+        run: vendor/bin/simple-phpunit -c $GITHUB_WORKSPACE/phpunit.xml.dist
+        if: always()
+#        env:
+#          DATABASE_URL: mysql://root:password@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/forgot_pw_ci?serverVersion=5.7
