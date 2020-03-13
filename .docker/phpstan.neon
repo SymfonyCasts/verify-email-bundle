@@ -1,0 +1,10 @@
+parameters:
+    level: 7
+    paths:
+        - src
+        - tests
+    autoload_directories:
+        - %currentWorkingDirectory%/bin/.phpunit/phpunit-8.3-0/src
+        - %currentWorkingDirectory%/src/Migrations
+    symfony:
+        container_xml_path: '%currentWorkingDirectory%/var/cache/dev/App_KernelDevDebugContainer.xml'
