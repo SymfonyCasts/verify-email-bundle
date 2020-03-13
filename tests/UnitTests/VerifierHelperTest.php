@@ -1,10 +1,17 @@
 <?php
 
+/*
+ * This file is part of the SymfonyCasts BUNDLE_NAME_HERE package.
+ * Copyright (c) SymfonyCasts <https://symfonycasts.com/>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace SymfonyCasts\Bundle\VerifyUser\Tests\UnitTests;
 
+use PHPUnit\Framework\TestCase;
 use SymfonyCasts\Bundle\VerifyUser\Generator\TokenGenerator;
 use SymfonyCasts\Bundle\VerifyUser\VerifyHelper;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @author Jesse Rushlow <jr@rushlow.dev>
@@ -48,7 +55,7 @@ class VerifierHelperTest extends TestCase
         $userId = 'test-user';
 
         $token = \hash_hmac('sha256', \json_encode([$expiresAt, $userId]), '1234', false);
-        $signature = $expiresAt->getTimestamp() . $token;
+        $signature = $expiresAt->getTimestamp().$token;
 
         $mockGenerator = $this->createMock(TokenGenerator::class);
         $mockGenerator

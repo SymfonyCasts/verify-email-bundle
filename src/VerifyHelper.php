@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the SymfonyCasts BUNDLE_NAME_HERE package.
+ * Copyright (c) SymfonyCasts <https://symfonycasts.com/>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace SymfonyCasts\Bundle\VerifyUser;
 
 use SymfonyCasts\Bundle\VerifyUser\Generator\TokenGenerator;
@@ -27,34 +34,34 @@ class VerifyHelper implements VerifyHelperInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function generateSignature(string $userId, \DateTimeInterface $expiresAt = null): SignatureComponents
     {
         if (null === $expiresAt) {
             $expiresAt = (new \DateTimeImmutable('now'))
-                ->modify(sprintf('+%d seconds', 450));
+                ->modify(\sprintf('+%d seconds', 450));
         }
 
         return new SignatureComponents($expiresAt, $this->generator->getToken($expiresAt, $userId));
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function isValidSignature(string $signature, string $userId): bool
     {
-        $timestamp = (int) substr($signature, 0, 10);
+        $timestamp = (int) \substr($signature, 0, 10);
         $time = new \DateTimeImmutable();
         $expiresAt = $time->setTimestamp($timestamp);
 
         $expected = $this->generator->getToken($expiresAt, $userId);
 
-        return hash_equals($expected, substr($signature, 10));
+        return \hash_equals($expected, \substr($signature, 10));
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getSignatureLifetime(): int
     {

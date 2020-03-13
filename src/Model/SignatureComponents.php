@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the SymfonyCasts BUNDLE_NAME_HERE package.
+ * Copyright (c) SymfonyCasts <https://symfonycasts.com/>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace SymfonyCasts\Bundle\VerifyUser\Model;
 
 /**
@@ -24,12 +31,12 @@ final class SignatureComponents
     }
 
     /**
-     * Returns Unix timestamp + hashed token as string
+     * Returns Unix timestamp + hashed token as string.
      */
     public function getSignature(): string
     {
         $timestamp = $this->expiresAt->getTimestamp();
 
-        return $timestamp . $this->token;
+        return $timestamp.$this->token;
     }
 }
