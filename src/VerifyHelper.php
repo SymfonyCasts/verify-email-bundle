@@ -41,7 +41,7 @@ class VerifyHelper
         //@TODO - add() should create the query object within the collection.
         $collection->add(new QueryParam(QueryParam::USER_ID, $userId));
         $collection->add(new QueryParam(QueryParam::USER_EMAIL, $userEmail));
-        $collection->add(new QueryParam(QueryParam::EXPIRES_AT, $expiresAt->getTimestamp()));
+        $collection->add(new QueryParam(QueryParam::EXPIRES_AT, (string) $expiresAt->getTimestamp()));
 
         $queryUtil = new Query();
 
