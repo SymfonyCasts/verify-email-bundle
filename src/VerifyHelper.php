@@ -18,7 +18,7 @@ use SymfonyCasts\Bundle\VerifyUser\Util\Query;
 /**
  * @author Jesse Rushlow <jr@rushlow.dev>
  */
-class VerifyHelper implements VerifyHelperInterface
+class VerifyHelper
 {
     /**
      * @var int The length of time in seconds that a signed URI is valid for after it is created
