@@ -18,54 +18,71 @@ use SymfonyCasts\Bundle\VerifyUser\VerifyHelper;
  */
 class VerifierHelperTest extends TestCase
 {
-    public function testUsesParamsToCreateComponents(): void
+    public function testIsSignature(): void
     {
-        $userId = 'test-user';
-        $expiresAt = new \DateTimeImmutable();
+        $this->markTestIncomplete('Not yet finished');
+        $helper = new VerifyHelper(3600);
+        $components = $helper->generateSignature('1234', 'jr@rushlow.dev');
 
-        $generator = $this->createMock(TokenGenerator::class);
-        $generator
-            ->expects($this->once())
-            ->method('getToken')
-            ->with($expiresAt, $userId)
-        ;
-
-        $helper = new VerifyHelper($generator, 100);
-        $helper->generateSignature($userId, $expiresAt);
-    }
-
-    public function testCreatesComponentsWithoutProvidingExpireDate(): void
-    {
-        $userId = 'test-user';
-
-        $generator = $this->createMock(TokenGenerator::class);
-        $generator
-            ->expects($this->once())
-            ->method('getToken')
-            ->with(self::isInstanceOf(\DateTimeInterface::class), $userId)
-        ;
-
-        $helper = new VerifyHelper($generator, 100);
-        $helper->generateSignature($userId);
+        self::assertSame('', $components->getSignature());
     }
 
     public function testIsValid(): void
     {
-        $expiresAt = new \DateTimeImmutable('2020-01-01 12:00');
-        $userId = 'test-user';
+        $helper = new VerifyHelper(3600);
+        $components = $helper->generateSignature('1234', 'jr@rushlow.dev');
 
-        $token = \hash_hmac('sha256', \json_encode([$expiresAt, $userId]), '1234', false);
-        $signature = $expiresAt->getTimestamp().$token;
-
-        $mockGenerator = $this->createMock(TokenGenerator::class);
-        $mockGenerator
-            ->expects($this->once())
-            ->method('getToken')
-            ->with($expiresAt, $userId)
-            ->willReturn($token)
-        ;
-
-        $helper = new VerifyHelper($mockGenerator, 100);
-        self::assertTrue($helper->isValidSignature($signature, $userId));
+        $result = $helper->isValidSignature($components->getSignature(), '1234', 'jr@rushlow.dev');
+        self::assertTrue($result);
     }
+//    public function testUsesParamsToCreateComponents(): void
+//    {
+//        $userId = 'test-user';
+//        $expiresAt = new \DateTimeImmutable();
+//
+//        $generator = $this->createMock(TokenGenerator::class);
+//        $generator
+//            ->expects($this->once())
+//            ->method('getToken')
+//            ->with($expiresAt, $userId)
+//        ;
+//
+//        $helper = new VerifyHelper($generator, 100);
+//        $helper->generateSignature($userId, $expiresAt);
+//    }
+//
+//    public function testCreatesComponentsWithoutProvidingExpireDate(): void
+//    {
+//        $userId = 'test-user';
+//
+//        $generator = $this->createMock(TokenGenerator::class);
+//        $generator
+//            ->expects($this->once())
+//            ->method('getToken')
+//            ->with(self::isInstanceOf(\DateTimeInterface::class), $userId)
+//        ;
+//
+//        $helper = new VerifyHelper($generator, 100);
+//        $helper->generateSignature($userId);
+//    }
+//
+//    public function testIsValid(): void
+//    {
+//        $expiresAt = new \DateTimeImmutable('2020-01-01 12:00');
+//        $userId = 'test-user';
+//
+//        $token = \hash_hmac('sha256', \json_encode([$expiresAt, $userId]), '1234', false);
+//        $signature = $expiresAt->getTimestamp().$token;
+//
+//        $mockGenerator = $this->createMock(TokenGenerator::class);
+//        $mockGenerator
+//            ->expects($this->once())
+//            ->method('getToken')
+//            ->with($expiresAt, $userId)
+//            ->willReturn($token)
+//        ;
+//
+//        $helper = new VerifyHelper($mockGenerator, 100);
+//        self::assertTrue($helper->isValidSignature($signature, $userId));
+//    }
 }

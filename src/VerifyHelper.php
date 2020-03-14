@@ -9,8 +9,11 @@
 
 namespace SymfonyCasts\Bundle\VerifyUser;
 
-use SymfonyCasts\Bundle\VerifyUser\Generator\TokenGenerator;
+use Symfony\Component\HttpKernel\UriSigner;
+use SymfonyCasts\Bundle\VerifyUser\Collection\QueryParamCollection;
+use SymfonyCasts\Bundle\VerifyUser\Model\QueryParam;
 use SymfonyCasts\Bundle\VerifyUser\Model\SignatureComponents;
+use SymfonyCasts\Bundle\VerifyUser\Util\Query;
 
 /**
  * @author Jesse Rushlow <jr@rushlow.dev>
@@ -18,51 +21,58 @@ use SymfonyCasts\Bundle\VerifyUser\Model\SignatureComponents;
 class VerifyHelper implements VerifyHelperInterface
 {
     /**
-     * @var TokenGenerator
-     */
-    private $generator;
-
-    /**
      * @var int The length of time in seconds that a signed URI is valid for after it is created
      */
     private $lifetime;
 
-    public function __construct(TokenGenerator $generator, int $lifetime)
+    public function __construct(int $lifetime)
     {
-        $this->generator = $generator;
         $this->lifetime = $lifetime;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function generateSignature(string $userId, \DateTimeInterface $expiresAt = null): SignatureComponents
+    public function generateSignature(string $userId, string $userEmail, \DateTimeInterface $expiresAt = null): SignatureComponents
     {
         if (null === $expiresAt) {
             $expiresAt = (new \DateTimeImmutable('now'))
                 ->modify(\sprintf('+%d seconds', 450));
         }
 
-        return new SignatureComponents($expiresAt, $this->generator->getToken($expiresAt, $userId));
+        $collection = new QueryParamCollection();
+        $collection->add(new QueryParam('id', $userId));
+        $collection->add(new QueryParam('userEmail', $userEmail));
+        $collection->add(new QueryParam('expires', $expiresAt->getTimestamp()));
+
+        $queryUtil = new Query();
+
+        $toBeSigned = $queryUtil->addQueryParams($collection, '/');
+
+        $signer = new UriSigner('secret', 'signature');
+
+        $collection->offsetUnset(2);
+
+        $piiRemovedFromSignature = $queryUtil->removeQueryParam($collection, $signer->sign($toBeSigned));
+
+        return new SignatureComponents($expiresAt, $piiRemovedFromSignature);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function isValidSignature(string $signature, string $userId): bool
+    public function isValidSignature(string $signature, string $userId, string $userEmail): bool
     {
-        $timestamp = (int) \substr($signature, 0, 10);
-        $time = new \DateTimeImmutable();
-        $expiresAt = $time->setTimestamp($timestamp);
+        $queryUtil = new Query();
 
-        $expected = $this->generator->getToken($expiresAt, $userId);
+        // check time is not expired here / if true exit early...
+        $timestamp = (int) $queryUtil->getExpiryTimeStamp($signature);
 
-        return \hash_equals($expected, \substr($signature, 10));
+        $collection = new QueryParamCollection();
+        $collection->add(new QueryParam('id', $userId));
+        $collection->add(new QueryParam('userEmail', $userEmail));
+
+        $uriToCheck = $queryUtil->addQueryParams($collection, $signature);
+
+        $signer = new UriSigner('secret', 'signature');
+
+        return $signer->check($uriToCheck);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getSignatureLifetime(): int
     {
         return $this->lifetime;

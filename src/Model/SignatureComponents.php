@@ -22,21 +22,21 @@ final class SignatureComponents
     /**
      * @var string
      */
-    private $token;
+    private $uri;
 
-    public function __construct(\DateTimeInterface $expiresAt, string $token)
+    public function __construct(\DateTimeInterface $expiresAt, string $uri)
     {
         $this->expiresAt = $expiresAt;
-        $this->token = $token;
+        $this->uri = $uri;
     }
 
-    /**
-     * Returns Unix timestamp + hashed token as string.
-     */
     public function getSignature(): string
     {
-        $timestamp = $this->expiresAt->getTimestamp();
+        return $this->uri;
+    }
 
-        return $timestamp.$this->token;
+    public function getExpiryTime(): \DateTimeInterface
+    {
+        return $this->expiresAt;
     }
 }
