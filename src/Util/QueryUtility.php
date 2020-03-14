@@ -10,7 +10,7 @@ use SymfonyCasts\Bundle\VerifyUser\Collection\QueryParamCollection;
  * @internal
  * @final
  */
-class Query
+class QueryUtility
 {
     public function removeQueryParam(QueryParamCollection $collection, string $uri): string
     {

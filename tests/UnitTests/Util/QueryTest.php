@@ -5,7 +5,7 @@ namespace SymfonyCasts\Bundle\VerifyUser\Tests\UnitTests\Util;
 use PHPUnit\Framework\TestCase;
 use SymfonyCasts\Bundle\VerifyUser\Collection\QueryParamCollection;
 use SymfonyCasts\Bundle\VerifyUser\Model\QueryParam;
-use SymfonyCasts\Bundle\VerifyUser\Util\Query;
+use SymfonyCasts\Bundle\VerifyUser\Util\QueryUtility;
 
 class QueryTest extends TestCase
 {
@@ -24,7 +24,7 @@ class QueryTest extends TestCase
         $path = '/verify?';
         $uri = $path.\http_build_query($params);
 
-        $queryUtility = new Query();
+        $queryUtility = new QueryUtility();
 
         $result = $queryUtility->removeQueryParam($collection, $uri);
         $expected = $path.\http_build_query(['b' => 'bar']);
@@ -49,7 +49,7 @@ class QueryTest extends TestCase
         $collection->offsetUnset(1);
         $uri = $path.\http_build_query([$exists->getKey() => $exists->getValue()]);
 
-        $queryUtil = new Query();
+        $queryUtil = new QueryUtility();
         $result = $queryUtil->addQueryParams($collection, $uri);
 
         self::assertSame($expected, $result);
