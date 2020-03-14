@@ -13,7 +13,8 @@
 
         <service id="SymfonyCasts\Bundle\VerifyUser\VerifyHelperInterface" alias="symfonycasts.verify_user.helper" />
         <service id="symfonycasts.verify_user.helper" class="SymfonyCasts\Bundle\VerifyUser\VerifyHelper">
-            <argument type="service" id="symfonycasts.verify_user.token_generator" />
+            <argument type="service" id="symfonycasts.verify_user.signing_wrapper" />
+            <argument type="service" id="symfonycasts.verify_user.query_utility" />
             <argument /> <!-- verify user signature lifetime -->
         </service>
     </services>
