@@ -38,9 +38,9 @@ class VerifyHelper
         }
 
         $collection = new QueryParamCollection();
-        $collection->add(new QueryParam('id', $userId));
-        $collection->add(new QueryParam('userEmail', $userEmail));
-        $collection->add(new QueryParam('expires', $expiresAt->getTimestamp()));
+        $collection->add(new QueryParam(QueryParam::USER_ID, $userId));
+        $collection->add(new QueryParam(QueryParam::USER_EMAIL, $userEmail));
+        $collection->add(new QueryParam(QueryParam::EXPIRES_AT, $expiresAt->getTimestamp()));
 
         $queryUtil = new Query();
 
@@ -63,8 +63,8 @@ class VerifyHelper
         $timestamp = (int) $queryUtil->getExpiryTimeStamp($signature);
 
         $collection = new QueryParamCollection();
-        $collection->add(new QueryParam('id', $userId));
-        $collection->add(new QueryParam('userEmail', $userEmail));
+        $collection->add(new QueryParam(QueryParam::USER_ID, $userId));
+        $collection->add(new QueryParam(QueryParam::USER_EMAIL, $userEmail));
 
         $uriToCheck = $queryUtil->addQueryParams($collection, $signature);
 

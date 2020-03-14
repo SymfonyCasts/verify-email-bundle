@@ -7,6 +7,10 @@ namespace SymfonyCasts\Bundle\VerifyUser\Model;
  */
 class QueryParam
 {
+    public const USER_ID = 'id';
+    public const USER_EMAIL = 'email';
+    public const EXPIRES_AT = 'expires';
+
     private $key;
 
     private $value;
