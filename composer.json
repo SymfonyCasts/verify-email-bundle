@@ -3,7 +3,7 @@
     "license": "proprietary",
     "minimum-stability": "dev",
     "require": {
-        "php": "^7.2.5",
+        "php": "^7.2",
         "symfony/framework-bundle": "^5.0"
     },
     "require-dev": {
