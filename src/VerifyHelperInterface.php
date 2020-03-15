@@ -12,24 +12,13 @@ namespace SymfonyCasts\Bundle\VerifyUser;
 use SymfonyCasts\Bundle\VerifyUser\Model\SignatureComponents;
 
 /**
- * @author Jesse Rushlow <jr@rushlow.dev>
+ * @author  Jesse Rushlow <jr@rushlow.dev>
  */
 interface VerifyHelperInterface
 {
-    /**
-     * Create a
-     * @param string $userId Identifiable string that's unique to a user. (email, id, etc..)
-     */
-    public function generateSignature(string $userId, \DateTimeInterface $expires): SignatureComponents;
+    public function generateSignature(string $userId, string $userEmail, \DateTimeInterface $expiresAt = null): SignatureComponents;
 
-    /**
-     * @param string $signature Timestamp + hashed token
-     * @param string $userId    User identifier used to create hashed token (email, id, etc..)
-     */
-    public function isValidSignature(string $signature, string $userId): bool;
+    public function isValidSignature(string $signature, string $userId, string $userEmail): bool;
 
-    /**
-     * Get the lifetime of a signed URI in seconds.
-     */
     public function getSignatureLifetime(): int;
 }

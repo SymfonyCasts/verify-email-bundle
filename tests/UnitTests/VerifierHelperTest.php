@@ -10,62 +10,89 @@
 namespace SymfonyCasts\Bundle\VerifyUser\Tests\UnitTests;
 
 use PHPUnit\Framework\TestCase;
-use SymfonyCasts\Bundle\VerifyUser\Generator\TokenGenerator;
+use SymfonyCasts\Bundle\VerifyUser\Collection\QueryParamCollection;
+use SymfonyCasts\Bundle\VerifyUser\Util\QueryUtility;
+use SymfonyCasts\Bundle\VerifyUser\Util\UriSigningWrapper;
 use SymfonyCasts\Bundle\VerifyUser\VerifyHelper;
+use SymfonyCasts\Bundle\VerifyUser\VerifyHelperInterface;
 
 /**
  * @author Jesse Rushlow <jr@rushlow.dev>
  */
 class VerifierHelperTest extends TestCase
 {
-    public function testUsesParamsToCreateComponents(): void
+    private $mockSigner;
+    private $mockQueryUtility;
+
+    protected function setUp(): void
     {
-        $userId = 'test-user';
-        $expiresAt = new \DateTimeImmutable();
-
-        $generator = $this->createMock(TokenGenerator::class);
-        $generator
-            ->expects($this->once())
-            ->method('getToken')
-            ->with($expiresAt, $userId)
-        ;
-
-        $helper = new VerifyHelper($generator, 100);
-        $helper->generateSignature($userId, $expiresAt);
+        $this->mockSigner = $this->createMock(UriSigningWrapper::class);
+        $this->mockQueryUtility = $this->createMock(QueryUtility::class);
     }
 
-    public function testCreatesComponentsWithoutProvidingExpireDate(): void
+    public function testSignatureIsGenerated(): void
     {
-        $userId = 'test-user';
+        $uriToBeSigned = '/?id=1234&email=jr@rushlow.dev&expires=';
+        $signature = '?signature=abc';
+        $signedUri = $uriToBeSigned.$signature;
 
-        $generator = $this->createMock(TokenGenerator::class);
-        $generator
+        $this->mockQueryUtility
             ->expects($this->once())
-            ->method('getToken')
-            ->with(self::isInstanceOf(\DateTimeInterface::class), $userId)
+            ->method('addQueryParams')
+            ->with(self::isInstanceOf(QueryParamCollection::class), '/')
+            ->willReturn($uriToBeSigned)
         ;
 
-        $helper = new VerifyHelper($generator, 100);
-        $helper->generateSignature($userId);
+        $this->mockSigner
+            ->expects($this->once())
+            ->method('signUri')
+            ->with($uriToBeSigned)
+            ->willReturn($signedUri)
+        ;
+
+        $this->mockQueryUtility
+            ->expects($this->once())
+            ->method('removeQueryParam')
+            ->with(self::isInstanceOf(QueryParamCollection::class), $signedUri)
+            ->willReturn($signature)
+        ;
+
+        $helper = $this->getHelper();
+        $components = $helper->generateSignature('1234', 'jr@rushlow.dev');
+
+        self::assertSame($signature, $components->getSignature());
     }
 
-    public function testIsValid(): void
+    public function testIsValidSignature(): void
     {
-        $expiresAt = new \DateTimeImmutable('2020-01-01 12:00');
-        $userId = 'test-user';
+        $signature = '/?signature=abc';
+        $uriToBeVerified = '/?signature=abc&user=123&email=jr@rushlow.dev';
 
-        $token = \hash_hmac('sha256', \json_encode([$expiresAt, $userId]), '1234', false);
-        $signature = $expiresAt->getTimestamp().$token;
-
-        $mockGenerator = $this->createMock(TokenGenerator::class);
-        $mockGenerator
+        $this->mockQueryUtility
             ->expects($this->once())
-            ->method('getToken')
-            ->with($expiresAt, $userId)
-            ->willReturn($token)
+            ->method('addQueryParams')
+            ->with(self::isInstanceOf(QueryParamCollection::class), $signature)
+            ->willReturn($uriToBeVerified)
         ;
 
-        $helper = new VerifyHelper($mockGenerator, 100);
-        self::assertTrue($helper->isValidSignature($signature, $userId));
+        $this->mockSigner
+            ->expects($this->once())
+            ->method('isValid')
+            ->with($uriToBeVerified)
+        ;
+
+        $helper = $this->getHelper();
+        $helper->isValidSignature($signature, '1234', 'jr@rushlow.dev');
+    }
+
+    public function testGetLifetimeReturnsIntFromLifetimeProperty(): void
+    {
+        $helper = $this->getHelper();
+        self::assertSame(3600, $helper->getSignatureLifetime());
+    }
+
+    private function getHelper(): VerifyHelperInterface
+    {
+        return new VerifyHelper($this->mockSigner, $this->mockQueryUtility, 3600);
     }
 }

@@ -10,10 +10,19 @@
 namespace SymfonyCasts\Bundle\VerifyUser;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
+use SymfonyCasts\Bundle\VerifyUser\DependencyInjection\SymfonyCastsVerifyUserExtension;
 
 /**
  * @author Jesse Rushlow <jr@rushlow.dev>
  */
 class SymfonyCastsVerifyUserBundle extends Bundle
 {
+    public function getContainerExtension()
+    {
+        if (null === $this->extension) {
+            $this->extension = new SymfonyCastsVerifyUserExtension();
+        }
+
+        return $this->extension ?: null;
+    }
 }
