@@ -41,8 +41,6 @@ class VerifyUserHelper implements VerifyUserHelperInterface
 
     public function generateSignature(string $routeName, string $userId, string $userEmail, array $extraParams = []): VerifyUserSignatureComponents
     {
-        $uri = $this->router->generate($routeName, $extraParams);
-
         $expiresAt = new \DateTimeImmutable(\sprintf('+%d seconds', $this->lifetime));
 
         $collection = new VerifyUserQueryParamCollection();
@@ -54,7 +52,10 @@ class VerifyUserHelper implements VerifyUserHelperInterface
             $collection->createParam($key, $value);
         }
 
-        $toBeSigned = $this->queryUtility->addQueryParams($collection, $uri);
+        $toBeSigned = $this->queryUtility->addQueryParams(
+            $collection,
+            $this->router->generate($routeName, $extraParams)
+        );
 
         $collection->offsetUnset(2);
 
@@ -68,9 +69,7 @@ class VerifyUserHelper implements VerifyUserHelperInterface
      */
     public function isValidSignature(string $signature, string $userId, string $userEmail): bool
     {
-        $timestamp = $this->queryUtility->getExpiryTimeStamp($signature);
-
-        if ($timestamp <= \time()) {
+        if ($this->queryUtility->getExpiryTimeStamp($signature) <= \time()) {
             throw new ExpiredSignatureException();
         }
 
