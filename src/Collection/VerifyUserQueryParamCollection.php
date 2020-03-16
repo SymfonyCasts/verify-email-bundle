@@ -13,8 +13,10 @@ use SymfonyCasts\Bundle\VerifyUser\Model\VerifyUserQueryParam;
 
 /**
  * @author Jesse Rushlow <jr@rushlow.dev>
+ *
+ * @internal
  */
-class VerifyUserQueryParamCollection implements \ArrayAccess, \Countable, \IteratorAggregate
+final class VerifyUserQueryParamCollection implements \ArrayAccess, \Countable, \IteratorAggregate
 {
     private $elements = [];
 
