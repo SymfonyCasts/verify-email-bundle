@@ -68,7 +68,7 @@ class VerifierHelperTest extends TestCase
         ;
 
         $helper = $this->getHelper();
-        $components = $helper->generateSignature('app_verify_route','1234', 'jr@rushlow.dev');
+        $components = $helper->generateSignature('app_verify_route', '1234', 'jr@rushlow.dev');
 
         self::assertSame($signature, $components->getSignature());
     }

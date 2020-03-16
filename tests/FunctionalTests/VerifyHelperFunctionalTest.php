@@ -37,15 +37,15 @@ class VerifyHelperFunctionalTest extends TestCase
 
         $result = $this->getHelper()->generateSignature('app_verify_route', $userId, $email);
 
-        $parsedUri = parse_url($result->getSignature());
-        parse_str($parsedUri['query'], $queryParams);
+        $parsedUri = \parse_url($result->getSignature());
+        \parse_str($parsedUri['query'], $queryParams);
 
         $expectedQueryParams['email'] = $email;
         $expectedQueryParams['expires'] = $queryParams['expires'];
         $expectedQueryParams['id'] = $userId;
 
-        ksort($expectedQueryParams);
-        $expectedQueryString = http_build_query($expectedQueryParams);
+        \ksort($expectedQueryParams);
+        $expectedQueryString = \http_build_query($expectedQueryParams);
 
         $expectedUri = $uri.'?'.$expectedQueryString;
         $expectedHash = \base64_encode(\hash_hmac('sha256', $expectedUri, self::FAKE_SIGNING_KEY, true));
@@ -63,7 +63,7 @@ class VerifyHelperFunctionalTest extends TestCase
         $queryParams['expires'] = (new \DateTimeImmutable('+1 hours'))->getTimestamp();
         $queryParams['id'] = $userId;
 
-        $queryString = http_build_query($queryParams);
+        $queryString = \http_build_query($queryParams);
         $uriToSign = $uri.'?'.$queryString;
 
         $signature = \base64_encode(\hash_hmac('sha256', $uriToSign, self::FAKE_SIGNING_KEY, true));
