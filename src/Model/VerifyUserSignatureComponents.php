@@ -30,11 +30,17 @@ final class VerifyUserSignatureComponents
         $this->uri = $uri;
     }
 
+    /**
+     * Returns the full signed URI that a user should use.
+     */
     public function getSignature(): string
     {
         return $this->uri;
     }
 
+    /**
+     * Get the length of time in seconds that a signature is valid for.
+     */
     public function getExpiryTime(): \DateTimeInterface
     {
         return $this->expiresAt;

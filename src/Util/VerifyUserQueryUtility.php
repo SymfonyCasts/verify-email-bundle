@@ -12,6 +12,8 @@ namespace SymfonyCasts\Bundle\VerifyUser\Util;
 use SymfonyCasts\Bundle\VerifyUser\Collection\VerifyUserQueryParamCollection;
 
 /**
+ * Provides methods to manipulate a query string in a URI.
+ *
  * @author Jesse Rushlow <jr@rushlow.dev>
  *
  * @internal
