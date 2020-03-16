@@ -21,6 +21,7 @@ use SymfonyCasts\Bundle\VerifyUser\Collection\VerifyUserQueryParamCollection;
  */
 class VerifyUserQueryUtility
 {
+    //@TODO remove/add method handle full uri? hmm [scheme] etc.. hmmm let me think
     public function removeQueryParam(VerifyUserQueryParamCollection $collection, string $uri): string
     {
         $parsedUri = \parse_url($uri);
