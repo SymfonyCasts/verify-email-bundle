@@ -34,7 +34,7 @@ services:
     networks:
       - app
 
-  mysql:
+  mariadb:
     build:
       context: ./mariadb
       args:

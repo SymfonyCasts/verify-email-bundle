@@ -1,5 +1,5 @@
 ARG MARIADB_VERSION=latest
 
-FROM mysql:${MARIADB_VERSION}
+FROM mariadb:${MARIADB_VERSION}
 
 CMD ["mysqld"]

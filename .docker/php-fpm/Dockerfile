@@ -27,7 +27,7 @@ ARG XDEBUG_PORT
 ARG XDEBUG_IDEKEY
 
 RUN sed -i "s/xdebug.remote_enable=0/xdebug.remote_enable=1/" /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-RUN sed -i "s/xdebug.remote_host=0.0.0.0/xdebug.remote_host=${XDEBUG_HOST}/" /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+RUN sed -i "s/xdebug.remote_host=1.2.3.4/xdebug.remote_host=${XDEBUG_HOST}/" /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 RUN sed -i "s/xdebug.remote_port=9000/xdebug.remote_port=${XDEBUG_PORT}/" /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 RUN sed -i "s/xdebug.idekey=docker/xdebug.idekey=${XDEBUG_IDEKEY}/" /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
