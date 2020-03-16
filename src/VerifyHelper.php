@@ -11,6 +11,7 @@ namespace SymfonyCasts\Bundle\VerifyUser;
 
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use SymfonyCasts\Bundle\VerifyUser\Collection\QueryParamCollection;
+use SymfonyCasts\Bundle\VerifyUser\Exception\ExpiredSignatureException;
 use SymfonyCasts\Bundle\VerifyUser\Model\QueryParam;
 use SymfonyCasts\Bundle\VerifyUser\Model\SignatureComponents;
 use SymfonyCasts\Bundle\VerifyUser\Util\QueryUtility;
@@ -59,10 +60,17 @@ class VerifyHelper implements VerifyHelperInterface
         return new SignatureComponents($expiresAt, $piiRemovedFromSignature);
     }
 
+    /**
+     * @throws ExpiredSignatureException
+     */
     public function isValidSignature(string $signature, string $userId, string $userEmail): bool
     {
         // check time is not expired here / if true exit early...
-        $timestamp = (int) $this->queryUtility->getExpiryTimeStamp($signature);
+        $timestamp = $this->queryUtility->getExpiryTimeStamp($signature);
+
+        if ($timestamp <= \time()) {
+            throw new ExpiredSignatureException();
+        }
 
         $collection = new QueryParamCollection();
         $collection->createParam(QueryParam::USER_ID, $userId);

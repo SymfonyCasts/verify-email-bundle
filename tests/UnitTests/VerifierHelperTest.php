@@ -12,6 +12,7 @@ namespace SymfonyCasts\Bundle\VerifyUser\Tests\UnitTests;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Routing\RouterInterface;
 use SymfonyCasts\Bundle\VerifyUser\Collection\QueryParamCollection;
+use SymfonyCasts\Bundle\VerifyUser\Exception\ExpiredSignatureException;
 use SymfonyCasts\Bundle\VerifyUser\Util\QueryUtility;
 use SymfonyCasts\Bundle\VerifyUser\Util\UriSigningWrapper;
 use SymfonyCasts\Bundle\VerifyUser\VerifyHelper;
@@ -75,8 +76,18 @@ class VerifierHelperTest extends TestCase
 
     public function testIsValidSignature(): void
     {
-        $signature = '/?signature=abc';
-        $uriToBeVerified = '/?signature=abc&user=123&email=jr@rushlow.dev';
+        $timestamp = (new \DateTimeImmutable('+1 minutes'))->getTimestamp();
+        $expires = 'expires='.$timestamp;
+
+        $signature = '/?'.$expires.'&signature=abc';
+        $uriToBeVerified = '/?'.$expires.'signature=abc&user=123&email=jr@rushlow.dev';
+
+        $this->mockQueryUtility
+            ->expects($this->once())
+            ->method('getExpiryTimeStamp')
+            ->with($signature)
+            ->willReturn($timestamp)
+        ;
 
         $this->mockQueryUtility
             ->expects($this->once())
@@ -91,6 +102,23 @@ class VerifierHelperTest extends TestCase
             ->with($uriToBeVerified)
         ;
 
+        $helper = $this->getHelper();
+        $helper->isValidSignature($signature, '1234', 'jr@rushlow.dev');
+    }
+
+    public function testExceptionThrownWithExpiredSignature(): void
+    {
+        $timestamp = (new \DateTimeImmutable('-1 seconds'))->getTimestamp();
+        $signature = '/?expires='.$timestamp;
+
+        $this->mockQueryUtility
+            ->expects($this->once())
+            ->method('getExpiryTimeStamp')
+            ->with($signature)
+            ->willReturn($timestamp)
+        ;
+
+        $this->expectException(ExpiredSignatureException::class);
         $helper = $this->getHelper();
         $helper->isValidSignature($signature, '1234', 'jr@rushlow.dev');
     }

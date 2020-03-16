@@ -41,17 +41,17 @@ class QueryUtility
         return $parsedUri['path'].'?'.$this->getSortedQueryString($params);
     }
 
-    public function getExpiryTimeStamp(string $uri): ?string
+    public function getExpiryTimeStamp(string $uri): int
     {
         $parsedUri = \parse_url($uri);
 
         if (!isset($parsedUri['query'])) {
-            return null;
+            return 0;
         }
 
         \parse_str($parsedUri['query'], $params);
 
-        return $params['expires'] ?? null;
+        return (int) $params['expires'];
     }
 
     private function getSortedQueryString(array $params): string
