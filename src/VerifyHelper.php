@@ -9,6 +9,7 @@
 
 namespace SymfonyCasts\Bundle\VerifyUser;
 
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use SymfonyCasts\Bundle\VerifyUser\Collection\QueryParamCollection;
 use SymfonyCasts\Bundle\VerifyUser\Model\QueryParam;
 use SymfonyCasts\Bundle\VerifyUser\Model\SignatureComponents;
@@ -20,6 +21,7 @@ use SymfonyCasts\Bundle\VerifyUser\Util\UriSigningWrapper;
  */
 class VerifyHelper implements VerifyHelperInterface
 {
+    private $router;
     private $uriSigner;
     private $queryUtility;
 
@@ -28,16 +30,19 @@ class VerifyHelper implements VerifyHelperInterface
      */
     private $lifetime;
 
-    public function __construct(UriSigningWrapper $uriSigner, QueryUtility $queryUtility, int $lifetime)
+    public function __construct(UrlGeneratorInterface $router, UriSigningWrapper $uriSigner, QueryUtility $queryUtility, int $lifetime)
     {
+        $this->router = $router;
         $this->uriSigner = $uriSigner;
         $this->queryUtility = $queryUtility;
         $this->lifetime = $lifetime;
     }
 
     // @TODO This will get past the URI string from the app.
-    public function generateSignature(string $uri, string $userId, string $userEmail): SignatureComponents
+    public function generateSignature(string $routeName, string $userId, string $userEmail, array $extraParams = []): SignatureComponents
     {
+        $uri = $this->router->generate($routeName, $extraParams);
+
         $expiresAt = new \DateTimeImmutable(\sprintf('+%d seconds', $this->lifetime));
 
         $collection = new QueryParamCollection();
