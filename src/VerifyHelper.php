@@ -39,7 +39,6 @@ class VerifyHelper implements VerifyHelperInterface
         $this->lifetime = $lifetime;
     }
 
-    // @TODO This will get past the URI string from the app.
     public function generateSignature(string $routeName, string $userId, string $userEmail, array $extraParams = []): SignatureComponents
     {
         $uri = $this->router->generate($routeName, $extraParams);
@@ -65,7 +64,6 @@ class VerifyHelper implements VerifyHelperInterface
      */
     public function isValidSignature(string $signature, string $userId, string $userEmail): bool
     {
-        // check time is not expired here / if true exit early...
         $timestamp = $this->queryUtility->getExpiryTimeStamp($signature);
 
         if ($timestamp <= \time()) {
