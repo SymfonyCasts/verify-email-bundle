@@ -29,7 +29,7 @@ final class SymfonyCastsVerifyUserExtension extends Extension
         $config = $this->processConfiguration($configuration, $configs);
 
         $helperDefinition = $container->getDefinition('symfonycasts.verify_user.helper');
-        $helperDefinition->replaceArgument(2, $config['lifetime']);
+        $helperDefinition->replaceArgument(3, $config['lifetime']);
     }
 
     public function getAlias()
