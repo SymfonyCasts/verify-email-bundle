@@ -9,6 +9,7 @@
 
 namespace SymfonyCasts\Bundle\VerifyUser;
 
+use SymfonyCasts\Bundle\VerifyUser\Exception\ExpiredSignatureException;
 use SymfonyCasts\Bundle\VerifyUser\Model\VerifyUserSignatureComponents;
 
 /**
@@ -16,9 +17,20 @@ use SymfonyCasts\Bundle\VerifyUser\Model\VerifyUserSignatureComponents;
  */
 interface VerifyUserHelperInterface
 {
+    /**
+     * Generate a signed URI that can be used to validate a user.
+     */
     public function generateSignature(string $routeName, string $userId, string $userEmail, array $extraParameters = []): VerifyUserSignatureComponents;
 
+    /**
+     * Validate a signed URI and mark the user a verified.
+     *
+     * @throws ExpiredSignatureException
+     */
     public function isValidSignature(string $signature, string $userId, string $userEmail): bool;
 
+    /**
+     * Returns the length of time in seconds that a signed uri is valid.
+     */
     public function getSignatureLifetime(): int;
 }
