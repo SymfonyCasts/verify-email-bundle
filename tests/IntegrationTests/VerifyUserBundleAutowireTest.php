@@ -11,7 +11,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\HttpKernel\Log\Logger;
 use SymfonyCasts\Bundle\VerifyUser\SymfonyCastsVerifyUserBundle;
-use SymfonyCasts\Bundle\VerifyUser\VerifyHelperInterface;
+use SymfonyCasts\Bundle\VerifyUser\VerifyUserHelperInterface;
 
 class VerifyBundleAutowireTest extends TestCase
 {
@@ -78,7 +78,7 @@ class VerifyBundleIntegrationKernel extends Kernel
 
 class VerifyHelperAutowireTest
 {
-    public function __construct(VerifyHelperInterface $helper)
+    public function __construct(VerifyUserHelperInterface $helper)
     {
     }
 }

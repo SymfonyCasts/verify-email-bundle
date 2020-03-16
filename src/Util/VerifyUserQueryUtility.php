@@ -2,7 +2,7 @@
 
 namespace SymfonyCasts\Bundle\VerifyUser\Util;
 
-use SymfonyCasts\Bundle\VerifyUser\Collection\QueryParamCollection;
+use SymfonyCasts\Bundle\VerifyUser\Collection\VerifyUserQueryParamCollection;
 
 /**
  * @author Jesse Rushlow <jr@rushlow.dev>
@@ -10,9 +10,9 @@ use SymfonyCasts\Bundle\VerifyUser\Collection\QueryParamCollection;
  * @internal
  * @final
  */
-class QueryUtility
+class VerifyUserQueryUtility
 {
-    public function removeQueryParam(QueryParamCollection $collection, string $uri): string
+    public function removeQueryParam(VerifyUserQueryParamCollection $collection, string $uri): string
     {
         $parsedUri = \parse_url($uri);
         \parse_str($parsedUri['query'], $params);
@@ -26,7 +26,7 @@ class QueryUtility
         return $parsedUri['path'].'?'.$this->getSortedQueryString($params);
     }
 
-    public function addQueryParams(QueryParamCollection $collection, string $uri): string
+    public function addQueryParams(VerifyUserQueryParamCollection $collection, string $uri): string
     {
         $parsedUri = \parse_url($uri);
         $params = [];

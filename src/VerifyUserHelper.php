@@ -10,17 +10,17 @@
 namespace SymfonyCasts\Bundle\VerifyUser;
 
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use SymfonyCasts\Bundle\VerifyUser\Collection\QueryParamCollection;
+use SymfonyCasts\Bundle\VerifyUser\Collection\VerifyUserQueryParamCollection;
 use SymfonyCasts\Bundle\VerifyUser\Exception\ExpiredSignatureException;
-use SymfonyCasts\Bundle\VerifyUser\Model\QueryParam;
-use SymfonyCasts\Bundle\VerifyUser\Model\SignatureComponents;
-use SymfonyCasts\Bundle\VerifyUser\Util\QueryUtility;
-use SymfonyCasts\Bundle\VerifyUser\Util\UriSigningWrapper;
+use SymfonyCasts\Bundle\VerifyUser\Model\VerifyUserQueryParam;
+use SymfonyCasts\Bundle\VerifyUser\Model\VerifyUserSignatureComponents;
+use SymfonyCasts\Bundle\VerifyUser\Util\VerifyUserQueryUtility;
+use SymfonyCasts\Bundle\VerifyUser\Util\VerifyUserUriSigningWrapper;
 
 /**
  * @author Jesse Rushlow <jr@rushlow.dev>
  */
-class VerifyHelper implements VerifyHelperInterface
+class VerifyUserHelper implements VerifyUserHelperInterface
 {
     private $router;
     private $uriSigner;
@@ -31,7 +31,7 @@ class VerifyHelper implements VerifyHelperInterface
      */
     private $lifetime;
 
-    public function __construct(UrlGeneratorInterface $router, UriSigningWrapper $uriSigner, QueryUtility $queryUtility, int $lifetime)
+    public function __construct(UrlGeneratorInterface $router, VerifyUserUriSigningWrapper $uriSigner, VerifyUserQueryUtility $queryUtility, int $lifetime)
     {
         $this->router = $router;
         $this->uriSigner = $uriSigner;
@@ -39,16 +39,16 @@ class VerifyHelper implements VerifyHelperInterface
         $this->lifetime = $lifetime;
     }
 
-    public function generateSignature(string $routeName, string $userId, string $userEmail, array $extraParams = []): SignatureComponents
+    public function generateSignature(string $routeName, string $userId, string $userEmail, array $extraParams = []): VerifyUserSignatureComponents
     {
         $uri = $this->router->generate($routeName, $extraParams);
 
         $expiresAt = new \DateTimeImmutable(\sprintf('+%d seconds', $this->lifetime));
 
-        $collection = new QueryParamCollection();
-        $collection->createParam(QueryParam::USER_ID, $userId);
-        $collection->createParam(QueryParam::USER_EMAIL, $userEmail);
-        $collection->createParam(QueryParam::EXPIRES_AT, (string) $expiresAt->getTimestamp());
+        $collection = new VerifyUserQueryParamCollection();
+        $collection->createParam(VerifyUserQueryParam::USER_ID, $userId);
+        $collection->createParam(VerifyUserQueryParam::USER_EMAIL, $userEmail);
+        $collection->createParam(VerifyUserQueryParam::EXPIRES_AT, (string) $expiresAt->getTimestamp());
 
         $toBeSigned = $this->queryUtility->addQueryParams($collection, $uri);
 
@@ -56,7 +56,7 @@ class VerifyHelper implements VerifyHelperInterface
 
         $piiRemovedFromSignature = $this->queryUtility->removeQueryParam($collection, $this->uriSigner->signUri($toBeSigned));
 
-        return new SignatureComponents($expiresAt, $piiRemovedFromSignature);
+        return new VerifyUserSignatureComponents($expiresAt, $piiRemovedFromSignature);
     }
 
     /**
@@ -70,9 +70,9 @@ class VerifyHelper implements VerifyHelperInterface
             throw new ExpiredSignatureException();
         }
 
-        $collection = new QueryParamCollection();
-        $collection->createParam(QueryParam::USER_ID, $userId);
-        $collection->createParam(QueryParam::USER_EMAIL, $userEmail);
+        $collection = new VerifyUserQueryParamCollection();
+        $collection->createParam(VerifyUserQueryParam::USER_ID, $userId);
+        $collection->createParam(VerifyUserQueryParam::USER_EMAIL, $userEmail);
 
         $uriToCheck = $this->queryUtility->addQueryParams($collection, $signature);
 

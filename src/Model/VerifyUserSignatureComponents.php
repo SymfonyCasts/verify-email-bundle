@@ -12,7 +12,7 @@ namespace SymfonyCasts\Bundle\VerifyUser\Model;
 /**
  * @author Jesse Rushlow <jr@rushlow.dev>
  */
-final class SignatureComponents
+final class VerifyUserSignatureComponents
 {
     /**
      * @var \DateTimeInterface

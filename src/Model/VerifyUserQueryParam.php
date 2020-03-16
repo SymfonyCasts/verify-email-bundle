@@ -5,7 +5,7 @@ namespace SymfonyCasts\Bundle\VerifyUser\Model;
 /**
  * @author Jesse Rushlow <jr@rushlow.dev>
  */
-class QueryParam
+class VerifyUserQueryParam
 {
     public const USER_ID = 'id';
     public const USER_EMAIL = 'email';

@@ -7,7 +7,7 @@ use Symfony\Component\HttpKernel\UriSigner;
 /**
  * @author Jesse Rushlow <jr@rushlow.dev>
  */
-class UriSigningWrapper
+class VerifyUserUriSigningWrapper
 {
     /**
      * @var UriSigner

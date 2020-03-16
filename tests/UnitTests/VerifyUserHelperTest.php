@@ -11,17 +11,17 @@ namespace SymfonyCasts\Bundle\VerifyUser\Tests\UnitTests;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Routing\RouterInterface;
-use SymfonyCasts\Bundle\VerifyUser\Collection\QueryParamCollection;
+use SymfonyCasts\Bundle\VerifyUser\Collection\VerifyUserQueryParamCollection;
 use SymfonyCasts\Bundle\VerifyUser\Exception\ExpiredSignatureException;
-use SymfonyCasts\Bundle\VerifyUser\Util\QueryUtility;
-use SymfonyCasts\Bundle\VerifyUser\Util\UriSigningWrapper;
-use SymfonyCasts\Bundle\VerifyUser\VerifyHelper;
-use SymfonyCasts\Bundle\VerifyUser\VerifyHelperInterface;
+use SymfonyCasts\Bundle\VerifyUser\Util\VerifyUserQueryUtility;
+use SymfonyCasts\Bundle\VerifyUser\Util\VerifyUserUriSigningWrapper;
+use SymfonyCasts\Bundle\VerifyUser\VerifyUserHelper;
+use SymfonyCasts\Bundle\VerifyUser\VerifyUserHelperInterface;
 
 /**
  * @author Jesse Rushlow <jr@rushlow.dev>
  */
-class VerifierHelperTest extends TestCase
+class VerifyUserHelperTest extends TestCase
 {
     private $mockRouter;
     private $mockSigner;
@@ -30,8 +30,8 @@ class VerifierHelperTest extends TestCase
     protected function setUp(): void
     {
         $this->mockRouter = $this->createMock(RouterInterface::class);
-        $this->mockSigner = $this->createMock(UriSigningWrapper::class);
-        $this->mockQueryUtility = $this->createMock(QueryUtility::class);
+        $this->mockSigner = $this->createMock(VerifyUserUriSigningWrapper::class);
+        $this->mockQueryUtility = $this->createMock(VerifyUserQueryUtility::class);
     }
 
     public function testSignatureIsGenerated(): void
@@ -50,7 +50,7 @@ class VerifierHelperTest extends TestCase
         $this->mockQueryUtility
             ->expects($this->once())
             ->method('addQueryParams')
-            ->with(self::isInstanceOf(QueryParamCollection::class), '/verify')
+            ->with(self::isInstanceOf(VerifyUserQueryParamCollection::class), '/verify')
             ->willReturn($uriToBeSigned)
         ;
 
@@ -64,7 +64,7 @@ class VerifierHelperTest extends TestCase
         $this->mockQueryUtility
             ->expects($this->once())
             ->method('removeQueryParam')
-            ->with(self::isInstanceOf(QueryParamCollection::class), $signedUri)
+            ->with(self::isInstanceOf(VerifyUserQueryParamCollection::class), $signedUri)
             ->willReturn($signature)
         ;
 
@@ -92,7 +92,7 @@ class VerifierHelperTest extends TestCase
         $this->mockQueryUtility
             ->expects($this->once())
             ->method('addQueryParams')
-            ->with(self::isInstanceOf(QueryParamCollection::class), $signature)
+            ->with(self::isInstanceOf(VerifyUserQueryParamCollection::class), $signature)
             ->willReturn($uriToBeVerified)
         ;
 
@@ -129,8 +129,8 @@ class VerifierHelperTest extends TestCase
         self::assertSame(3600, $helper->getSignatureLifetime());
     }
 
-    private function getHelper(): VerifyHelperInterface
+    private function getHelper(): VerifyUserHelperInterface
     {
-        return new VerifyHelper($this->mockRouter, $this->mockSigner, $this->mockQueryUtility, 3600);
+        return new VerifyUserHelper($this->mockRouter, $this->mockSigner, $this->mockQueryUtility, 3600);
     }
 }

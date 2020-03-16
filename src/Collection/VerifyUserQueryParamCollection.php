@@ -9,21 +9,21 @@
 
 namespace SymfonyCasts\Bundle\VerifyUser\Collection;
 
-use SymfonyCasts\Bundle\VerifyUser\Model\QueryParam;
+use SymfonyCasts\Bundle\VerifyUser\Model\VerifyUserQueryParam;
 
 /**
  * @author Jesse Rushlow <jr@rushlow.dev>
  */
-class QueryParamCollection implements \ArrayAccess, \Countable, \IteratorAggregate
+class VerifyUserQueryParamCollection implements \ArrayAccess, \Countable, \IteratorAggregate
 {
     private $elements = [];
 
     public function createParam(string $key, string $value): void
     {
-        $this->elements[] = new QueryParam($key, $value);
+        $this->elements[] = new VerifyUserQueryParam($key, $value);
     }
 
-    public function add(QueryParam $queryParam): void
+    public function add(VerifyUserQueryParam $queryParam): void
     {
         $this->elements[] = $queryParam;
     }

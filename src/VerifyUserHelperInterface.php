@@ -9,14 +9,14 @@
 
 namespace SymfonyCasts\Bundle\VerifyUser;
 
-use SymfonyCasts\Bundle\VerifyUser\Model\SignatureComponents;
+use SymfonyCasts\Bundle\VerifyUser\Model\VerifyUserSignatureComponents;
 
 /**
  * @author  Jesse Rushlow <jr@rushlow.dev>
  */
-interface VerifyHelperInterface
+interface VerifyUserHelperInterface
 {
-    public function generateSignature(string $routeName, string $userId, string $userEmail, array $extraParameters = []): SignatureComponents;
+    public function generateSignature(string $routeName, string $userId, string $userEmail, array $extraParameters = []): VerifyUserSignatureComponents;
 
     public function isValidSignature(string $signature, string $userId, string $userEmail): bool;
 

@@ -4,12 +4,12 @@ namespace SymfonyCasts\Bundle\VerifyUser\Tests\FunctionalTests;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use SymfonyCasts\Bundle\VerifyUser\Util\QueryUtility;
-use SymfonyCasts\Bundle\VerifyUser\Util\UriSigningWrapper;
-use SymfonyCasts\Bundle\VerifyUser\VerifyHelper;
-use SymfonyCasts\Bundle\VerifyUser\VerifyHelperInterface;
+use SymfonyCasts\Bundle\VerifyUser\Util\VerifyUserQueryUtility;
+use SymfonyCasts\Bundle\VerifyUser\Util\VerifyUserUriSigningWrapper;
+use SymfonyCasts\Bundle\VerifyUser\VerifyUserHelper;
+use SymfonyCasts\Bundle\VerifyUser\VerifyUserHelperInterface;
 
-class VerifyHelperFunctionalTest extends TestCase
+class VerifyUserHelperFunctionalTest extends TestCase
 {
     private const FAKE_SIGNING_KEY = 'superSecret';
     private $mockRouter;
@@ -77,12 +77,12 @@ class VerifyHelperFunctionalTest extends TestCase
         self::assertTrue($this->getHelper()->isValidSignature($expectedSignedUri, $userId, $email));
     }
 
-    private function getHelper(): VerifyHelperInterface
+    private function getHelper(): VerifyUserHelperInterface
     {
-        return new VerifyHelper(
+        return new VerifyUserHelper(
             $this->mockRouter,
-            new UriSigningWrapper(self::FAKE_SIGNING_KEY),
-            new QueryUtility(),
+            new VerifyUserUriSigningWrapper(self::FAKE_SIGNING_KEY),
+            new VerifyUserQueryUtility(),
             3600
         );
     }
