@@ -50,6 +50,10 @@ class VerifyUserHelper implements VerifyUserHelperInterface
         $collection->createParam(VerifyUserQueryParam::USER_EMAIL, $userEmail);
         $collection->createParam(VerifyUserQueryParam::EXPIRES_AT, (string) $expiresAt->getTimestamp());
 
+        foreach ($extraParams as $key => $value) {
+            $collection->createParam($key, $value);
+        }
+
         $toBeSigned = $this->queryUtility->addQueryParams($collection, $uri);
 
         $collection->offsetUnset(2);
