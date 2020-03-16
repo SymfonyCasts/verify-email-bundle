@@ -36,12 +36,9 @@ class VerifyHelper implements VerifyHelperInterface
     }
 
     // @TODO This will get past the URI string from the app.
-    public function generateSignature(string $userId, string $userEmail, \DateTimeInterface $expiresAt = null): SignatureComponents
+    public function generateSignature(string $userId, string $userEmail): SignatureComponents
     {
-        // @TODO - Do I even need to accept an expiresAt Argument?
-        if (null === $expiresAt) {
-            $expiresAt = new \DateTimeImmutable(\sprintf('+%d seconds', $this->lifetime));
-        }
+        $expiresAt = new \DateTimeImmutable(\sprintf('+%d seconds', $this->lifetime));
 
         $collection = new QueryParamCollection();
         $collection->createParam(QueryParam::USER_ID, $userId);
