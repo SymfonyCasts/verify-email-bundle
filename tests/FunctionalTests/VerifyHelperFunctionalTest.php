@@ -29,10 +29,11 @@ class VerifyHelperFunctionalTest extends TestCase
 
     public function testGenerateSignature(): void
     {
+        $uri = '/verify';
         $userId = '1234';
         $email = 'jr@rushlow.dev';
 
-        $result = $this->helper->generateSignature($userId, $email);
+        $result = $this->helper->generateSignature($uri, $userId, $email);
 
         $parsedUri = parse_url($result->getSignature());
         parse_str($parsedUri['query'], $queryParams);
@@ -44,7 +45,7 @@ class VerifyHelperFunctionalTest extends TestCase
         ksort($expectedQueryParams);
         $expectedQueryString = http_build_query($expectedQueryParams);
 
-        $expectedUri = '/?'.$expectedQueryString;
+        $expectedUri = $uri.'?'.$expectedQueryString;
         $expectedHash = \base64_encode(\hash_hmac('sha256', $expectedUri, self::FAKE_SIGNING_KEY, true));
 
         self::assertTrue(\hash_equals($expectedHash, $queryParams['signature']));
@@ -52,6 +53,7 @@ class VerifyHelperFunctionalTest extends TestCase
 
     public function testValidSignature(): void
     {
+        $uri = '/verify';
         $userId = '1234';
         $email = 'jr@rushlow.dev';
 
@@ -60,7 +62,7 @@ class VerifyHelperFunctionalTest extends TestCase
         $queryParams['id'] = $userId;
 
         $queryString = http_build_query($queryParams);
-        $uriToSign = '/?'.$queryString;
+        $uriToSign = $uri.'?'.$queryString;
 
         $signature = \base64_encode(\hash_hmac('sha256', $uriToSign, self::FAKE_SIGNING_KEY, true));
         $queryParams['signature'] = $signature;
@@ -68,7 +70,7 @@ class VerifyHelperFunctionalTest extends TestCase
         unset($queryParams['id'], $queryParams['email']);
         \ksort($queryParams);
 
-        $expectedSignedUri = '/?'.\http_build_query($queryParams);
+        $expectedSignedUri = $uri.'?'.\http_build_query($queryParams);
 
         self::assertTrue($this->helper->isValidSignature($expectedSignedUri, $userId, $email));
     }

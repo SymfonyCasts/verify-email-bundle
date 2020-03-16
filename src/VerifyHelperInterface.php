@@ -16,7 +16,7 @@ use SymfonyCasts\Bundle\VerifyUser\Model\SignatureComponents;
  */
 interface VerifyHelperInterface
 {
-    public function generateSignature(string $userId, string $userEmail): SignatureComponents;
+    public function generateSignature(string $uri, string $userId, string $userEmail): SignatureComponents;
 
     public function isValidSignature(string $signature, string $userId, string $userEmail): bool;
 

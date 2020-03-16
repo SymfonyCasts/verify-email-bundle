@@ -36,7 +36,7 @@ class VerifyHelper implements VerifyHelperInterface
     }
 
     // @TODO This will get past the URI string from the app.
-    public function generateSignature(string $userId, string $userEmail): SignatureComponents
+    public function generateSignature(string $uri, string $userId, string $userEmail): SignatureComponents
     {
         $expiresAt = new \DateTimeImmutable(\sprintf('+%d seconds', $this->lifetime));
 
@@ -45,7 +45,7 @@ class VerifyHelper implements VerifyHelperInterface
         $collection->createParam(QueryParam::USER_EMAIL, $userEmail);
         $collection->createParam(QueryParam::EXPIRES_AT, (string) $expiresAt->getTimestamp());
 
-        $toBeSigned = $this->queryUtility->addQueryParams($collection, '/');
+        $toBeSigned = $this->queryUtility->addQueryParams($collection, $uri);
 
         $collection->offsetUnset(2);
 

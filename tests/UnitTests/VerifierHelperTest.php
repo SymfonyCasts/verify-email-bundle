@@ -32,14 +32,14 @@ class VerifierHelperTest extends TestCase
 
     public function testSignatureIsGenerated(): void
     {
-        $uriToBeSigned = '/?id=1234&email=jr@rushlow.dev&expires=';
+        $uriToBeSigned = '/verify?id=1234&email=jr@rushlow.dev&expires=';
         $signature = '?signature=abc';
         $signedUri = $uriToBeSigned.$signature;
 
         $this->mockQueryUtility
             ->expects($this->once())
             ->method('addQueryParams')
-            ->with(self::isInstanceOf(QueryParamCollection::class), '/')
+            ->with(self::isInstanceOf(QueryParamCollection::class), '/verify')
             ->willReturn($uriToBeSigned)
         ;
 
@@ -58,7 +58,7 @@ class VerifierHelperTest extends TestCase
         ;
 
         $helper = $this->getHelper();
-        $components = $helper->generateSignature('1234', 'jr@rushlow.dev');
+        $components = $helper->generateSignature('/verify','1234', 'jr@rushlow.dev');
 
         self::assertSame($signature, $components->getSignature());
     }
