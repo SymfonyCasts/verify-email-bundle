@@ -41,7 +41,7 @@ services:
         - MARIADB_VERSION=${MARIADB_VERSION}
     environment:
       - MYSQL_ROOT_PASSWORD=${MARIADB_ROOT_PW}
-      - MYSQL_DATABASE=maker_test
+      - MYSQL_DATABASE=${MARIADB_DATABASE}
     networks:
       - app
 
