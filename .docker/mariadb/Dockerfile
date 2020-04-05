@@ -1,5 +1,0 @@
-ARG MARIADB_VERSION=latest
-
-FROM mariadb:${MARIADB_VERSION}
-
-CMD ["mysqld"]
