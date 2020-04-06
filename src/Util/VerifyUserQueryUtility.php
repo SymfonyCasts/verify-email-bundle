@@ -9,7 +9,7 @@
 
 namespace SymfonyCasts\Bundle\VerifyUser\Util;
 
-use SymfonyCasts\Bundle\VerifyUser\Collection\VerifyUserQueryParamCollection;
+use SymfonyCasts\Bundle\VerifyUser\Model\VerifyUserQueryParam;
 
 /**
  * Provides methods to manipulate a query string in a URI.
@@ -21,33 +21,47 @@ use SymfonyCasts\Bundle\VerifyUser\Collection\VerifyUserQueryParamCollection;
  */
 class VerifyUserQueryUtility
 {
-    //@TODO remove/add method handle full uri? hmm [scheme] etc.. hmmm let me think
-    public function removeQueryParam(VerifyUserQueryParamCollection $collection, string $uri): string
-    {
-        $parsedUri = \parse_url($uri);
-        \parse_str($parsedUri['query'], $params);
-
-        foreach ($collection as $queryParam) {
-            if (isset($params[$queryParam->getKey()])) {
-                unset($params[$queryParam->getKey()]);
-            }
-        }
-
-        return $parsedUri['path'].'?'.$this->getSortedQueryString($params);
-    }
-
-    public function addQueryParams(VerifyUserQueryParamCollection $collection, string $uri): string
+    /**
+     * @param VerifyUserQueryParam[] $queryParams
+     */
+    public function addQueryParams(array $queryParams, string $uri): string
     {
         $parsedUri = \parse_url($uri);
         $params = [];
+
         if (isset($parsedUri['query'])) {
             \parse_str($parsedUri['query'], $params);
         }
 
-        foreach ($collection as $queryParam) {
-            $params[$queryParam->getKey()] = $queryParam->getValue();
+        foreach ($queryParams as $param) {
+            $params[$param->getKey()] = $param->getValue();
         }
 
+        //@TODO if path is not set, return what?
+        return $parsedUri['path'].'?'.$this->getSortedQueryString($params);
+    }
+
+    //@TODO remove/add method handle full uri? hmm [scheme] etc.. hmmm let me think
+
+    /**
+     * @param VerifyUserQueryParam[] $queryParams
+     */
+    public function removeQueryParam(array $queryParams, string $uri): string
+    {
+        $parsedUri = \parse_url($uri);
+        $params = [];
+
+        if (isset($parsedUri['query'])) {
+            \parse_str($parsedUri['query'], $params);
+        }
+
+        foreach ($queryParams as $param) {
+            if (isset($params[$param->getKey()])) {
+                unset($params[$param->getKey()]);
+            }
+        }
+
+        //@TODO if path is not set, return what?
         return $parsedUri['path'].'?'.$this->getSortedQueryString($params);
     }
 
