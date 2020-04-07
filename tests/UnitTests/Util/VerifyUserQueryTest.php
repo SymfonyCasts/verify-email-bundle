@@ -10,7 +10,6 @@
 namespace SymfonyCasts\Bundle\VerifyUser\Tests\UnitTests\Util;
 
 use PHPUnit\Framework\TestCase;
-use SymfonyCasts\Bundle\VerifyUser\Collection\VerifyUserQueryParamCollection;
 use SymfonyCasts\Bundle\VerifyUser\Model\VerifyUserQueryParam;
 use SymfonyCasts\Bundle\VerifyUser\Util\VerifyUserQueryUtility;
 
@@ -20,13 +19,13 @@ class VerifyUserQueryTest extends TestCase
     {
         $params = ['a' => 'foo', 'b' => 'bar', 'c' => 'baz'];
 
-        $collection = new VerifyUserQueryParamCollection();
+        $collection = [];
 
         foreach ($params as $key => $value) {
-            $collection->add(new VerifyUserQueryParam($key, $value));
+            $collection[] = new VerifyUserQueryParam($key, $value);
         }
 
-        $collection->offsetUnset(1);
+        unset($collection[1]);
 
         $path = '/verify?';
         $uri = $path.\http_build_query($params);
@@ -46,14 +45,14 @@ class VerifyUserQueryTest extends TestCase
         $path = '/verify?';
         $expected = $path.\http_build_query($params);
 
-        $collection = new VerifyUserQueryParamCollection();
+        $collection = [];
 
         foreach ($params as $key => $value) {
-            $collection->add(new VerifyUserQueryParam($key, $value));
+            $collection[] = new VerifyUserQueryParam($key, $value);
         }
 
         $exists = $collection[1];
-        $collection->offsetUnset(1);
+        unset($collection[1]);
         $uri = $path.\http_build_query([$exists->getKey() => $exists->getValue()]);
 
         $queryUtil = new VerifyUserQueryUtility();

@@ -11,7 +11,6 @@ namespace SymfonyCasts\Bundle\VerifyUser\Tests\UnitTests;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Routing\RouterInterface;
-use SymfonyCasts\Bundle\VerifyUser\Collection\VerifyUserQueryParamCollection;
 use SymfonyCasts\Bundle\VerifyUser\Exception\ExpiredSignatureException;
 use SymfonyCasts\Bundle\VerifyUser\Util\VerifyUserQueryUtility;
 use SymfonyCasts\Bundle\VerifyUser\Util\VerifyUserUriSigningWrapper;
@@ -21,7 +20,7 @@ use SymfonyCasts\Bundle\VerifyUser\VerifyUserHelperInterface;
 /**
  * @author Jesse Rushlow <jr@rushlow.dev>
  */
-class VerifyUserHelperTest extends TestCase
+final class VerifyUserHelperTest extends TestCase
 {
     private $mockRouter;
     private $mockSigner;
@@ -50,7 +49,7 @@ class VerifyUserHelperTest extends TestCase
         $this->mockQueryUtility
             ->expects($this->once())
             ->method('addQueryParams')
-            ->with(self::isInstanceOf(VerifyUserQueryParamCollection::class), '/verify')
+            ->with(self::isType('array'), '/verify')
             ->willReturn($uriToBeSigned)
         ;
 
@@ -64,7 +63,7 @@ class VerifyUserHelperTest extends TestCase
         $this->mockQueryUtility
             ->expects($this->once())
             ->method('removeQueryParam')
-            ->with(self::isInstanceOf(VerifyUserQueryParamCollection::class), $signedUri)
+            ->with(self::isType('array'), $signedUri)
             ->willReturn($signature)
         ;
 
@@ -92,7 +91,7 @@ class VerifyUserHelperTest extends TestCase
         $this->mockQueryUtility
             ->expects($this->once())
             ->method('addQueryParams')
-            ->with(self::isInstanceOf(VerifyUserQueryParamCollection::class), $signature)
+            ->with(self::isType('array'), $signature)
             ->willReturn($uriToBeVerified)
         ;
 

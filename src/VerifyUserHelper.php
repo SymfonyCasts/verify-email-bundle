@@ -10,7 +10,6 @@
 namespace SymfonyCasts\Bundle\VerifyUser;
 
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use SymfonyCasts\Bundle\VerifyUser\Collection\VerifyUserQueryParamCollection;
 use SymfonyCasts\Bundle\VerifyUser\Exception\ExpiredSignatureException;
 use SymfonyCasts\Bundle\VerifyUser\Model\VerifyUserQueryParam;
 use SymfonyCasts\Bundle\VerifyUser\Model\VerifyUserSignatureComponents;
@@ -20,7 +19,7 @@ use SymfonyCasts\Bundle\VerifyUser\Util\VerifyUserUriSigningWrapper;
 /**
  * @author Jesse Rushlow <jr@rushlow.dev>
  */
-class VerifyUserHelper implements VerifyUserHelperInterface
+final class VerifyUserHelper implements VerifyUserHelperInterface
 {
     private $router;
     private $uriSigner;
@@ -49,19 +48,11 @@ class VerifyUserHelper implements VerifyUserHelperInterface
             'expires' => new VerifyUserQueryParam(VerifyUserQueryParam::EXPIRES_AT, (string) $expiresAt->getTimestamp()),
         ];
 
-//        $collection = new VerifyUserQueryParamCollection();
-//        $collection->createParam(VerifyUserQueryParam::USER_ID, $userId);
-//        $collection->createParam(VerifyUserQueryParam::USER_EMAIL, $userEmail);
-//        $collection->createParam(VerifyUserQueryParam::EXPIRES_AT, (string) $expiresAt->getTimestamp());
-
         if (!empty($extraParams)) {
             foreach ($extraParams as $key => $value) {
                 $queryParams[] = new VerifyUserQueryParam($key, $value);
             }
         }
-//        foreach ($extraParams as $key => $value) {
-//            $collection->createParam($key, $value);
-//        }
 
         $toBeSigned = $this->queryUtility->addQueryParams(
             $queryParams,
@@ -88,10 +79,6 @@ class VerifyUserHelper implements VerifyUserHelperInterface
             'id' => new VerifyUserQueryParam(VerifyUserQueryParam::USER_ID, $userId),
             'email' => new VerifyUserQueryParam(VerifyUserQueryParam::USER_EMAIL, $userEmail),
         ];
-
-//        $collection = new VerifyUserQueryParamCollection();
-//        $collection->createParam(VerifyUserQueryParam::USER_ID, $userId);
-//        $collection->createParam(VerifyUserQueryParam::USER_EMAIL, $userEmail);
 
         $uriToCheck = $this->queryUtility->addQueryParams($queryParams, $signature);
 
