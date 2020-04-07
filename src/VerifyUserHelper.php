@@ -40,7 +40,7 @@ final class VerifyUserHelper implements VerifyUserHelperInterface
 
     public function generateSignature(string $routeName, string $userId, string $userEmail, array $extraParams = []): VerifyUserSignatureComponents
     {
-        $expiresAt = new \DateTimeImmutable(\sprintf('+%d seconds', $this->lifetime));
+        $expiresAt = new \DateTimeImmutable(sprintf('+%d seconds', $this->lifetime));
 
         $queryParams = [
             'id' => new VerifyUserQueryParam(VerifyUserQueryParam::USER_ID, $userId),
@@ -71,7 +71,7 @@ final class VerifyUserHelper implements VerifyUserHelperInterface
      */
     public function isValidSignature(string $signature, string $userId, string $userEmail): bool
     {
-        if ($this->queryUtility->getExpiryTimeStamp($signature) <= \time()) {
+        if ($this->queryUtility->getExpiryTimeStamp($signature) <= time()) {
             throw new ExpiredSignatureException();
         }
 

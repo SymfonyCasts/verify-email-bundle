@@ -28,12 +28,12 @@ class VerifyUserQueryTest extends TestCase
         unset($collection[1]);
 
         $path = '/verify?';
-        $uri = $path.\http_build_query($params);
+        $uri = $path.http_build_query($params);
 
         $queryUtility = new VerifyUserQueryUtility();
 
         $result = $queryUtility->removeQueryParam($collection, $uri);
-        $expected = $path.\http_build_query(['b' => 'bar']);
+        $expected = $path.http_build_query(['b' => 'bar']);
 
         self::assertSame($expected, $result);
     }
@@ -43,7 +43,7 @@ class VerifyUserQueryTest extends TestCase
         $params = ['a' => 'foo', 'b' => 'bar', 'c' => 'baz'];
 
         $path = '/verify?';
-        $expected = $path.\http_build_query($params);
+        $expected = $path.http_build_query($params);
 
         $collection = [];
 
@@ -53,7 +53,7 @@ class VerifyUserQueryTest extends TestCase
 
         $exists = $collection[1];
         unset($collection[1]);
-        $uri = $path.\http_build_query([$exists->getKey() => $exists->getValue()]);
+        $uri = $path.http_build_query([$exists->getKey() => $exists->getValue()]);
 
         $queryUtil = new VerifyUserQueryUtility();
         $result = $queryUtil->addQueryParams($collection, $uri);

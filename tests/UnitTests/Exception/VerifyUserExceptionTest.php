@@ -40,7 +40,7 @@ final class VerifyUserExceptionTest extends TestCase
      */
     public function testImplementsVerifyUserExceptionInterface(string $exception): void
     {
-        $interfaces = \class_implements($exception);
+        $interfaces = class_implements($exception);
         self::assertArrayHasKey(VerifyUserExceptionInterface::class, $interfaces);
     }
 }

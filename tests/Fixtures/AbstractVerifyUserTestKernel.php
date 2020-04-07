@@ -46,7 +46,7 @@ class AbstractVerifyUserTestKernel extends Kernel
     public function getCacheDir()
     {
         if (null === $this->cacheDir) {
-            return \sys_get_temp_dir().'/cache'.\spl_object_hash($this);
+            return sys_get_temp_dir().'/cache'.spl_object_hash($this);
         }
 
         return $this->cacheDir;
@@ -55,7 +55,7 @@ class AbstractVerifyUserTestKernel extends Kernel
     public function getLogDir()
     {
         if (null === $this->logDir) {
-            return \sys_get_temp_dir().'/logs'.\spl_object_hash($this);
+            return sys_get_temp_dir().'/logs'.spl_object_hash($this);
         }
 
         return $this->logDir;

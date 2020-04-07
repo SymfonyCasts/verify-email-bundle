@@ -26,11 +26,11 @@ class VerifyUserQueryUtility
      */
     public function addQueryParams(array $queryParams, string $uri): string
     {
-        $parsedUri = \parse_url($uri);
+        $parsedUri = parse_url($uri);
         $params = [];
 
         if (isset($parsedUri['query'])) {
-            \parse_str($parsedUri['query'], $params);
+            parse_str($parsedUri['query'], $params);
         }
 
         foreach ($queryParams as $param) {
@@ -48,11 +48,11 @@ class VerifyUserQueryUtility
      */
     public function removeQueryParam(array $queryParams, string $uri): string
     {
-        $parsedUri = \parse_url($uri);
+        $parsedUri = parse_url($uri);
         $params = [];
 
         if (isset($parsedUri['query'])) {
-            \parse_str($parsedUri['query'], $params);
+            parse_str($parsedUri['query'], $params);
         }
 
         foreach ($queryParams as $param) {
@@ -67,21 +67,21 @@ class VerifyUserQueryUtility
 
     public function getExpiryTimeStamp(string $uri): int
     {
-        $parsedUri = \parse_url($uri);
+        $parsedUri = parse_url($uri);
 
         if (!isset($parsedUri['query'])) {
             return 0;
         }
 
-        \parse_str($parsedUri['query'], $params);
+        parse_str($parsedUri['query'], $params);
 
         return (int) $params['expires'];
     }
 
     private function getSortedQueryString(array $params): string
     {
-        \ksort($params);
+        ksort($params);
 
-        return \http_build_query($params);
+        return http_build_query($params);
     }
 }

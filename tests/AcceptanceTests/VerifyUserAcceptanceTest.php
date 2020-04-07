@@ -44,21 +44,21 @@ final class VerifyUserAcceptanceTest extends TestCase
             'id' => '1234',
         ];
 
-        \ksort($queryParams);
+        ksort($queryParams);
 
-        $hash = \base64_encode(\hash_hmac(
+        $hash = base64_encode(hash_hmac(
             'sha256',
-            \sprintf('/verify/user?%s', \http_build_query($queryParams)),
+            sprintf('/verify/user?%s', http_build_query($queryParams)),
             'foo',
             true
         ));
 
-        $parsed = \parse_url($signature);
-        \parse_str($parsed['query'], $result);
+        $parsed = parse_url($signature);
+        parse_str($parsed['query'], $result);
 
-        self::assertTrue(\hash_equals($hash, $result['signature']));
+        self::assertTrue(hash_equals($hash, $result['signature']));
         self::assertSame(
-            \sprintf('/verify/user?expires=%s&signature=%s', $expiresAt, \urlencode($hash)),
+            sprintf('/verify/user?expires=%s&signature=%s', $expiresAt, urlencode($hash)),
             $signature
         );
     }
