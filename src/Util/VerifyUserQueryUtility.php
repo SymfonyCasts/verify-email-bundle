@@ -37,8 +37,9 @@ class VerifyUserQueryUtility
             $params[$param->getKey()] = $param->getValue();
         }
 
-        //@TODO if path is not set, return what?
-        return $parsedUri['path'].'?'.$this->getSortedQueryString($params);
+        $path = $parsedUri['path'] ?? '';
+
+        return $path.'?'.$this->getSortedQueryString($params);
     }
 
     //@TODO remove/add method handle full uri? hmm [scheme] etc.. hmmm let me think
@@ -61,8 +62,9 @@ class VerifyUserQueryUtility
             }
         }
 
-        //@TODO if path is not set, return what?
-        return $parsedUri['path'].'?'.$this->getSortedQueryString($params);
+        $path = $parsedUri['path'] ?? '';
+
+        return $path.'?'.$this->getSortedQueryString($params);
     }
 
     public function getExpiryTimeStamp(string $uri): int
