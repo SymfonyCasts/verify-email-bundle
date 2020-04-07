@@ -21,39 +21,44 @@ use SymfonyCasts\Bundle\VerifyUser\Model\VerifyUserQueryParam;
  */
 class VerifyUserQueryUtility
 {
+    private $urlUtility;
+
+    public function __construct(VerifyUserUrlUtility $urlUtility)
+    {
+        $this->urlUtility = $urlUtility;
+    }
+
     /**
      * @param VerifyUserQueryParam[] $queryParams
      */
     public function addQueryParams(array $queryParams, string $uri): string
     {
-        $parsedUri = parse_url($uri);
+        $urlComponents = $this->urlUtility->parseUrl($uri);
         $params = [];
 
-        if (isset($parsedUri['query'])) {
-            parse_str($parsedUri['query'], $params);
+        if (null !== ($queryString = $urlComponents->getQuery())) {
+            parse_str($queryString, $params);
         }
 
         foreach ($queryParams as $param) {
             $params[$param->getKey()] = $param->getValue();
         }
 
-        $path = $parsedUri['path'] ?? '';
+        $urlComponents->setQuery($this->getSortedQueryString($params));
 
-        return $path.'?'.$this->getSortedQueryString($params);
+        return $this->urlUtility->buildUrl($urlComponents);
     }
-
-    //@TODO remove/add method handle full uri? hmm [scheme] etc.. hmmm let me think
 
     /**
      * @param VerifyUserQueryParam[] $queryParams
      */
     public function removeQueryParam(array $queryParams, string $uri): string
     {
-        $parsedUri = parse_url($uri);
+        $urlComponents = $this->urlUtility->parseUrl($uri);
         $params = [];
 
-        if (isset($parsedUri['query'])) {
-            parse_str($parsedUri['query'], $params);
+        if (null !== ($queryString = $urlComponents->getQuery())) {
+            parse_str($queryString, $params);
         }
 
         foreach ($queryParams as $param) {
@@ -62,20 +67,20 @@ class VerifyUserQueryUtility
             }
         }
 
-        $path = $parsedUri['path'] ?? '';
+        $urlComponents->setQuery($this->getSortedQueryString($params));
 
-        return $path.'?'.$this->getSortedQueryString($params);
+        return $this->urlUtility->buildUrl($urlComponents);
     }
 
     public function getExpiryTimeStamp(string $uri): int
     {
-        $parsedUri = parse_url($uri);
+        $components = $this->urlUtility->parseUrl($uri);
 
-        if (!isset($parsedUri['query'])) {
+        if (null === ($query = $components->getQuery())) {
             return 0;
         }
 
-        parse_str($parsedUri['query'], $params);
+        parse_str($query, $params);
 
         return (int) $params['expires'];
     }

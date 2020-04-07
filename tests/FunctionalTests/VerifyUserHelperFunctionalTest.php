@@ -13,6 +13,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use SymfonyCasts\Bundle\VerifyUser\Util\VerifyUserQueryUtility;
 use SymfonyCasts\Bundle\VerifyUser\Util\VerifyUserUriSigningWrapper;
+use SymfonyCasts\Bundle\VerifyUser\Util\VerifyUserUrlUtility;
 use SymfonyCasts\Bundle\VerifyUser\VerifyUserHelper;
 use SymfonyCasts\Bundle\VerifyUser\VerifyUserHelperInterface;
 
@@ -89,7 +90,7 @@ class VerifyUserHelperFunctionalTest extends TestCase
         return new VerifyUserHelper(
             $this->mockRouter,
             new VerifyUserUriSigningWrapper(self::FAKE_SIGNING_KEY),
-            new VerifyUserQueryUtility(),
+            new VerifyUserQueryUtility(new VerifyUserUrlUtility()),
             3600
         );
     }
