@@ -65,10 +65,10 @@ class AbstractVerifyUserTestKernel extends Kernel
     {
     }
 
-    public function configureContainer(ContainerBuilder $container, LoaderInterface $loader)
+    protected function configureContainer(ContainerBuilder $container, LoaderInterface $loader)
     {
         $container->loadFromExtension('framework', [
-            'secret' => 'fool',
+            'secret' => 'foo',
             'router' => [
                 'utf8' => true,
             ],
