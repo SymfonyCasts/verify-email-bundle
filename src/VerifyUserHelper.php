@@ -43,23 +43,34 @@ class VerifyUserHelper implements VerifyUserHelperInterface
     {
         $expiresAt = new \DateTimeImmutable(\sprintf('+%d seconds', $this->lifetime));
 
-        $collection = new VerifyUserQueryParamCollection();
-        $collection->createParam(VerifyUserQueryParam::USER_ID, $userId);
-        $collection->createParam(VerifyUserQueryParam::USER_EMAIL, $userEmail);
-        $collection->createParam(VerifyUserQueryParam::EXPIRES_AT, (string) $expiresAt->getTimestamp());
+        $queryParams = [
+            'id' => new VerifyUserQueryParam(VerifyUserQueryParam::USER_ID, $userId),
+            'email' => new VerifyUserQueryParam(VerifyUserQueryParam::USER_EMAIL, $userEmail),
+            'expires' => new VerifyUserQueryParam(VerifyUserQueryParam::EXPIRES_AT, (string) $expiresAt->getTimestamp()),
+        ];
 
-        foreach ($extraParams as $key => $value) {
-            $collection->createParam($key, $value);
+//        $collection = new VerifyUserQueryParamCollection();
+//        $collection->createParam(VerifyUserQueryParam::USER_ID, $userId);
+//        $collection->createParam(VerifyUserQueryParam::USER_EMAIL, $userEmail);
+//        $collection->createParam(VerifyUserQueryParam::EXPIRES_AT, (string) $expiresAt->getTimestamp());
+
+        if (!empty($extraParams)) {
+            foreach ($extraParams as $key => $value) {
+                $queryParams[] = new VerifyUserQueryParam($key, $value);
+            }
         }
+//        foreach ($extraParams as $key => $value) {
+//            $collection->createParam($key, $value);
+//        }
 
         $toBeSigned = $this->queryUtility->addQueryParams(
-            $collection,
+            $queryParams,
             $this->router->generate($routeName, $extraParams)
         );
 
-        $collection->offsetUnset(2);
+        unset($queryParams['expires']);
 
-        $piiRemovedFromSignature = $this->queryUtility->removeQueryParam($collection, $this->uriSigner->signUri($toBeSigned));
+        $piiRemovedFromSignature = $this->queryUtility->removeQueryParam($queryParams, $this->uriSigner->signUri($toBeSigned));
 
         return new VerifyUserSignatureComponents($expiresAt, $piiRemovedFromSignature);
     }
@@ -73,11 +84,16 @@ class VerifyUserHelper implements VerifyUserHelperInterface
             throw new ExpiredSignatureException();
         }
 
-        $collection = new VerifyUserQueryParamCollection();
-        $collection->createParam(VerifyUserQueryParam::USER_ID, $userId);
-        $collection->createParam(VerifyUserQueryParam::USER_EMAIL, $userEmail);
+        $queryParams = [
+            'id' => new VerifyUserQueryParam(VerifyUserQueryParam::USER_ID, $userId),
+            'email' => new VerifyUserQueryParam(VerifyUserQueryParam::USER_EMAIL, $userEmail),
+        ];
 
-        $uriToCheck = $this->queryUtility->addQueryParams($collection, $signature);
+//        $collection = new VerifyUserQueryParamCollection();
+//        $collection->createParam(VerifyUserQueryParam::USER_ID, $userId);
+//        $collection->createParam(VerifyUserQueryParam::USER_EMAIL, $userEmail);
+
+        $uriToCheck = $this->queryUtility->addQueryParams($queryParams, $signature);
 
         return $this->uriSigner->isValid($uriToCheck);
     }
