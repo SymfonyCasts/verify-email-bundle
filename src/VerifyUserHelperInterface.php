@@ -19,11 +19,20 @@ interface VerifyUserHelperInterface
 {
     /**
      * Generate a signed URI that can be used to validate a user.
+     *
+     * @param string $routeName       name of the route who's URL will be signed
+     * @param string $userId          unique user identifier
+     * @param string $userEmail       the user's email address
+     * @param array  $extraParameters any additional query string parameters that will be apart of the signed URL
      */
     public function generateSignature(string $routeName, string $userId, string $userEmail, array $extraParameters = []): VerifyUserSignatureComponents;
 
     /**
      * Validate a signed URI and mark the user a verified.
+     *
+     * @param string $signature the URI that was submitted by the user
+     * @param string $userId    unique user identifier
+     * @param string $userEmail the user's email address
      *
      * @throws ExpiredSignatureException
      */
