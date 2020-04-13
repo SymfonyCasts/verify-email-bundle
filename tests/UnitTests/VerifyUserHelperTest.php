@@ -12,6 +12,7 @@ namespace SymfonyCasts\Bundle\VerifyUser\Tests\UnitTests;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Routing\RouterInterface;
 use SymfonyCasts\Bundle\VerifyUser\Exception\ExpiredSignatureException;
+use SymfonyCasts\Bundle\VerifyUser\Generator\VerifyUserTokenGenerator;
 use SymfonyCasts\Bundle\VerifyUser\Util\VerifyUserQueryUtility;
 use SymfonyCasts\Bundle\VerifyUser\Util\VerifyUserUriSigningWrapper;
 use SymfonyCasts\Bundle\VerifyUser\VerifyUserHelper;
@@ -130,6 +131,6 @@ final class VerifyUserHelperTest extends TestCase
 
     private function getHelper(): VerifyUserHelperInterface
     {
-        return new VerifyUserHelper($this->mockRouter, $this->mockSigner, $this->mockQueryUtility, 3600);
+        return new VerifyUserHelper($this->mockRouter, $this->mockSigner, $this->mockQueryUtility, new VerifyUserTokenGenerator('foo'), 3600);
     }
 }

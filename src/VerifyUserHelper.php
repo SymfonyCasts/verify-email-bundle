@@ -11,6 +11,7 @@ namespace SymfonyCasts\Bundle\VerifyUser;
 
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use SymfonyCasts\Bundle\VerifyUser\Exception\ExpiredSignatureException;
+use SymfonyCasts\Bundle\VerifyUser\Generator\VerifyUserTokenGenerator;
 use SymfonyCasts\Bundle\VerifyUser\Model\VerifyUserQueryParam;
 use SymfonyCasts\Bundle\VerifyUser\Model\VerifyUserSignatureComponents;
 use SymfonyCasts\Bundle\VerifyUser\Util\VerifyUserQueryUtility;
@@ -24,17 +25,19 @@ final class VerifyUserHelper implements VerifyUserHelperInterface
     private $router;
     private $uriSigner;
     private $queryUtility;
+    private $tokenGenerator;
 
     /**
      * @var int The length of time in seconds that a signed URI is valid for after it is created
      */
     private $lifetime;
 
-    public function __construct(UrlGeneratorInterface $router, VerifyUserUriSigningWrapper $uriSigner, VerifyUserQueryUtility $queryUtility, int $lifetime)
+    public function __construct(UrlGeneratorInterface $router, VerifyUserUriSigningWrapper $uriSigner, VerifyUserQueryUtility $queryUtility, VerifyUserTokenGenerator $generator, int $lifetime)
     {
         $this->router = $router;
         $this->uriSigner = $uriSigner;
         $this->queryUtility = $queryUtility;
+        $this->tokenGenerator = $generator;
         $this->lifetime = $lifetime;
     }
 

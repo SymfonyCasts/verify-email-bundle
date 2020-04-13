@@ -11,6 +11,7 @@ namespace SymfonyCasts\Bundle\VerifyUser\Tests\FunctionalTests;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use SymfonyCasts\Bundle\VerifyUser\Generator\VerifyUserTokenGenerator;
 use SymfonyCasts\Bundle\VerifyUser\Util\VerifyUserQueryUtility;
 use SymfonyCasts\Bundle\VerifyUser\Util\VerifyUserUriSigningWrapper;
 use SymfonyCasts\Bundle\VerifyUser\Util\VerifyUserUrlUtility;
@@ -91,6 +92,7 @@ class VerifyUserHelperFunctionalTest extends TestCase
             $this->mockRouter,
             new VerifyUserUriSigningWrapper(self::FAKE_SIGNING_KEY),
             new VerifyUserQueryUtility(new VerifyUserUrlUtility()),
+            new VerifyUserTokenGenerator('foo'),
             3600
         );
     }

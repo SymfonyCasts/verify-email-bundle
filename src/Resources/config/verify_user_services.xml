@@ -9,6 +9,10 @@
             <argument>%kernel.secret%</argument>
         </service>
 
+        <service id="symfonycasts.verify_user.token_generator" class="SymfonyCasts\Bundle\VerifyUser\Generator\VerifyUserTokenGenerator" public="false">
+            <argument>%kernel.secret%</argument>
+        </service>
+
         <service id="symfonycasts.verify_user.url_utility" class="SymfonyCasts\Bundle\VerifyUser\Util\VerifyUserUrlUtility" public="false" />
         <service id="symfonycasts.verify_user.query_utility" class="SymfonyCasts\Bundle\VerifyUser\Util\VerifyUserQueryUtility" public="false">
             <argument type="service" id="symfonycasts.verify_user.url_utility" />
@@ -19,6 +23,7 @@
             <argument type="service" id="router.default" />
             <argument type="service" id="symfonycasts.verify_user.signing_wrapper" />
             <argument type="service" id="symfonycasts.verify_user.query_utility" />
+            <argument type="service" id="symfonycasts.verify_user.token_generator" />
             <argument /> <!-- verify user signature lifetime -->
         </service>
     </services>

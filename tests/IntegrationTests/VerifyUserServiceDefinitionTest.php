@@ -27,6 +27,7 @@ final class VerifyUserServiceDefinitionTest extends TestCase
         yield [$prefix.'signing_wrapper'];
         yield [$prefix.'helper'];
         yield [$prefix.'url_utility'];
+        yield [$prefix.'token_generator'];
     }
 
     /**
