@@ -44,7 +44,7 @@ class VerifyUserHelperFunctionalTest extends TestCase
             ->willReturn('/verify')
         ;
 
-        $result = $this->getHelper()->generateSignature('app_verify_route', $userId, $email);
+        $result = $this->getHelper()->generateSignature('app_verify_route', $userId, $email, false);
 
         $parsedUri = parse_url($result->getSignature());
         parse_str($parsedUri['query'], $queryParams);

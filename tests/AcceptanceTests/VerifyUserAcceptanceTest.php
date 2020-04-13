@@ -33,15 +33,18 @@ final class VerifyUserAcceptanceTest extends TestCase
 
         /** @var VerifyUserHelper $helper */
         $helper = ($container->get(VerifyUserAcceptanceFixture::class))->helper;
-        $components = $helper->generateSignature('verify-test', '1234', 'jr@rushlow.dev');
+        $components = $helper->generateSignature('verify-test', '1234', 'jr@rushlow.dev', false);
 
         $signature = $components->getSignature();
         $expiresAt = ($components->getExpiryTime())->getTimestamp();
 
+        $encodedData = json_encode(['1234', 'jr@rushlow.dev', false, $expiresAt]);
+
+        $hashToBeUsedInQueryParam = base64_encode(hash_hmac('sha256', $encodedData, 'foo', true));
+
         $queryParams = [
-            'email' => 'jr@rushlow.dev',
             'expires' => $expiresAt,
-            'id' => '1234',
+            'hash' => $hashToBeUsedInQueryParam
         ];
 
         ksort($queryParams);
@@ -58,7 +61,7 @@ final class VerifyUserAcceptanceTest extends TestCase
 
         self::assertTrue(hash_equals($hash, $result['signature']));
         self::assertSame(
-            sprintf('/verify/user?expires=%s&signature=%s', $expiresAt, urlencode($hash)),
+            sprintf('/verify/user?expires=%s&hash=%s&signature=%s', $expiresAt, urlencode($hashToBeUsedInQueryParam), urlencode($hash)),
             $signature
         );
     }

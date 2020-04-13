@@ -41,32 +41,17 @@ final class VerifyUserHelper implements VerifyUserHelperInterface
         $this->lifetime = $lifetime;
     }
 
-    public function generateSignature(string $routeName, string $userId, string $userEmail, array $extraParams = []): VerifyUserSignatureComponents
+    public function generateSignature(string $routeName, string $userId, string $userEmail, bool $isVerified, array $extraParams = []): VerifyUserSignatureComponents
     {
         $expiresAt = new \DateTimeImmutable(sprintf('+%d seconds', $this->lifetime));
 
-        $queryParams = [
-            'id' => new VerifyUserQueryParam(VerifyUserQueryParam::USER_ID, $userId),
-            'email' => new VerifyUserQueryParam(VerifyUserQueryParam::USER_EMAIL, $userEmail),
-            'expires' => new VerifyUserQueryParam(VerifyUserQueryParam::EXPIRES_AT, (string) $expiresAt->getTimestamp()),
-        ];
+        $extraParams['hash'] = $this->tokenGenerator->createToken($userId, $userEmail, $isVerified, $expiresAt);
+        $extraParams['expires'] = $expiresAt->getTimestamp();
 
-        if (!empty($extraParams)) {
-            foreach ($extraParams as $key => $value) {
-                $queryParams[] = new VerifyUserQueryParam($key, $value);
-            }
-        }
+        $uri = $this->router->generate($routeName, $extraParams);
+        $signature = $this->uriSigner->signUri($uri);
 
-        $toBeSigned = $this->queryUtility->addQueryParams(
-            $queryParams,
-            $this->router->generate($routeName, $extraParams)
-        );
-
-        unset($queryParams['expires']);
-
-        $piiRemovedFromSignature = $this->queryUtility->removeQueryParam($queryParams, $this->uriSigner->signUri($toBeSigned));
-
-        return new VerifyUserSignatureComponents($expiresAt, $piiRemovedFromSignature);
+        return new VerifyUserSignatureComponents($expiresAt, $signature);
     }
 
     /**

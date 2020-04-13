@@ -25,7 +25,7 @@ interface VerifyUserHelperInterface
      * @param string $userEmail       the user's email address
      * @param array  $extraParameters any additional query string parameters that will be apart of the signed URL
      */
-    public function generateSignature(string $routeName, string $userId, string $userEmail, array $extraParameters = []): VerifyUserSignatureComponents;
+    public function generateSignature(string $routeName, string $userId, string $userEmail, bool $isVerified, array $extraParameters = []): VerifyUserSignatureComponents;
 
     /**
      * Validate a signed URI and mark the user a verified.
