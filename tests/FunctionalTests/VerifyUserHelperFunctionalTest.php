@@ -12,6 +12,7 @@ namespace SymfonyCasts\Bundle\VerifyUser\Tests\FunctionalTests;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use SymfonyCasts\Bundle\VerifyUser\Generator\VerifyUserTokenGenerator;
+use SymfonyCasts\Bundle\VerifyUser\Tests\Fixtures\VerifyUserFixtureUser;
 use SymfonyCasts\Bundle\VerifyUser\Util\VerifyUserQueryUtility;
 use SymfonyCasts\Bundle\VerifyUser\Util\VerifyUserUriSigningWrapper;
 use SymfonyCasts\Bundle\VerifyUser\Util\VerifyUserUrlUtility;
@@ -34,8 +35,7 @@ class VerifyUserHelperFunctionalTest extends TestCase
     public function testGenerateSignature(): void
     {
         $uri = '/verify';
-        $userId = '1234';
-        $email = 'jr@rushlow.dev';
+        $user = new VerifyUserFixtureUser();
 
         $this->mockRouter
             ->expects($this->once())
@@ -44,14 +44,14 @@ class VerifyUserHelperFunctionalTest extends TestCase
             ->willReturn('/verify')
         ;
 
-        $result = $this->getHelper()->generateSignature('app_verify_route', $userId, $email, false);
+        $result = $this->getHelper()->generateSignature('app_verify_route', $user->id, $user->email, $user->verified);
 
         $parsedUri = parse_url($result->getSignature());
         parse_str($parsedUri['query'], $queryParams);
 
-        $expectedQueryParams['email'] = $email;
+        $expectedQueryParams['email'] = $user->email;
         $expectedQueryParams['expires'] = $queryParams['expires'];
-        $expectedQueryParams['id'] = $userId;
+        $expectedQueryParams['id'] = $user->id;
 
         ksort($expectedQueryParams);
         $expectedQueryString = http_build_query($expectedQueryParams);
@@ -65,12 +65,11 @@ class VerifyUserHelperFunctionalTest extends TestCase
     public function testValidSignature(): void
     {
         $uri = '/verify';
-        $userId = '1234';
-        $email = 'jr@rushlow.dev';
+        $user = new VerifyUserFixtureUser();
 
-        $queryParams['email'] = $email;
+        $queryParams['email'] = $user->email;
         $queryParams['expires'] = (new \DateTimeImmutable('+1 hours'))->getTimestamp();
-        $queryParams['id'] = $userId;
+        $queryParams['id'] = $user->id;
 
         $queryString = http_build_query($queryParams);
         $uriToSign = $uri.'?'.$queryString;
@@ -83,7 +82,7 @@ class VerifyUserHelperFunctionalTest extends TestCase
 
         $expectedSignedUri = $uri.'?'.http_build_query($queryParams);
 
-        self::assertTrue($this->getHelper()->isValidSignature($expectedSignedUri, $userId, $email));
+        self::assertTrue($this->getHelper()->isValidSignature($expectedSignedUri, $user->id, $user->email, $user->verified));
     }
 
     private function getHelper(): VerifyUserHelperInterface
