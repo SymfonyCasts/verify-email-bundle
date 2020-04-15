@@ -36,7 +36,7 @@ final class VerifyUserAcceptanceTest extends TestCase
         $helper = ($container->get(VerifyUserAcceptanceFixture::class))->helper;
         $user = new VerifyUserFixtureUser();
 
-        $components = $helper->generateSignature('verify-test', $user->id, $user->email, $user->verified);
+        $components = $helper->generateSignature('verify-test', $user->id, $user->email);
 
         $signature = $components->getSignature();
         $expiresAt = ($components->getExpiryTime())->getTimestamp();

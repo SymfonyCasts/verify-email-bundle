@@ -40,11 +40,11 @@ final class VerifyUserHelper implements VerifyUserHelperInterface
         $this->lifetime = $lifetime;
     }
 
-    public function generateSignature(string $routeName, string $userId, string $userEmail, bool $isVerified, array $extraParams = []): VerifyUserSignatureComponents
+    public function generateSignature(string $routeName, string $userId, string $userEmail, array $extraParams = []): VerifyUserSignatureComponents
     {
         $expiresAt = new \DateTimeImmutable(sprintf('+%d seconds', $this->lifetime));
 
-        $extraParams['token'] = $this->tokenGenerator->createToken($userId, $userEmail, $isVerified, $expiresAt->getTimestamp());
+        $extraParams['token'] = $this->tokenGenerator->createToken($userId, $userEmail, false, $expiresAt->getTimestamp());
         $extraParams['expires'] = $expiresAt->getTimestamp();
 
         $uri = $this->router->generate($routeName, $extraParams);
