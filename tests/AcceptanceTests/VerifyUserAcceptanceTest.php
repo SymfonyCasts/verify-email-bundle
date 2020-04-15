@@ -41,7 +41,7 @@ final class VerifyUserAcceptanceTest extends TestCase
         $signature = $components->getSignature();
         $expiresAt = ($components->getExpiryTime())->getTimestamp();
 
-        $encodedData = json_encode([$user->id, $user->email, $user->verified, $expiresAt]);
+        $encodedData = json_encode([$user->id, $user->email, $expiresAt]);
 
         $hashToBeUsedInQueryParam = base64_encode(hash_hmac('sha256', $encodedData, 'foo', true));
 
@@ -87,7 +87,7 @@ final class VerifyUserAcceptanceTest extends TestCase
                 'expires' => $expires->getTimestamp(),
                 'token' => base64_encode(hash_hmac(
                     'sha256',
-                    json_encode([$user->id, $user->email, $user->verified, $expires->getTimestamp()]),
+                    json_encode([$user->id, $user->email, $expires->getTimestamp()]),
                     'foo',
                     true
                 )),
@@ -98,7 +98,7 @@ final class VerifyUserAcceptanceTest extends TestCase
 
         $test = sprintf('%s&signature=%s', $uriToTest, urlencode($signature));
 
-        self::assertTrue($helper->isValidSignature($test, $user->id, $user->email, $user->verified));
+        self::assertTrue($helper->isValidSignature($test, $user->id, $user->email));
     }
 }
 

@@ -44,7 +44,7 @@ final class VerifyUserHelper implements VerifyUserHelperInterface
     {
         $expiresAt = new \DateTimeImmutable(sprintf('+%d seconds', $this->lifetime));
 
-        $extraParams['token'] = $this->tokenGenerator->createToken($userId, $userEmail, false, $expiresAt->getTimestamp());
+        $extraParams['token'] = $this->tokenGenerator->createToken($userId, $userEmail, $expiresAt->getTimestamp());
         $extraParams['expires'] = $expiresAt->getTimestamp();
 
         $uri = $this->router->generate($routeName, $extraParams);
@@ -56,7 +56,7 @@ final class VerifyUserHelper implements VerifyUserHelperInterface
     /**
      * @throws ExpiredSignatureException
      */
-    public function isValidSignature(string $signature, string $userId, string $userEmail, bool $isVerified): bool
+    public function isValidSignature(string $signature, string $userId, string $userEmail): bool
     {
         $expiresAt = $this->queryUtility->getExpiryTimeStamp($signature);
 
@@ -64,7 +64,7 @@ final class VerifyUserHelper implements VerifyUserHelperInterface
             throw new ExpiredSignatureException();
         }
 
-        $knownToken = $this->tokenGenerator->createToken($userId, $userEmail, $isVerified, $expiresAt);
+        $knownToken = $this->tokenGenerator->createToken($userId, $userEmail, $expiresAt);
 
         parse_str($this->queryUtility->getQueryString($signature), $userProvidedParams);
 

@@ -36,7 +36,7 @@ interface VerifyUserHelperInterface
      *
      * @throws ExpiredSignatureException
      */
-    public function isValidSignature(string $signature, string $userId, string $userEmail, bool $isVerified): bool;
+    public function isValidSignature(string $signature, string $userId, string $userEmail): bool;
 
     /**
      * Returns the length of time in seconds that a signed uri is valid.
