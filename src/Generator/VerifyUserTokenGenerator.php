@@ -18,9 +18,9 @@ class VerifyUserTokenGenerator
         $this->signingKey = $key;
     }
 
-    public function createToken(string $userId, string $email, bool $isVerified, \DateTimeInterface $expires): string
+    public function createToken(string $userId, string $email, bool $isVerified, int $expiryTimeStamp): string
     {
-        $encodedData = json_encode([$userId, $email, $isVerified, $expires->getTimestamp()]);
+        $encodedData = json_encode([$userId, $email, $isVerified, $expiryTimeStamp]);
 
         return base64_encode(hash_hmac('sha256', $encodedData, $this->signingKey, true));
     }

@@ -15,7 +15,6 @@ use SymfonyCasts\Bundle\VerifyUser\Generator\VerifyUserTokenGenerator;
 use SymfonyCasts\Bundle\VerifyUser\Model\VerifyUserSignatureComponents;
 use SymfonyCasts\Bundle\VerifyUser\Util\VerifyUserQueryUtility;
 use SymfonyCasts\Bundle\VerifyUser\Util\VerifyUserUriSigningWrapper;
-use SymfonyCasts\Bundle\VerifyUser\Util\VerifyUserUrlUtility;
 
 /**
  * @author Jesse Rushlow <jr@rushlow.dev>
@@ -45,7 +44,7 @@ final class VerifyUserHelper implements VerifyUserHelperInterface
     {
         $expiresAt = new \DateTimeImmutable(sprintf('+%d seconds', $this->lifetime));
 
-        $extraParams['hash'] = $this->tokenGenerator->createToken($userId, $userEmail, $isVerified, $expiresAt);
+        $extraParams['token'] = $this->tokenGenerator->createToken($userId, $userEmail, $isVerified, $expiresAt->getTimestamp());
         $extraParams['expires'] = $expiresAt->getTimestamp();
 
         $uri = $this->router->generate($routeName, $extraParams);
@@ -59,25 +58,26 @@ final class VerifyUserHelper implements VerifyUserHelperInterface
      */
     public function isValidSignature(string $signature, string $userId, string $userEmail, bool $isVerified): bool
     {
-        $expiresAt = (new \DateTimeImmutable())->setTimestamp($this->queryUtility->getExpiryTimeStamp($signature));
+        $expiresAt = $this->queryUtility->getExpiryTimeStamp($signature);
 
-        if ($expiresAt->getTimestamp() <= time()) {
+        if ($expiresAt <= time()) {
             throw new ExpiredSignatureException();
         }
 
-        $token = $this->tokenGenerator->createToken($userId, $userEmail, $isVerified, $expiresAt);
+        $knownToken = $this->tokenGenerator->createToken($userId, $userEmail, $isVerified, $expiresAt);
 
-        $uriComponents = (new VerifyUserUrlUtility())->parseUrl($signature);
-        parse_str($uriComponents->getQuery(), $userProvidedParams);
+        parse_str($this->queryUtility->getQueryString($signature), $userProvidedParams);
 
-        $hashToCheck = $userProvidedParams['hash'];
+        $userToken = $userProvidedParams['token'];
 
-        if (!\hash_equals($token, $hashToCheck)) {
+        if (!hash_equals($knownToken, $userToken)) {
             return false;
         }
 
-        $params['hash'] = $token;
-        $params['expires'] = $expiresAt->getTimestamp();
+        $params['token'] = $knownToken;
+        $params['expires'] = $expiresAt;
+
+        //@TODO we are not validating the signature correctly here
 
         return $this->uriSigner->isValid($signature);
     }
