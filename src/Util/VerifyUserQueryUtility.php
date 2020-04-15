@@ -35,6 +35,23 @@ class VerifyUserQueryUtility
         return $components->getQuery();
     }
 
+    public function getQueryParams(string $uri): array
+    {
+        $params = [];
+
+        $queryString = $this->getQueryString($uri);
+        parse_str($queryString, $params);
+
+        return $params;
+    }
+
+    public function getTokenFromQuery(string $uri): string
+    {
+        $params = $this->getQueryParams($uri);
+
+        return $params['token'];
+    }
+
     /**
      * @param VerifyUserQueryParam[] $queryParams
      */
