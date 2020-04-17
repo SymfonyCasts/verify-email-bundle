@@ -65,8 +65,9 @@ final class VerifyUserHelper implements VerifyUserHelperInterface
         }
 
         $knownToken = $this->tokenGenerator->createToken($userId, $userEmail, $expiresAt);
+        $userToken = $this->queryUtility->getTokenFromQuery($signature);
 
-        if (!hash_equals($knownToken, $this->queryUtility->getTokenFromQuery($signature))) {
+        if (!hash_equals($knownToken, $userToken)) {
             return false;
         }
 
