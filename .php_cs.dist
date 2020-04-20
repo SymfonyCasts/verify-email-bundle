@@ -16,6 +16,7 @@ return PhpCsFixer\Config::create()
         'array_syntax' => ['syntax' => 'short'],
         'protected_to_private' => false,
         'semicolon_after_instruction' => false,
+        'phpdoc_to_comment' => false,
         'header_comment' => [
             'header' => <<<EOF
 This file is part of the SymfonyCasts BUNDLE_NAME_HERE package.
