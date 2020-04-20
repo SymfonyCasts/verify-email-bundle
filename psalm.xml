@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <psalm
-    totallyTyped="false"
+    errorLevel="3"
+    totallyTyped="true"
     resolveFromConfigFile="true"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns="https://getpsalm.org/schema/config"
@@ -31,12 +32,12 @@
         <InternalClass errorLevel="info" />
 
         <MissingClosureReturnType errorLevel="info" />
-        <MissingReturnType errorLevel="info">
-<!--            <errorLevel type="suppress">-->
-<!--                <file name="VerifyUserBundle/src/DependencyInjection/JRushlowVerifyUserExtension.php" />-->
-<!--            </errorLevel>-->
-        </MissingReturnType>
-        <MissingPropertyType errorLevel="info" />
+        <MissingReturnType errorLevel="info" />
+        <MissingPropertyType errorLevel="info">
+            <errorLevel type="suppress">
+                <file name="src/Model/VerifyUserUrlComponents.php"/>
+            </errorLevel>
+        </MissingPropertyType>
         <InvalidDocblock errorLevel="info" />
         <MisplacedRequiredParam errorLevel="info" />
 
