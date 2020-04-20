@@ -71,11 +71,6 @@ final class VerifyUserHelper implements VerifyUserHelperInterface
             return false;
         }
 
-        $params['token'] = $knownToken;
-        $params['expires'] = $expiresAt;
-
-        //@TODO we are not validating the signature correctly here
-
         return $this->uriSigner->isValid($signature);
     }
 
