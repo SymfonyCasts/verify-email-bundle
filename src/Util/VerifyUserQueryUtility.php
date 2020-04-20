@@ -28,6 +28,30 @@ class VerifyUserQueryUtility
         $this->urlUtility = $urlUtility;
     }
 
+    public function getQueryString(string $uri): string
+    {
+        $components = $this->urlUtility->parseUrl($uri);
+
+        return $components->getQuery();
+    }
+
+    public function getQueryParams(string $uri): array
+    {
+        $params = [];
+
+        $queryString = $this->getQueryString($uri);
+        parse_str($queryString, $params);
+
+        return $params;
+    }
+
+    public function getTokenFromQuery(string $uri): string
+    {
+        $params = $this->getQueryParams($uri);
+
+        return $params['token'];
+    }
+
     /**
      * @param VerifyUserQueryParam[] $queryParams
      */
@@ -74,6 +98,7 @@ class VerifyUserQueryUtility
 
     public function getExpiryTimeStamp(string $uri): int
     {
+        //@TODO - validate timestamp before return
         $components = $this->urlUtility->parseUrl($uri);
 
         if (null === ($query = $components->getQuery())) {

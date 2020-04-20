@@ -14,6 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Routing\Loader\Configurator\RoutingConfigurat
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use SymfonyCasts\Bundle\VerifyUser\Tests\Fixtures\AbstractVerifyUserTestKernel;
+use SymfonyCasts\Bundle\VerifyUser\Tests\Fixtures\VerifyUserFixtureUser;
 use SymfonyCasts\Bundle\VerifyUser\VerifyUserHelper;
 use SymfonyCasts\Bundle\VerifyUser\VerifyUserHelperInterface;
 
@@ -33,15 +34,20 @@ final class VerifyUserAcceptanceTest extends TestCase
 
         /** @var VerifyUserHelper $helper */
         $helper = ($container->get(VerifyUserAcceptanceFixture::class))->helper;
-        $components = $helper->generateSignature('verify-test', '1234', 'jr@rushlow.dev');
+        $user = new VerifyUserFixtureUser();
+
+        $components = $helper->generateSignature('verify-test', $user->id, $user->email);
 
         $signature = $components->getSignature();
         $expiresAt = ($components->getExpiryTime())->getTimestamp();
 
+        $encodedData = json_encode([$user->id, $user->email, $expiresAt]);
+
+        $hashToBeUsedInQueryParam = base64_encode(hash_hmac('sha256', $encodedData, 'foo', true));
+
         $queryParams = [
-            'email' => 'jr@rushlow.dev',
             'expires' => $expiresAt,
-            'id' => '1234',
+            'token' => $hashToBeUsedInQueryParam,
         ];
 
         ksort($queryParams);
@@ -58,9 +64,41 @@ final class VerifyUserAcceptanceTest extends TestCase
 
         self::assertTrue(hash_equals($hash, $result['signature']));
         self::assertSame(
-            sprintf('/verify/user?expires=%s&signature=%s', $expiresAt, urlencode($hash)),
+            sprintf('/verify/user?expires=%s&signature=%s&token=%s', $expiresAt, urlencode($hash), urlencode($hashToBeUsedInQueryParam)),
             $signature
         );
+    }
+
+    public function testIsValidSignature(): void
+    {
+        $kernel = new VerifyUserAcceptanceTestKernel();
+        $kernel->boot();
+
+        $container = $kernel->getContainer();
+
+        /** @var VerifyUserHelper $helper */
+        $helper = ($container->get(VerifyUserAcceptanceFixture::class))->helper;
+        $user = new VerifyUserFixtureUser();
+        $expires = new \DateTimeImmutable('+1 hour');
+
+        $uriToTest = sprintf(
+            '/verify/user?%s',
+            http_build_query([
+                'expires' => $expires->getTimestamp(),
+                'token' => base64_encode(hash_hmac(
+                    'sha256',
+                    json_encode([$user->id, $user->email, $expires->getTimestamp()]),
+                    'foo',
+                    true
+                )),
+            ])
+        );
+
+        $signature = base64_encode(hash_hmac('sha256', $uriToTest, 'foo', true));
+
+        $test = sprintf('%s&signature=%s', $uriToTest, urlencode($signature));
+
+        self::assertTrue($helper->isValidSignature($test, $user->id, $user->email));
     }
 }
 
