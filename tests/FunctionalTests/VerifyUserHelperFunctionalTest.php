@@ -21,7 +21,6 @@ use SymfonyCasts\Bundle\VerifyUser\VerifyUserHelperInterface;
 
 class VerifyUserHelperFunctionalTest extends TestCase
 {
-    private const FAKE_SIGNING_KEY = 'superSecret';
     private $mockRouter;
 
     /**
@@ -59,39 +58,23 @@ class VerifyUserHelperFunctionalTest extends TestCase
         $expectedQueryString = http_build_query($expectedQueryParams);
 
         $expectedUri = $uri.'?'.$expectedQueryString;
-        $expectedHash = base64_encode(hash_hmac('sha256', $expectedUri, self::FAKE_SIGNING_KEY, true));
+        $expectedHash = base64_encode(hash_hmac('sha256', $expectedUri, 'foo', true));
 
         self::assertTrue(hash_equals($expectedHash, $queryParams['signature']));
     }
 
     public function testValidSignature(): void
     {
-        $uri = '/verify';
         $user = new VerifyUserFixtureUser();
 
         $testSignature = $this->getTestSignature(new \DateTimeImmutable('+1 hours'));
-
-//        $queryParams['email'] = $user->email;
-//        $queryParams['expires'] = (new \DateTimeImmutable('+1 hours'))->getTimestamp();
-//        $queryParams['id'] = $user->id;
-//
-//        $queryString = http_build_query($queryParams);
-//        $uriToSign = $uri.'?'.$queryString;
-//
-//        $signature = base64_encode(hash_hmac('sha256', $uriToSign, self::FAKE_SIGNING_KEY, true));
-//        $queryParams['signature'] = $signature;
-//
-//        unset($queryParams['id'], $queryParams['email']);
-//        ksort($queryParams);
-//
-//        $expectedSignedUri = $uri.'?'.http_build_query($queryParams);
 
         self::assertTrue($this->getHelper()->isValidSignature($testSignature, $user->id, $user->email));
     }
 
     private function getTestSignature(\DateTimeInterface $expires): string
     {
-        $token = base64_encode(hash_hmac('sha256', json_encode(['1234', 'jr@rushlow.dev', $expires->getTimestamp()]), 'foo', true));
+        $token = urlencode(base64_encode(hash_hmac('sha256', json_encode(['1234', 'jr@rushlow.dev', $expires->getTimestamp()]), 'foo', true)));
 
         $uri = sprintf('/verify?expires=%s&token=%s', $expires->getTimestamp(), $token);
         $signature = base64_encode(hash_hmac('sha256', $uri, 'foo', true));
@@ -113,7 +96,7 @@ class VerifyUserHelperFunctionalTest extends TestCase
     {
         return new VerifyUserHelper(
             $this->mockRouter,
-            new VerifyUserUriSigningWrapper(self::FAKE_SIGNING_KEY),
+            new VerifyUserUriSigningWrapper('foo'),
             new VerifyUserQueryUtility(new VerifyUserUrlUtility()),
             new VerifyUserTokenGenerator('foo'),
             3600
