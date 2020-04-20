@@ -10,6 +10,7 @@
 namespace SymfonyCasts\Bundle\VerifyUser\Tests\FunctionalTests;
 
 use PHPUnit\Framework\TestCase;
+use Symfony\Bridge\PhpUnit\ClockMock;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use SymfonyCasts\Bundle\VerifyUser\Generator\VerifyUserTokenGenerator;
 use SymfonyCasts\Bundle\VerifyUser\Tests\Fixtures\VerifyUserFixtureUser;
@@ -19,30 +20,37 @@ use SymfonyCasts\Bundle\VerifyUser\Util\VerifyUserUrlUtility;
 use SymfonyCasts\Bundle\VerifyUser\VerifyUserHelper;
 use SymfonyCasts\Bundle\VerifyUser\VerifyUserHelperInterface;
 
+/**
+ * @group time-sensitive
+ */
 class VerifyUserHelperFunctionalTest extends TestCase
 {
     private $mockRouter;
+    private $expiryTimeStamp;
 
     /**
      * {@inheritdoc}
      */
     protected function setUp(): void
     {
+        ClockMock::register(VerifyUserHelper::class);
+
+        $this->expiryTimeStamp = (time() + 3600);
+
         $this->mockRouter = $this->createMock(UrlGeneratorInterface::class);
     }
 
     public function testGenerateSignature(): void
     {
-        $this->markTestSkipped('Unable to properly generate token without mocking DateTimeImmutable');
-
-        $uri = '/verify';
         $user = new VerifyUserFixtureUser();
+
+        $token = $this->getTestToken();
 
         $this->mockRouter
             ->expects($this->once())
             ->method('generate')
-            ->with('app_verify_route')
-            ->willReturn('/verify')
+            ->with('app_verify_route', ['expires' => $this->expiryTimeStamp, 'token' => $token])
+            ->willReturn(sprintf('/verify?expires=%s&token=%s', $this->expiryTimeStamp, $token))
         ;
 
         $result = $this->getHelper()->generateSignature('app_verify_route', $user->id, $user->email);
@@ -50,33 +58,44 @@ class VerifyUserHelperFunctionalTest extends TestCase
         $parsedUri = parse_url($result->getSignature());
         parse_str($parsedUri['query'], $queryParams);
 
-        $expectedQueryParams['email'] = $user->email;
-        $expectedQueryParams['expires'] = $queryParams['expires'];
-        $expectedQueryParams['id'] = $user->id;
+        // @TODO if I have to urlEncode here, shouldnt I be doing it in the helper?
+        $knownToken = urlencode($token);
+        $testToken = urlencode($queryParams['token']);
 
-        ksort($expectedQueryParams);
-        $expectedQueryString = http_build_query($expectedQueryParams);
+        $knownSignature = $this->getTestSignature();
+        $testSignature = $queryParams['signature'];
 
-        $expectedUri = $uri.'?'.$expectedQueryString;
-        $expectedHash = base64_encode(hash_hmac('sha256', $expectedUri, 'foo', true));
-
-        self::assertTrue(hash_equals($expectedHash, $queryParams['signature']));
+        self::assertTrue(hash_equals($knownToken, $testToken));
+        self::assertTrue(hash_equals($knownSignature, $testSignature));
     }
 
     public function testValidSignature(): void
     {
         $user = new VerifyUserFixtureUser();
 
-        $testSignature = $this->getTestSignature(new \DateTimeImmutable('+1 hours'));
+        $testSignature = $this->getTestSignedUri();
 
         self::assertTrue($this->getHelper()->isValidSignature($testSignature, $user->id, $user->email));
     }
 
-    private function getTestSignature(\DateTimeInterface $expires): string
+    private function getTestToken(): string
     {
-        $token = urlencode(base64_encode(hash_hmac('sha256', json_encode(['1234', 'jr@rushlow.dev', $expires->getTimestamp()]), 'foo', true)));
+        return base64_encode(hash_hmac('sha256', json_encode(['1234', 'jr@rushlow.dev', $this->expiryTimeStamp]), 'foo', true));
+    }
 
-        $uri = sprintf('/verify?expires=%s&token=%s', $expires->getTimestamp(), $token);
+    private function getTestSignature(): string
+    {
+        $query = http_build_query(['expires' => $this->expiryTimeStamp, 'token' => $this->getTestToken()], '', '&');
+        $uri = sprintf('/verify?%s', $query);
+
+        return base64_encode(hash_hmac('sha256', $uri, 'foo', true));
+    }
+
+    private function getTestSignedUri(): string
+    {
+        $token = urlencode($this->getTestToken());
+
+        $uri = sprintf('/verify?expires=%s&token=%s', $this->expiryTimeStamp, $token);
         $signature = base64_encode(hash_hmac('sha256', $uri, 'foo', true));
 
         $uriComponents = parse_url($uri);
@@ -87,9 +106,7 @@ class VerifyUserHelperFunctionalTest extends TestCase
 
         $sortedParams = http_build_query($params);
 
-        $signedUri = sprintf('/verify?%s', $sortedParams);
-
-        return $signedUri;
+        return sprintf('/verify?%s', $sortedParams);
     }
 
     private function getHelper(): VerifyUserHelperInterface
