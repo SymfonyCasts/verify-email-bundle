@@ -30,7 +30,7 @@ class VerifyUserQueryUtility
     {
         $components = $this->urlUtility->parseUrl($uri);
 
-        return $components->getQuery();
+        return $components->getQuery() ?? '';
     }
 
     public function getQueryParams(string $uri): array
