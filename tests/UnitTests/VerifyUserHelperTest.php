@@ -19,7 +19,6 @@ use SymfonyCasts\Bundle\VerifyUser\Util\VerifyUserQueryUtility;
 use SymfonyCasts\Bundle\VerifyUser\Util\VerifyUserUriSigningWrapper;
 use SymfonyCasts\Bundle\VerifyUser\VerifyUserHelper;
 use SymfonyCasts\Bundle\VerifyUser\VerifyUserHelperInterface;
-use function Amp\Promise\wait;
 
 /**
  * @author Jesse Rushlow <jr@rushlow.dev>
