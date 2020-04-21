@@ -26,23 +26,6 @@ class VerifyUserQueryUtility
         $this->urlUtility = $urlUtility;
     }
 
-    public function getQueryString(string $uri): string
-    {
-        $components = $this->urlUtility->parseUrl($uri);
-
-        return $components->getQuery() ?? '';
-    }
-
-    public function getQueryParams(string $uri): array
-    {
-        $params = [];
-
-        $queryString = $this->getQueryString($uri);
-        parse_str($queryString, $params);
-
-        return $params;
-    }
-
     public function getTokenFromQuery(string $uri): string
     {
         $params = $this->getQueryParams($uri);
@@ -53,21 +36,25 @@ class VerifyUserQueryUtility
     public function getExpiryTimeStamp(string $uri): int
     {
         //@TODO - validate timestamp before return
-        $components = $this->urlUtility->parseUrl($uri);
+        $params = $this->getQueryParams($uri);
 
-        if (null === ($query = $components->getQuery())) {
+        if (empty($params['expires'])) {
             return 0;
         }
-
-        parse_str($query, $params);
 
         return (int) $params['expires'];
     }
 
-    private function getSortedQueryString(array $params): string
+    private function getQueryParams(string $uri): array
     {
-        ksort($params);
+        $params = [];
+        $components = $this->urlUtility->parseUrl($uri);
+        $queryString = $components->getQuery();
 
-        return http_build_query($params);
+        if (null !== $queryString) {
+            parse_str($queryString, $params);
+        }
+
+        return $params;
     }
 }
