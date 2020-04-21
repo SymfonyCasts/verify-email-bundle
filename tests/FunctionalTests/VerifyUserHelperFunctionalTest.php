@@ -50,7 +50,7 @@ class VerifyUserHelperFunctionalTest extends TestCase
             ->expects($this->once())
             ->method('generate')
             ->with('app_verify_route', ['expires' => $this->expiryTimeStamp, 'token' => $token])
-            ->willReturn(sprintf('/verify?expires=%s&token=%s', $this->expiryTimeStamp, $token))
+            ->willReturn(sprintf('/verify?expires=%s&token=%s', $this->expiryTimeStamp, urlencode($token)))
         ;
 
         $result = $this->getHelper()->generateSignature('app_verify_route', $user->id, $user->email);
@@ -58,9 +58,8 @@ class VerifyUserHelperFunctionalTest extends TestCase
         $parsedUri = parse_url($result->getSignature());
         parse_str($parsedUri['query'], $queryParams);
 
-        // @TODO if I have to urlEncode here, shouldnt I be doing it in the helper?
-        $knownToken = urlencode($token);
-        $testToken = urlencode($queryParams['token']);
+        $knownToken = $token;
+        $testToken = $queryParams['token'];
 
         $knownSignature = $this->getTestSignature();
         $testSignature = $queryParams['signature'];

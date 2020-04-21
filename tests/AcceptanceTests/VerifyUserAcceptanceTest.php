@@ -41,20 +41,13 @@ final class VerifyUserAcceptanceTest extends TestCase
         $signature = $components->getSignature();
         $expiresAt = ($components->getExpiryTime())->getTimestamp();
 
-        $encodedData = json_encode([$user->id, $user->email, $expiresAt]);
+        $expectedUserData = json_encode([$user->id, $user->email, $expiresAt]);
 
-        $hashToBeUsedInQueryParam = base64_encode(hash_hmac('sha256', $encodedData, 'foo', true));
+        $expectedToken = base64_encode(hash_hmac('sha256', $expectedUserData, 'foo', true));
 
-        $queryParams = [
-            'expires' => $expiresAt,
-            'token' => $hashToBeUsedInQueryParam,
-        ];
-
-        ksort($queryParams);
-
-        $hash = base64_encode(hash_hmac(
+        $expectedSignature = base64_encode(hash_hmac(
             'sha256',
-            sprintf('/verify/user?%s', http_build_query($queryParams)),
+            sprintf('/verify/user?expires=%s&token=%s', $expiresAt, urlencode($expectedToken)),
             'foo',
             true
         ));
@@ -62,9 +55,9 @@ final class VerifyUserAcceptanceTest extends TestCase
         $parsed = parse_url($signature);
         parse_str($parsed['query'], $result);
 
-        self::assertTrue(hash_equals($hash, $result['signature']));
+        self::assertTrue(hash_equals($expectedSignature, $result['signature']));
         self::assertSame(
-            sprintf('/verify/user?expires=%s&signature=%s&token=%s', $expiresAt, urlencode($hash), urlencode($hashToBeUsedInQueryParam)),
+            sprintf('/verify/user?expires=%s&signature=%s&token=%s', $expiresAt, urlencode($expectedSignature), urlencode($expectedToken)),
             $signature
         );
     }
