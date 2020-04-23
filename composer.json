@@ -17,6 +17,10 @@
         "symfony/phpunit-bridge": "^5.0",
         "vimeo/psalm": "^3.8"
     },
+    "conflict": {
+        "symfony/http-foundation": "<4.4",
+        "symfony/framework-bundle": "<4.4"
+    },
     "autoload": {
         "psr-4": {
             "SymfonyCasts\\Bundle\\VerifyUser\\": "src/"
@@ -26,8 +30,5 @@
         "psr-4": {
             "SymfonyCasts\\Bundle\\VerifyUser\\Tests\\": "tests/"
         }
-    },
-    "conflict": {
-        "symfony/framework-bundle": "<4.4"
     }
 }
