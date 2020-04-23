@@ -24,7 +24,7 @@ final class VerifyUserServiceDefinitionTest extends TestCase
         $prefix = 'symfonycasts.verify_user.';
 
         yield [$prefix.'query_utility'];
-        yield [$prefix.'signing_wrapper'];
+        yield [$prefix.'uri_signer'];
         yield [$prefix.'helper'];
         yield [$prefix.'url_utility'];
         yield [$prefix.'token_generator'];

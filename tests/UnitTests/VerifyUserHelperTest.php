@@ -11,12 +11,12 @@ namespace SymfonyCasts\Bundle\VerifyUser\Tests\UnitTests;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Bridge\PhpUnit\ClockMock;
+use Symfony\Component\HttpKernel\UriSigner;
 use Symfony\Component\Routing\RouterInterface;
 use SymfonyCasts\Bundle\VerifyUser\Exception\ExpiredSignatureException;
 use SymfonyCasts\Bundle\VerifyUser\Generator\VerifyUserTokenGenerator;
 use SymfonyCasts\Bundle\VerifyUser\Tests\Fixtures\VerifyUserFixtureUser;
 use SymfonyCasts\Bundle\VerifyUser\Util\VerifyUserQueryUtility;
-use SymfonyCasts\Bundle\VerifyUser\Util\VerifyUserUriSigningWrapper;
 use SymfonyCasts\Bundle\VerifyUser\VerifyUserHelper;
 use SymfonyCasts\Bundle\VerifyUser\VerifyUserHelperInterface;
 
@@ -37,7 +37,7 @@ final class VerifyUserHelperTest extends TestCase
         ClockMock::register(VerifyUserHelper::class);
 
         $this->mockRouter = $this->createMock(RouterInterface::class);
-        $this->mockSigner = $this->createMock(VerifyUserUriSigningWrapper::class);
+        $this->mockSigner = $this->createMock(UriSigner::class);
         $this->mockQueryUtility = $this->createMock(VerifyUserQueryUtility::class);
         $this->tokenGenerator = $this->createMock(VerifyUserTokenGenerator::class);
     }
@@ -64,7 +64,7 @@ final class VerifyUserHelperTest extends TestCase
 
         $this->mockSigner
             ->expects($this->once())
-            ->method('signUri')
+            ->method('sign')
             ->with('/verify')
             ->willReturn($expectedSignature)
         ;
@@ -104,8 +104,9 @@ final class VerifyUserHelperTest extends TestCase
 
         $this->mockSigner
             ->expects($this->once())
-            ->method('isValid')
+            ->method('check')
             ->with($signature)
+            ->willReturn(false)
         ;
 
         $helper = $this->getHelper();

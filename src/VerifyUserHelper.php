@@ -9,12 +9,12 @@
 
 namespace SymfonyCasts\Bundle\VerifyUser;
 
+use Symfony\Component\HttpKernel\UriSigner;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use SymfonyCasts\Bundle\VerifyUser\Exception\ExpiredSignatureException;
 use SymfonyCasts\Bundle\VerifyUser\Generator\VerifyUserTokenGenerator;
 use SymfonyCasts\Bundle\VerifyUser\Model\VerifyUserSignatureComponents;
 use SymfonyCasts\Bundle\VerifyUser\Util\VerifyUserQueryUtility;
-use SymfonyCasts\Bundle\VerifyUser\Util\VerifyUserUriSigningWrapper;
 
 /**
  * @author Jesse Rushlow <jr@rushlow.dev>
@@ -31,7 +31,7 @@ final class VerifyUserHelper implements VerifyUserHelperInterface
      */
     private $lifetime;
 
-    public function __construct(UrlGeneratorInterface $router, VerifyUserUriSigningWrapper $uriSigner, VerifyUserQueryUtility $queryUtility, VerifyUserTokenGenerator $generator, int $lifetime)
+    public function __construct(UrlGeneratorInterface $router, UriSigner $uriSigner, VerifyUserQueryUtility $queryUtility, VerifyUserTokenGenerator $generator, int $lifetime)
     {
         $this->router = $router;
         $this->uriSigner = $uriSigner;
@@ -48,7 +48,7 @@ final class VerifyUserHelper implements VerifyUserHelperInterface
         $extraParams['expires'] = $expiryTimestamp;
 
         $uri = $this->router->generate($routeName, $extraParams);
-        $signature = $this->uriSigner->signUri($uri);
+        $signature = $this->uriSigner->sign($uri);
 
         /** @psalm-suppress PossiblyFalseArgument */
         return new VerifyUserSignatureComponents(\DateTimeImmutable::createFromFormat('U', (string) $expiryTimestamp), $signature);
@@ -72,7 +72,7 @@ final class VerifyUserHelper implements VerifyUserHelperInterface
             return false;
         }
 
-        return $this->uriSigner->isValid($signature);
+        return $this->uriSigner->check($signature);
     }
 
     public function getSignatureLifetime(): int

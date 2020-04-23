@@ -11,11 +11,11 @@ namespace SymfonyCasts\Bundle\VerifyUser\Tests\FunctionalTests;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Bridge\PhpUnit\ClockMock;
+use Symfony\Component\HttpKernel\UriSigner;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use SymfonyCasts\Bundle\VerifyUser\Generator\VerifyUserTokenGenerator;
 use SymfonyCasts\Bundle\VerifyUser\Tests\Fixtures\VerifyUserFixtureUser;
 use SymfonyCasts\Bundle\VerifyUser\Util\VerifyUserQueryUtility;
-use SymfonyCasts\Bundle\VerifyUser\Util\VerifyUserUriSigningWrapper;
 use SymfonyCasts\Bundle\VerifyUser\Util\VerifyUserUrlUtility;
 use SymfonyCasts\Bundle\VerifyUser\VerifyUserHelper;
 use SymfonyCasts\Bundle\VerifyUser\VerifyUserHelperInterface;
@@ -112,7 +112,7 @@ class VerifyUserHelperFunctionalTest extends TestCase
     {
         return new VerifyUserHelper(
             $this->mockRouter,
-            new VerifyUserUriSigningWrapper('foo'),
+            new UriSigner('foo', 'signature'),
             new VerifyUserQueryUtility(new VerifyUserUrlUtility()),
             new VerifyUserTokenGenerator('foo'),
             3600
