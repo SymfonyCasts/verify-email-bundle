@@ -1,6 +1,8 @@
 {
+    "name": "symfonycasts/verify-email-bundle",
+    "description": "Simple, stylish Email Verification for Symfony",
     "type": "symfony-bundle",
-    "license": "proprietary",
+    "license": "MIT",
     "minimum-stability": "dev",
     "require": {
         "php": "^7.2",
@@ -23,12 +25,12 @@
     },
     "autoload": {
         "psr-4": {
-            "SymfonyCasts\\Bundle\\VerifyUser\\": "src/"
+            "SymfonyCasts\\Bundle\\VerifyEmail\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "SymfonyCasts\\Bundle\\VerifyUser\\Tests\\": "tests/"
+            "SymfonyCasts\\Bundle\\VerifyEmail\\Tests\\": "tests/"
         }
     }
 }
