@@ -7,9 +7,9 @@
  * file that was distributed with this source code.
  */
 
-namespace SymfonyCasts\Bundle\VerifyUser\Util;
+namespace SymfonyCasts\Bundle\VerifyEmail\Util;
 
-use SymfonyCasts\Bundle\VerifyUser\Model\VerifyUserUrlComponents;
+use SymfonyCasts\Bundle\VerifyEmail\Model\VerifyEmailUrlComponents;
 
 /**
  * @author Jesse Rushlow <jr@rushlow.dev>
@@ -17,13 +17,13 @@ use SymfonyCasts\Bundle\VerifyUser\Model\VerifyUserUrlComponents;
  * @internal
  * @final
  */
-class VerifyUserUrlUtility
+class VerifyEmailUrlUtility
 {
-    public function parseUrl(string $url): VerifyUserUrlComponents
+    public function parseUrl(string $url): VerifyEmailUrlComponents
     {
         $urlComponents = parse_url($url);
 
-        $components = new VerifyUserUrlComponents();
+        $components = new VerifyEmailUrlComponents();
 
         foreach ($urlComponents as $component => $value) {
             $method = 'set'.ucfirst($component);
@@ -33,7 +33,7 @@ class VerifyUserUrlUtility
         return $components;
     }
 
-    public function buildUrl(VerifyUserUrlComponents $components): string
+    public function buildUrl(VerifyEmailUrlComponents $components): string
     {
         // Order in which components must appear in a url with their separator
         $componentOrder = [
@@ -76,7 +76,7 @@ class VerifyUserUrlUtility
         return $url;
     }
 
-    private function formatCredentials(VerifyUserUrlComponents $components): VerifyUserUrlComponents
+    private function formatCredentials(VerifyEmailUrlComponents $components): VerifyEmailUrlComponents
     {
         $user = $components->getUser();
 

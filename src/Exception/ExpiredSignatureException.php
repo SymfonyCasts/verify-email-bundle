@@ -7,12 +7,12 @@
  * file that was distributed with this source code.
  */
 
-namespace SymfonyCasts\Bundle\VerifyUser\Exception;
+namespace SymfonyCasts\Bundle\VerifyEmail\Exception;
 
 /**
  * @author Jesse Rushlow <jr@rushlow.dev>
  */
-final class ExpiredSignatureException extends \Exception implements VerifyUserExceptionInterface
+final class ExpiredSignatureException extends \Exception implements VerifyEmailExceptionInterface
 {
     public function getReason(): string
     {

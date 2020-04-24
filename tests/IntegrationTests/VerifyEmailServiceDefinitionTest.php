@@ -7,21 +7,21 @@
  * file that was distributed with this source code.
  */
 
-namespace SymfonyCasts\Bundle\VerifyUser\Tests\IntegrationTests;
+namespace SymfonyCasts\Bundle\VerifyEmail\Tests\IntegrationTests;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use SymfonyCasts\Bundle\VerifyUser\Tests\Fixtures\AbstractVerifyUserTestKernel;
+use SymfonyCasts\Bundle\VerifyEmail\Tests\Fixtures\AbstractVerifyEmailTestKernel;
 
 /**
  * @author Jesse Rushlow <jr@rushlow.dev>
  */
-final class VerifyUserServiceDefinitionTest extends TestCase
+final class VerifyEmailServiceDefinitionTest extends TestCase
 {
     public function bundleServiceDefinitionDataProvider(): \Generator
     {
-        $prefix = 'symfonycasts.verify_user.';
+        $prefix = 'symfonycasts.verify_email.';
 
         yield [$prefix.'query_utility'];
         yield [$prefix.'uri_signer'];
@@ -38,7 +38,7 @@ final class VerifyUserServiceDefinitionTest extends TestCase
         $pass = new DefinitionPublicCompilerPass();
         $pass->definition = $definition;
 
-        $kernel = new VerifyUserDefinitionTestKernel();
+        $kernel = new VerifyEmailDefinitionTestKernel();
         $kernel->compilerPass = $pass;
         $kernel->boot();
 
@@ -61,7 +61,7 @@ final class DefinitionPublicCompilerPass implements CompilerPassInterface
     }
 }
 
-final class VerifyUserDefinitionTestKernel extends AbstractVerifyUserTestKernel
+final class VerifyEmailDefinitionTestKernel extends AbstractVerifyEmailTestKernel
 {
     public $compilerPass;
 

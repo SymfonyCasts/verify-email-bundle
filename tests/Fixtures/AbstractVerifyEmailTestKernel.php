@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-namespace SymfonyCasts\Bundle\VerifyUser\Tests\Fixtures;
+namespace SymfonyCasts\Bundle\VerifyEmail\Tests\Fixtures;
 
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
@@ -15,14 +15,14 @@ use Symfony\Bundle\FrameworkBundle\Routing\Loader\Configurator\RoutingConfigurat
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel;
-use SymfonyCasts\Bundle\VerifyUser\SymfonyCastsVerifyUserBundle;
+use SymfonyCasts\Bundle\VerifyEmail\SymfonyCastsVerifyEmailBundle;
 
 /**
  * @author Jesse Rushlow <jr@rushlow.dev>
  *
  * @internal
  */
-class AbstractVerifyUserTestKernel extends Kernel
+abstract class AbstractVerifyEmailTestKernel extends Kernel
 {
     use MicroKernelTrait;
 
@@ -39,7 +39,7 @@ class AbstractVerifyUserTestKernel extends Kernel
     {
         return [
             new FrameworkBundle(),
-            new SymfonyCastsVerifyUserBundle(),
+            new SymfonyCastsVerifyEmailBundle(),
         ];
     }
 

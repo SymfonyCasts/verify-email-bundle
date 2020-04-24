@@ -7,11 +7,12 @@
  * file that was distributed with this source code.
  */
 
-namespace SymfonyCasts\Bundle\VerifyUser\Tests\Fixtures;
+namespace SymfonyCasts\Bundle\VerifyEmail\Exception;
 
-class VerifyUserFixtureUser
+/**
+ * @author Jesse Rushlow <jr@rushlow.dev>
+ */
+interface VerifyEmailExceptionInterface
 {
-    public $id = '1234';
-    public $email = 'jr@rushlow.dev';
-    public $verified = false;
+    public function getReason(): string;
 }

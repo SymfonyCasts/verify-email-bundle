@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-namespace SymfonyCasts\Bundle\VerifyUser\DependencyInjection;
+namespace SymfonyCasts\Bundle\VerifyEmail\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -17,23 +17,23 @@ use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 /**
  * @author Jesse Rushlow <jr@rushlow.dev>
  */
-final class SymfonyCastsVerifyUserExtension extends Extension
+final class SymfonyCastsVerifyEmailExtension extends Extension
 {
     public function load(array $configs, ContainerBuilder $container): void
     {
         $loader = new XmlFileLoader($container, new FileLocator(\dirname(__DIR__).'/Resources/config'));
-        $loader->load('verify_user_services.xml');
+        $loader->load('verify_email_services.xml');
 
         $configuration = $this->getConfiguration($configs, $container);
 
         $config = $this->processConfiguration($configuration, $configs);
 
-        $helperDefinition = $container->getDefinition('symfonycasts.verify_user.helper');
+        $helperDefinition = $container->getDefinition('symfonycasts.verify_email.helper');
         $helperDefinition->replaceArgument(4, $config['lifetime']);
     }
 
     public function getAlias()
     {
-        return 'symfonycasts_verify_user';
+        return 'symfonycasts_verify_email';
     }
 }

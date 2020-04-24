@@ -7,19 +7,19 @@
  * file that was distributed with this source code.
  */
 
-namespace SymfonyCasts\Bundle\VerifyUser;
+namespace SymfonyCasts\Bundle\VerifyEmail;
 
 use Symfony\Component\HttpKernel\UriSigner;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use SymfonyCasts\Bundle\VerifyUser\Exception\ExpiredSignatureException;
-use SymfonyCasts\Bundle\VerifyUser\Generator\VerifyUserTokenGenerator;
-use SymfonyCasts\Bundle\VerifyUser\Model\VerifyUserSignatureComponents;
-use SymfonyCasts\Bundle\VerifyUser\Util\VerifyUserQueryUtility;
+use SymfonyCasts\Bundle\VerifyEmail\Exception\ExpiredSignatureException;
+use SymfonyCasts\Bundle\VerifyEmail\Generator\VerifyEmailTokenGenerator;
+use SymfonyCasts\Bundle\VerifyEmail\Model\VerifyEmailSignatureComponents;
+use SymfonyCasts\Bundle\VerifyEmail\Util\VerifyEmailQueryUtility;
 
 /**
  * @author Jesse Rushlow <jr@rushlow.dev>
  */
-final class VerifyUserHelper implements VerifyUserHelperInterface
+final class VerifyEmailHelper implements VerifyEmailHelperInterface
 {
     private $router;
     private $uriSigner;
@@ -31,7 +31,7 @@ final class VerifyUserHelper implements VerifyUserHelperInterface
      */
     private $lifetime;
 
-    public function __construct(UrlGeneratorInterface $router, UriSigner $uriSigner, VerifyUserQueryUtility $queryUtility, VerifyUserTokenGenerator $generator, int $lifetime)
+    public function __construct(UrlGeneratorInterface $router, UriSigner $uriSigner, VerifyEmailQueryUtility $queryUtility, VerifyEmailTokenGenerator $generator, int $lifetime)
     {
         $this->router = $router;
         $this->uriSigner = $uriSigner;
@@ -40,7 +40,7 @@ final class VerifyUserHelper implements VerifyUserHelperInterface
         $this->lifetime = $lifetime;
     }
 
-    public function generateSignature(string $routeName, string $userId, string $userEmail, array $extraParams = []): VerifyUserSignatureComponents
+    public function generateSignature(string $routeName, string $userId, string $userEmail, array $extraParams = []): VerifyEmailSignatureComponents
     {
         $expiryTimestamp = time() + $this->lifetime;
 
@@ -51,7 +51,7 @@ final class VerifyUserHelper implements VerifyUserHelperInterface
         $signature = $this->uriSigner->sign($uri);
 
         /** @psalm-suppress PossiblyFalseArgument */
-        return new VerifyUserSignatureComponents(\DateTimeImmutable::createFromFormat('U', (string) $expiryTimestamp), $signature);
+        return new VerifyEmailSignatureComponents(\DateTimeImmutable::createFromFormat('U', (string) $expiryTimestamp), $signature);
     }
 
     /**

@@ -7,20 +7,20 @@
  * file that was distributed with this source code.
  */
 
-namespace SymfonyCasts\Bundle\VerifyUser;
+namespace SymfonyCasts\Bundle\VerifyEmail;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
-use SymfonyCasts\Bundle\VerifyUser\DependencyInjection\SymfonyCastsVerifyUserExtension;
+use SymfonyCasts\Bundle\VerifyEmail\DependencyInjection\SymfonyCastsVerifyEmailExtension;
 
 /**
  * @author Jesse Rushlow <jr@rushlow.dev>
  */
-class SymfonyCastsVerifyUserBundle extends Bundle
+class SymfonyCastsVerifyEmailBundle extends Bundle
 {
     public function getContainerExtension()
     {
         if (null === $this->extension) {
-            $this->extension = new SymfonyCastsVerifyUserExtension();
+            $this->extension = new SymfonyCastsVerifyEmailExtension();
         }
 
         return $this->extension ?: null;

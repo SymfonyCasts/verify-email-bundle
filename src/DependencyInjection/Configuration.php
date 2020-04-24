@@ -7,16 +7,19 @@
  * file that was distributed with this source code.
  */
 
-namespace SymfonyCasts\Bundle\VerifyUser\DependencyInjection;
+namespace SymfonyCasts\Bundle\VerifyEmail\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
+/**
+ * @author Jesse Rushlow <jr@rushlow.dev>
+ */
 class Configuration implements ConfigurationInterface
 {
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder('symfonycasts_verify_user');
+        $treeBuilder = new TreeBuilder('symfonycasts_verify_email');
         $rootNode = $treeBuilder->getRootNode();
 
         $rootNode

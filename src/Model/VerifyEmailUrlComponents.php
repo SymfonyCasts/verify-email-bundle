@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-namespace SymfonyCasts\Bundle\VerifyUser\Model;
+namespace SymfonyCasts\Bundle\VerifyEmail\Model;
 
 /**
  * @author Jesse Rushlow <jr@rushlow.dev>
@@ -15,7 +15,7 @@ namespace SymfonyCasts\Bundle\VerifyUser\Model;
  * @internal
  * @final
  */
-class VerifyUserUrlComponents
+class VerifyEmailUrlComponents
 {
     private $scheme;
     private $host;

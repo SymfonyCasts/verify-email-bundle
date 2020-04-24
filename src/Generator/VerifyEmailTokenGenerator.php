@@ -7,9 +7,12 @@
  * file that was distributed with this source code.
  */
 
-namespace SymfonyCasts\Bundle\VerifyUser\Generator;
+namespace SymfonyCasts\Bundle\VerifyEmail\Generator;
 
-class VerifyUserTokenGenerator
+/**
+ * @author Jesse Rushlow <jr@rushlow.dev>
+ */
+class VerifyEmailTokenGenerator
 {
     private $signingKey;
 

@@ -7,16 +7,16 @@
  * file that was distributed with this source code.
  */
 
-namespace SymfonyCasts\Bundle\VerifyUser\Tests\UnitTests\Exception;
+namespace SymfonyCasts\Bundle\VerifyEmail\Tests\UnitTests\Exception;
 
 use PHPUnit\Framework\TestCase;
-use SymfonyCasts\Bundle\VerifyUser\Exception\ExpiredSignatureException;
-use SymfonyCasts\Bundle\VerifyUser\Exception\VerifyUserExceptionInterface;
+use SymfonyCasts\Bundle\VerifyEmail\Exception\ExpiredSignatureException;
+use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
 /**
  * @author Jesse Rushlow <jr@rushlow.dev>
  */
-final class VerifyUserExceptionTest extends TestCase
+final class VerifyEmailExceptionTest extends TestCase
 {
     public function exceptionDataProvider(): \Generator
     {
@@ -38,9 +38,9 @@ final class VerifyUserExceptionTest extends TestCase
     /**
      * @dataProvider exceptionDataProvider
      */
-    public function testImplementsVerifyUserExceptionInterface(string $exception): void
+    public function testImplementsVerifyEmailExceptionInterface(string $exception): void
     {
         $interfaces = class_implements($exception);
-        self::assertArrayHasKey(VerifyUserExceptionInterface::class, $interfaces);
+        self::assertArrayHasKey(VerifyEmailExceptionInterface::class, $interfaces);
     }
 }

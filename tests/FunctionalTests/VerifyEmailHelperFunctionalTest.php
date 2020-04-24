@@ -7,23 +7,23 @@
  * file that was distributed with this source code.
  */
 
-namespace SymfonyCasts\Bundle\VerifyUser\Tests\FunctionalTests;
+namespace SymfonyCasts\Bundle\VerifyEmail\Tests\FunctionalTests;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Bridge\PhpUnit\ClockMock;
 use Symfony\Component\HttpKernel\UriSigner;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use SymfonyCasts\Bundle\VerifyUser\Generator\VerifyUserTokenGenerator;
-use SymfonyCasts\Bundle\VerifyUser\Tests\Fixtures\VerifyUserFixtureUser;
-use SymfonyCasts\Bundle\VerifyUser\Util\VerifyUserQueryUtility;
-use SymfonyCasts\Bundle\VerifyUser\Util\VerifyUserUrlUtility;
-use SymfonyCasts\Bundle\VerifyUser\VerifyUserHelper;
-use SymfonyCasts\Bundle\VerifyUser\VerifyUserHelperInterface;
+use SymfonyCasts\Bundle\VerifyEmail\Generator\VerifyEmailTokenGenerator;
+use SymfonyCasts\Bundle\VerifyEmail\Tests\Fixtures\VerifyEmailFixtureUser;
+use SymfonyCasts\Bundle\VerifyEmail\Util\VerifyEmailQueryUtility;
+use SymfonyCasts\Bundle\VerifyEmail\Util\VerifyEmailUrlUtility;
+use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelper;
+use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
 
 /**
  * @group time-sensitive
  */
-class VerifyUserHelperFunctionalTest extends TestCase
+class VerifyEmailHelperFunctionalTest extends TestCase
 {
     private $mockRouter;
     private $expiryTimeStamp;
@@ -33,7 +33,7 @@ class VerifyUserHelperFunctionalTest extends TestCase
      */
     protected function setUp(): void
     {
-        ClockMock::register(VerifyUserHelper::class);
+        ClockMock::register(VerifyEmailHelper::class);
 
         $this->expiryTimeStamp = (time() + 3600);
 
@@ -42,7 +42,7 @@ class VerifyUserHelperFunctionalTest extends TestCase
 
     public function testGenerateSignature(): void
     {
-        $user = new VerifyUserFixtureUser();
+        $user = new VerifyEmailFixtureUser();
 
         $token = $this->getTestToken();
 
@@ -70,7 +70,7 @@ class VerifyUserHelperFunctionalTest extends TestCase
 
     public function testValidSignature(): void
     {
-        $user = new VerifyUserFixtureUser();
+        $user = new VerifyEmailFixtureUser();
 
         $testSignature = $this->getTestSignedUri();
 
@@ -108,13 +108,13 @@ class VerifyUserHelperFunctionalTest extends TestCase
         return sprintf('/verify?%s', $sortedParams);
     }
 
-    private function getHelper(): VerifyUserHelperInterface
+    private function getHelper(): VerifyEmailHelperInterface
     {
-        return new VerifyUserHelper(
+        return new VerifyEmailHelper(
             $this->mockRouter,
             new UriSigner('foo', 'signature'),
-            new VerifyUserQueryUtility(new VerifyUserUrlUtility()),
-            new VerifyUserTokenGenerator('foo'),
+            new VerifyEmailQueryUtility(new VerifyEmailUrlUtility()),
+            new VerifyEmailTokenGenerator('foo'),
             3600
         );
     }

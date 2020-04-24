@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-namespace SymfonyCasts\Bundle\VerifyUser\Util;
+namespace SymfonyCasts\Bundle\VerifyEmail\Util;
 
 /**
  * Provides methods to manipulate a query string in a URI.
@@ -17,11 +17,11 @@ namespace SymfonyCasts\Bundle\VerifyUser\Util;
  * @internal
  * @final
  */
-class VerifyUserQueryUtility
+class VerifyEmailQueryUtility
 {
     private $urlUtility;
 
-    public function __construct(VerifyUserUrlUtility $urlUtility)
+    public function __construct(VerifyEmailUrlUtility $urlUtility)
     {
         $this->urlUtility = $urlUtility;
     }

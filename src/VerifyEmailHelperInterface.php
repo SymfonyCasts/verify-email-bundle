@@ -7,15 +7,15 @@
  * file that was distributed with this source code.
  */
 
-namespace SymfonyCasts\Bundle\VerifyUser;
+namespace SymfonyCasts\Bundle\VerifyEmail;
 
-use SymfonyCasts\Bundle\VerifyUser\Exception\ExpiredSignatureException;
-use SymfonyCasts\Bundle\VerifyUser\Model\VerifyUserSignatureComponents;
+use SymfonyCasts\Bundle\VerifyEmail\Exception\ExpiredSignatureException;
+use SymfonyCasts\Bundle\VerifyEmail\Model\VerifyEmailSignatureComponents;
 
 /**
  * @author  Jesse Rushlow <jr@rushlow.dev>
  */
-interface VerifyUserHelperInterface
+interface VerifyEmailHelperInterface
 {
     /**
      * Generate a signed URI that can be used to validate a user.
@@ -25,7 +25,7 @@ interface VerifyUserHelperInterface
      * @param string $userEmail       the user's email address
      * @param array  $extraParameters any additional query string parameters that will be a part of the signed URL
      */
-    public function generateSignature(string $routeName, string $userId, string $userEmail, array $extraParameters = []): VerifyUserSignatureComponents;
+    public function generateSignature(string $routeName, string $userId, string $userEmail, array $extraParameters = []): VerifyEmailSignatureComponents;
 
     /**
      * Validate a signed URI and mark the user a verified.

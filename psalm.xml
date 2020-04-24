@@ -35,7 +35,7 @@
         <MissingReturnType errorLevel="info" />
         <MissingPropertyType errorLevel="info">
             <errorLevel type="suppress">
-                <file name="src/Model/VerifyUserUrlComponents.php"/>
+                <file name="src/Model/VerifyEmailUrlComponents.php"/>
             </errorLevel>
         </MissingPropertyType>
         <InvalidDocblock errorLevel="info" />
@@ -63,7 +63,7 @@
         </PossiblyUndefinedMethod>
         <PossiblyNullArgument>
             <errorLevel type="suppress">
-                <file name="src/DependencyInjection/SymfonyCastsVerifyUserExtension.php"/>
+                <file name="src/DependencyInjection/SymfonyCastsVerifyEmailExtension.php"/>
             </errorLevel>
         </PossiblyNullArgument>
     </issueHandlers>

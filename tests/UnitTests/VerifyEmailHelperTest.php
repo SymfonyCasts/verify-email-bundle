@@ -7,25 +7,25 @@
  * file that was distributed with this source code.
  */
 
-namespace SymfonyCasts\Bundle\VerifyUser\Tests\UnitTests;
+namespace SymfonyCasts\Bundle\VerifyEmail\Tests\UnitTests;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Bridge\PhpUnit\ClockMock;
 use Symfony\Component\HttpKernel\UriSigner;
 use Symfony\Component\Routing\RouterInterface;
-use SymfonyCasts\Bundle\VerifyUser\Exception\ExpiredSignatureException;
-use SymfonyCasts\Bundle\VerifyUser\Generator\VerifyUserTokenGenerator;
-use SymfonyCasts\Bundle\VerifyUser\Tests\Fixtures\VerifyUserFixtureUser;
-use SymfonyCasts\Bundle\VerifyUser\Util\VerifyUserQueryUtility;
-use SymfonyCasts\Bundle\VerifyUser\VerifyUserHelper;
-use SymfonyCasts\Bundle\VerifyUser\VerifyUserHelperInterface;
+use SymfonyCasts\Bundle\VerifyEmail\Exception\ExpiredSignatureException;
+use SymfonyCasts\Bundle\VerifyEmail\Generator\VerifyEmailTokenGenerator;
+use SymfonyCasts\Bundle\VerifyEmail\Tests\Fixtures\VerifyEmailFixtureUser;
+use SymfonyCasts\Bundle\VerifyEmail\Util\VerifyEmailQueryUtility;
+use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelper;
+use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
 
 /**
  * @author Jesse Rushlow <jr@rushlow.dev>
  *
  * @group time-sensitive
  */
-final class VerifyUserHelperTest extends TestCase
+final class VerifyEmailHelperTest extends TestCase
 {
     private $mockRouter;
     private $mockSigner;
@@ -34,12 +34,12 @@ final class VerifyUserHelperTest extends TestCase
 
     protected function setUp(): void
     {
-        ClockMock::register(VerifyUserHelper::class);
+        ClockMock::register(VerifyEmailHelper::class);
 
         $this->mockRouter = $this->createMock(RouterInterface::class);
         $this->mockSigner = $this->createMock(UriSigner::class);
-        $this->mockQueryUtility = $this->createMock(VerifyUserQueryUtility::class);
-        $this->tokenGenerator = $this->createMock(VerifyUserTokenGenerator::class);
+        $this->mockQueryUtility = $this->createMock(VerifyEmailQueryUtility::class);
+        $this->tokenGenerator = $this->createMock(VerifyEmailTokenGenerator::class);
     }
 
     public function testSignatureIsGenerated(): void
@@ -77,7 +77,7 @@ final class VerifyUserHelperTest extends TestCase
 
     public function testIsValidSignature(): void
     {
-        $user = new VerifyUserFixtureUser();
+        $user = new VerifyEmailFixtureUser();
         $expires = time() + 3600;
         $signature = '/verify?signature=1234';
 
@@ -136,8 +136,8 @@ final class VerifyUserHelperTest extends TestCase
         self::assertSame(3600, $helper->getSignatureLifetime());
     }
 
-    private function getHelper(): VerifyUserHelperInterface
+    private function getHelper(): VerifyEmailHelperInterface
     {
-        return new VerifyUserHelper($this->mockRouter, $this->mockSigner, $this->mockQueryUtility, $this->tokenGenerator, 3600);
+        return new VerifyEmailHelper($this->mockRouter, $this->mockSigner, $this->mockQueryUtility, $this->tokenGenerator, 3600);
     }
 }
