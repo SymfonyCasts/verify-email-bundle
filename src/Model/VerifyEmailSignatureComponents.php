@@ -33,7 +33,7 @@ final class VerifyEmailSignatureComponents
     /**
      * Returns the full signed URI that a user should use.
      */
-    public function getSignature(): string
+    public function getSignedUrl(): string
     {
         return $this->uri;
     }

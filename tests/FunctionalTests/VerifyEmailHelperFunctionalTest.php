@@ -55,7 +55,7 @@ class VerifyEmailHelperFunctionalTest extends TestCase
 
         $result = $this->getHelper()->generateSignature('app_verify_route', $user->id, $user->email);
 
-        $parsedUri = parse_url($result->getSignature());
+        $parsedUri = parse_url($result->getSignedUrl());
         parse_str($parsedUri['query'], $queryParams);
 
         $knownToken = $token;

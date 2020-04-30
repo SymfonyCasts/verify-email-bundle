@@ -36,7 +36,7 @@ final class VerifyEmailAcceptanceTest extends TestCase
 
         $components = $helper->generateSignature('verify-test', $user->id, $user->email);
 
-        $signature = $components->getSignature();
+        $signature = $components->getSignedUrl();
         $expiresAt = ($components->getExpiryTime())->getTimestamp();
 
         $expectedUserData = json_encode([$user->id, $user->email, $expiresAt]);
