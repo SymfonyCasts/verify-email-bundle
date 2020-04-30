@@ -91,4 +91,14 @@ class VerifyEmailTestKernel extends Kernel
 
         return $routes;
     }
+
+    public function getCacheDir()
+    {
+        return sys_get_temp_dir().'/cache'.spl_object_hash($this);
+    }
+
+    public function getLogDir()
+    {
+        return sys_get_temp_dir().'/logs'.spl_object_hash($this);
+    }
 }
