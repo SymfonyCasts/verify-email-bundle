@@ -10,33 +10,26 @@
 namespace SymfonyCasts\Bundle\VerifyEmail\Tests\IntegrationTests;
 
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use SymfonyCasts\Bundle\VerifyEmail\Tests\Fixtures\AbstractVerifyEmailTestKernel;
+use SymfonyCasts\Bundle\VerifyEmail\Tests\VerifyEmailTestKernel;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
 
 class VerifyEmailBundleAutowireTest extends TestCase
 {
     public function testVerifyEmailBundleInterfaceIsAutowiredByContainer(): void
     {
-        $kernel = new VerifyEmailBundleIntegrationKernel();
+        $builder = new ContainerBuilder();
+        $builder->autowire(VerifyEmailHelperAutowireTest::class)
+            ->setPublic(true)
+        ;
+
+        $kernel = new VerifyEmailTestKernel($builder);
         $kernel->boot();
+
         $container = $kernel->getContainer();
         $container->get(VerifyEmailHelperAutowireTest::class);
 
         $this->expectNotToPerformAssertions();
-    }
-}
-
-class VerifyEmailBundleIntegrationKernel extends AbstractVerifyEmailTestKernel
-{
-    protected function configureContainer(ContainerBuilder $container, LoaderInterface $loader)
-    {
-        parent::configureContainer($container, $loader);
-
-        $container->autowire(VerifyEmailHelperAutowireTest::class)
-            ->setPublic(true)
-        ;
     }
 }
 

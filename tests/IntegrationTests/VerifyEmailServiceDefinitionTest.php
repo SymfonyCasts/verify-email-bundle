@@ -12,7 +12,7 @@ namespace SymfonyCasts\Bundle\VerifyEmail\Tests\IntegrationTests;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use SymfonyCasts\Bundle\VerifyEmail\Tests\Fixtures\AbstractVerifyEmailTestKernel;
+use SymfonyCasts\Bundle\VerifyEmail\Tests\VerifyEmailTestKernel;
 
 /**
  * @author Jesse Rushlow <jr@rushlow.dev>
@@ -61,7 +61,7 @@ final class DefinitionPublicCompilerPass implements CompilerPassInterface
     }
 }
 
-final class VerifyEmailDefinitionTestKernel extends AbstractVerifyEmailTestKernel
+final class VerifyEmailDefinitionTestKernel extends VerifyEmailTestKernel
 {
     public $compilerPass;
 

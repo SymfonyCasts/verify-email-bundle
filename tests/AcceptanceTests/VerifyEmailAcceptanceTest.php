@@ -10,11 +10,10 @@
 namespace SymfonyCasts\Bundle\VerifyEmail\Tests\AcceptanceTests;
 
 use PHPUnit\Framework\TestCase;
-use Symfony\Bundle\FrameworkBundle\Routing\Loader\Configurator\RoutingConfigurator;
-use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use SymfonyCasts\Bundle\VerifyEmail\Tests\Fixtures\AbstractVerifyEmailTestKernel;
+use Symfony\Component\HttpKernel\KernelInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Tests\Fixtures\VerifyEmailFixtureUser;
+use SymfonyCasts\Bundle\VerifyEmail\Tests\VerifyEmailTestKernel;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelper;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
 
@@ -27,8 +26,7 @@ final class VerifyEmailAcceptanceTest extends TestCase
 {
     public function testGenerateSignature(): void
     {
-        $kernel = new VerifyEmailAcceptanceTestKernel();
-        $kernel->boot();
+        $kernel = $this->getBootedKernel();
 
         $container = $kernel->getContainer();
 
@@ -64,8 +62,7 @@ final class VerifyEmailAcceptanceTest extends TestCase
 
     public function testIsValidSignature(): void
     {
-        $kernel = new VerifyEmailAcceptanceTestKernel();
-        $kernel->boot();
+        $kernel = $this->getBootedKernel();
 
         $container = $kernel->getContainer();
 
@@ -93,6 +90,23 @@ final class VerifyEmailAcceptanceTest extends TestCase
 
         self::assertTrue($helper->isValidSignature($test, $user->id, $user->email));
     }
+
+    private function getBootedKernel(): KernelInterface
+    {
+        $builder = new ContainerBuilder();
+        $builder->autowire(VerifyEmailAcceptanceFixture::class)
+            ->setPublic(true)
+        ;
+
+        $kernel = new VerifyEmailTestKernel(
+            $builder,
+            ['verify-test' => '/verify/user']
+        );
+
+        $kernel->boot();
+
+        return $kernel;
+    }
 }
 
 final class VerifyEmailAcceptanceFixture
@@ -102,22 +116,5 @@ final class VerifyEmailAcceptanceFixture
     public function __construct(VerifyEmailHelperInterface $helper)
     {
         $this->helper = $helper;
-    }
-}
-
-final class VerifyEmailAcceptanceTestKernel extends AbstractVerifyEmailTestKernel
-{
-    protected function configureRoutes(RoutingConfigurator $routes)
-    {
-        $routes->add('verify-test', '/verify/user');
-    }
-
-    protected function configureContainer(ContainerBuilder $container, LoaderInterface $loader)
-    {
-        parent::configureContainer($container, $loader);
-
-        $container->autowire(VerifyEmailAcceptanceFixture::class)
-            ->setPublic(true)
-        ;
     }
 }
