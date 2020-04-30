@@ -69,8 +69,6 @@ class VerifyEmailTestKernel extends Kernel
 
             $kernelDefinition = $container->getDefinition('kernel');
             $kernelDefinition->addTag('routing.route_loader');
-
-
         });
     }
 
@@ -86,23 +84,5 @@ class VerifyEmailTestKernel extends Kernel
         }
 
         return $routes;
-//        $file = (new \ReflectionObject($this))->getFileName();
-//        /* @var RoutingPhpFileLoader $kernelLoader */
-//        $kernelLoader = $loader->getResolver()->resolve($file);
-//        $kernelLoader->setCurrentDir(\dirname($file));
-//        $collection = new RouteCollection();
-//
-//
-//        $this->configureRoutes(new RoutingConfigurator($collection, $kernelLoader, $file, $file));
-//
-//        foreach ($collection as $route) {
-//            $controller = $route->getDefault('_controller');
-//
-//            if (\is_array($controller) && [0, 1] === array_keys($controller) && $this === $controller[0]) {
-//                $route->setDefault('_controller', ['kernel', $controller[1]]);
-//            }
-//        }
-
-//        return $collection;
     }
 }
