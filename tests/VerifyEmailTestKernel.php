@@ -12,6 +12,7 @@ namespace SymfonyCasts\Bundle\VerifyEmail\Tests;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
@@ -29,8 +30,8 @@ class VerifyEmailTestKernel extends Kernel
     private $extraBundles;
 
     /**
-     * @param array $routes  Routes to be added to the container e.g. ['name' => 'path']
-     * @param array $bundles Array of bundles to be registered e.g. [new Bundle()]
+     * @param array             $routes  Routes to be added to the container e.g. ['name' => 'path']
+     * @param BundleInterface[] $bundles Additional bundles to be registered e.g. [new Bundle()]
      */
     public function __construct(ContainerBuilder $builder = null, array $routes = [], array $bundles = [])
     {
@@ -74,11 +75,7 @@ class VerifyEmailTestKernel extends Kernel
                 ]
             );
 
-            $container->addObjectResource($this);
             $container->register('kernel', static::class)
-                ->addTag('controller.service_arguments')
-                ->setAutoconfigured(true)
-                ->setSynthetic(true)
                 ->setPublic(true)
             ;
 
