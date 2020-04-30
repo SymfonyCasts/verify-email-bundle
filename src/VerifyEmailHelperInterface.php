@@ -30,13 +30,13 @@ interface VerifyEmailHelperInterface
     /**
      * Validate a signed Url provided by the user.
      *
-     * @param string $signature the URI that was submitted by the user
+     * @param string $signedUrl the URI that was submitted by the user
      * @param string $userId    unique user identifier
      * @param string $userEmail the user's unique email address
      *
      * @throws ExpiredSignatureException
      */
-    public function isValidSignature(string $signature, string $userId, string $userEmail): bool;
+    public function isValidSignature(string $signedUrl, string $userId, string $userEmail): bool;
 
     /**
      * Get the length of time in seconds that a signed uri is valid.
