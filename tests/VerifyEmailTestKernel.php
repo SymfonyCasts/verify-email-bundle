@@ -28,6 +28,10 @@ class VerifyEmailTestKernel extends Kernel
     private $routes;
     private $extraBundles;
 
+    /**
+     * @param array $routes  Routes to be added to the container e.g. ['name' => 'path']
+     * @param array $bundles Array of bundles to be registered e.g. [new Bundle()]
+     */
     public function __construct(ContainerBuilder $builder = null, array $routes = [], array $bundles = [])
     {
         $this->builder = $builder;
