@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the SymfonyCasts VerifyEmailBundle package.
+ * Copyright (c) SymfonyCasts <https://symfonycasts.com/>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace SymfonyCasts\Bundle\VerifyEmail\Tests;
 
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
@@ -9,7 +16,6 @@ use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 use SymfonyCasts\Bundle\VerifyEmail\SymfonyCastsVerifyEmailBundle;
-
 
 class VerifyEmailTestKernel extends Kernel
 {
@@ -45,7 +51,7 @@ class VerifyEmailTestKernel extends Kernel
 
         $builder = $this->builder;
 
-        $loader->load(function (ContainerBuilder $container) use ($builder, $loader) {
+        $loader->load(function (ContainerBuilder $container) use ($builder) {
             $container->merge($builder);
             $container->loadFromExtension(
                 'framework',
