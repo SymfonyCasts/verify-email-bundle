@@ -17,6 +17,11 @@ use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 use SymfonyCasts\Bundle\VerifyEmail\SymfonyCastsVerifyEmailBundle;
 
+/**
+ * @author Jesse Rushlow <jr@rushlow.dev>
+ *
+ * @internal
+ */
 class VerifyEmailTestKernel extends Kernel
 {
     private $builder;

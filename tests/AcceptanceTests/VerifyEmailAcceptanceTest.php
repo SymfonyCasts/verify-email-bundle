@@ -26,8 +26,6 @@ final class VerifyEmailAcceptanceTest extends TestCase
 {
     public function testGenerateSignature(): void
     {
-//        $kernel = new VerifyEmailAcceptanceTestKernel();
-//        $kernel->boot();
         $kernel = $this->getBootedKernel();
 
         $container = $kernel->getContainer();
@@ -64,8 +62,6 @@ final class VerifyEmailAcceptanceTest extends TestCase
 
     public function testIsValidSignature(): void
     {
-//        $kernel = new VerifyEmailAcceptanceTestKernel();
-//        $kernel->boot();
         $kernel = $this->getBootedKernel();
 
         $container = $kernel->getContainer();
@@ -122,20 +118,3 @@ final class VerifyEmailAcceptanceFixture
         $this->helper = $helper;
     }
 }
-
-//final class VerifyEmailAcceptanceTestKernel extends AbstractVerifyEmailTestKernel
-//{
-//    protected function configureRoutes(RoutingConfigurator $routes)
-//    {
-//        $routes->add('verify-test', '/verify/user');
-//    }
-//
-//    protected function configureContainer(ContainerBuilder $container, LoaderInterface $loader)
-//    {
-//        parent::configureContainer($container, $loader);
-//
-//        $container->autowire(VerifyEmailAcceptanceFixture::class)
-//            ->setPublic(true)
-//        ;
-//    }
-//}
