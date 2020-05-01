@@ -18,7 +18,7 @@ use SymfonyCasts\Bundle\VerifyEmail\Model\VerifyEmailSignatureComponents;
 interface VerifyEmailHelperInterface
 {
     /**
-     * Generate a signed URI that can be used to validate a user.
+     * Get a signed Url that can be provided to a user.
      *
      * @param string $routeName       name of route that will be used to verify users
      * @param string $userId          unique user identifier
@@ -28,7 +28,7 @@ interface VerifyEmailHelperInterface
     public function generateSignature(string $routeName, string $userId, string $userEmail, array $extraParameters = []): VerifyEmailSignatureComponents;
 
     /**
-     * Validate a signed URI and mark the user a verified.
+     * Validate a signed Url provided by the user.
      *
      * @param string $signature the URI that was submitted by the user
      * @param string $userId    unique user identifier
@@ -39,7 +39,7 @@ interface VerifyEmailHelperInterface
     public function isValidSignature(string $signature, string $userId, string $userEmail): bool;
 
     /**
-     * Returns the length of time in seconds that a signed uri is valid.
+     * Get the length of time in seconds that a signed uri is valid.
      */
     public function getSignatureLifetime(): int;
 }
