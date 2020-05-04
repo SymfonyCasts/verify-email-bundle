@@ -40,6 +40,9 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
         $this->lifetime = $lifetime;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function generateSignature(string $routeName, string $userId, string $userEmail, array $extraParams = []): VerifyEmailSignatureComponents
     {
         $expiryTimestamp = time() + $this->lifetime;
@@ -55,7 +58,7 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
     }
 
     /**
-     * @throws ExpiredSignatureException
+     * {@inheritdoc}
      */
     public function isValidSignature(string $signature, string $userId, string $userEmail): bool
     {
@@ -75,6 +78,9 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
         return $this->uriSigner->check($signature);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getSignatureLifetime(): int
     {
         return $this->lifetime;
