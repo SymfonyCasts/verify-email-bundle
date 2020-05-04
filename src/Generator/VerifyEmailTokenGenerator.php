@@ -11,9 +11,15 @@ namespace SymfonyCasts\Bundle\VerifyEmail\Generator;
 
 /**
  * @author Jesse Rushlow <jr@rushlow.dev>
+ *
+ * @internal
+ * @final
  */
 class VerifyEmailTokenGenerator
 {
+    /**
+     * @var string Unique, random, cryptographically secure string
+     */
     private $signingKey;
 
     public function __construct(string $key)
@@ -21,6 +27,9 @@ class VerifyEmailTokenGenerator
         $this->signingKey = $key;
     }
 
+    /**
+     * Get a cryptographically secure token.
+     */
     public function createToken(string $userId, string $email, int $expiryTimeStamp): string
     {
         $encodedData = json_encode([$userId, $email, $expiryTimeStamp]);
