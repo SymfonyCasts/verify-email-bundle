@@ -10,7 +10,6 @@
 namespace SymfonyCasts\Bundle\VerifyEmail\Tests\UnitTests\Exception;
 
 use PHPUnit\Framework\TestCase;
-use SymfonyCasts\Bundle\VerifyEmail\Exception\AlreadyVerifiedException;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\ExpiredSignatureException;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\InvalidSignatureException;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
@@ -30,11 +29,6 @@ final class VerifyEmailExceptionTest extends TestCase
         yield [
             InvalidSignatureException::class,
             'The signature could not be validated.',
-        ];
-
-        yield [
-            AlreadyVerifiedException::class,
-            'Your email address has already been verified.',
         ];
     }
 
