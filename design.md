@@ -1,3 +1,4 @@
+# THIS DOC IS OUTDATED - DO NOTE RELY UPON
 # Verification Bundle:
 Provides a simple, yet flexible, means of user email verification after
  registration utilizing signed url's and Symfony's Maker Bundle.
