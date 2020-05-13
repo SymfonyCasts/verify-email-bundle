@@ -119,20 +119,20 @@ You can change the default configuration parameters for the bundle in a
 
 ```
 symfonycasts_verify_email:
-  lifetime: 3600
+    lifetime: 3600
 ```
 
 #### `lifetime`
 
 _Optional_ - Defaults to `3600` seconds
 
-This is the length of time a reset password request is valid for in seconds 
-after it has been created. 
+This is the length of time a signed URL is valid for in seconds after it has
+been created. 
 
 ## Support
 
 Feel free to open an issue for questions, problems, or suggestions with our bundle.
-Issues pertaining to Symfony's Maker Bundle, specifically `make:reset-password`,
+Issues pertaining to Symfony's Maker Bundle, specifically `make:registration-form`,
 should be addressed in the [Symfony Maker repository](https://github.com/symfony/maker-bundle).
 
 ## Security Issues
