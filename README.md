@@ -73,6 +73,7 @@ public function updateMyEmailAddress()
     );
     
     $signedUrl = $signatureComponents->getSignedUrl();
+
     // email the $signedUrl to the user
 }
 
@@ -83,7 +84,7 @@ public function validateSignedUrlEmailedToTheUser(Request $request)
 {
     // Deny access to this method if the user is not authenticated
 
-    $user = $this-getUser();
+    $user = $this->getUser();
     
     $helper = new VerifyEmailHelper(....)
     $bool = $helper->isValidSignature($request->getUri(), $user->getId(), $user->getEmail());
@@ -98,11 +99,15 @@ public function validateSignedUrlEmailedToTheUser(Request $request)
 
 It is _critical_ that - 
 
-1) You do not allow access to the validation route unless the user has been
-authenticated (logged in). 
+1) ~~You do not allow access to the validation route unless the user has been
+authenticated (logged in).~~ 
 
 2) The user identifier and email address should be retrieved from within your
-application, not from the user when validating the signed URL.
+application, not from the user when validating the signed URL. e.g. Require user
+to be logged in, retrieve user identifier from the session.
+
+3) The URL being signed then validated should be fully qualified. e.g. 
+`https://your-domain.com/verify/user` not just `/verify/user`
 
 Failure to follow the above guidelines will circumvent the security features this
 bundle provides.
