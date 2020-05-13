@@ -4,9 +4,13 @@
 Don't know if your user's have a valid email address? The VerifyEmailBundle can
 help!
 
+As the Verify Email Bundle is stateless, you don't need to create new objects in
+persistent.
+
 The stateless Verify Email Bundle will generate and validate fully qualified
- signed URL's comprised of a unique user identifier, unique user email address, 
- and any other query string parameters needed by your application.  
+ signed URL's ~~comprised of a unique user identifier, unique user email address, 
+ and any other query string parameters needed by your application.~~ that can be
+ emailed to users.
 
 ## Installation
 
