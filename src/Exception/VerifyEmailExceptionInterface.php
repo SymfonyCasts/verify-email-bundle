@@ -12,7 +12,7 @@ namespace SymfonyCasts\Bundle\VerifyEmail\Exception;
 /**
  * @author Jesse Rushlow <jr@rushlow.dev>
  */
-interface VerifyEmailExceptionInterface
+interface VerifyEmailExceptionInterface extends \Throwable
 {
     public function getReason(): string;
 }
