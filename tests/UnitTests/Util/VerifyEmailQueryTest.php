@@ -15,7 +15,13 @@ use SymfonyCasts\Bundle\VerifyEmail\Model\VerifyEmailUrlComponents;
 use SymfonyCasts\Bundle\VerifyEmail\Util\VerifyEmailQueryUtility;
 use SymfonyCasts\Bundle\VerifyEmail\Util\VerifyEmailUrlUtility;
 
-class VerifyEmailQueryTest extends TestCase
+/**
+ * @author Jesse Rushlow <jr@rushlow.dev>
+ * @author Ryan Weaver   <ryan@symfonycasts.com>
+ *
+ * @internal
+ */
+final class VerifyEmailQueryTest extends TestCase
 {
     /**
      * @var MockObject|VerifyEmailUrlUtility
