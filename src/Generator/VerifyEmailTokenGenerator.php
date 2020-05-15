@@ -11,6 +11,7 @@ namespace SymfonyCasts\Bundle\VerifyEmail\Generator;
 
 /**
  * @author Jesse Rushlow <jr@rushlow.dev>
+ * @author Ryan Weaver   <ryan@symfonycasts.com>
  *
  * @internal
  * @final

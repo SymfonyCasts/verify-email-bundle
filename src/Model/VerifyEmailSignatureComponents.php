@@ -11,6 +11,7 @@ namespace SymfonyCasts\Bundle\VerifyEmail\Model;
 
 /**
  * @author Jesse Rushlow <jr@rushlow.dev>
+ * @author Ryan Weaver   <ryan@symfonycasts.com>
  */
 final class VerifyEmailSignatureComponents
 {
