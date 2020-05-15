@@ -4,7 +4,7 @@ Don't know if your user's have a valid email address? The VerifyEmailBundle can
 help! 
 
 Because it's stateless, Verify Email Bundle will generate and validated
- fully qualified and secure signed URL's that can be provided to your users using
+ fully qualified and secure signed URL's that can be emailed to your users using
  your existing entities with only minor modifications.
 
 ## Installation
@@ -18,7 +18,8 @@ composer require symfonycasts/verify-email-bundle
 ## What this bundle provides
 
 1) A generator to create secure fully qualified signed URL's comprised of a unique
- user identifier, unique user email address, and any other query params provided.
+ user identifier, unique user email address, and any other query params your
+ business logic requires.
  This URL should be emailed to the user for validation.
 
 2) A signed URL validator.
@@ -32,6 +33,10 @@ We strongly suggest using Symfony Maker Bundle's `make:registration-form` to get
  a feel for how the bundle should be used. It's super simple! Answer a couple 
  questions, and you'll have a fully functional secure registration system with
  email verification.
+ 
+_If your business logic requires additonal query parameters to be used in the signed
+ URL for email validation - please note that the `expires`, `signature`, & `token` 
+ query parameter keys are reserved for use by the Verify Email Bundle._
 
 ## Setting things up manually
 
