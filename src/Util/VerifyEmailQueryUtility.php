@@ -43,27 +43,12 @@ class VerifyEmailQueryUtility
     private function getQueryParams(string $uri): array
     {
         $params = [];
-        $components = $this->parseUrl($uri);
-        $queryString = $components->getQuery();
+        $urlComponents = parse_url($uri);
 
-        if (null !== $queryString) {
-            parse_str($queryString, $params);
+        if (array_key_exists('query', $urlComponents)) {
+            parse_str($urlComponents['query'], $params);
         }
 
         return $params;
-    }
-
-    public function parseUrl(string $url): VerifyEmailUrlComponents
-    {
-        $urlComponents = parse_url($url);
-
-        $components = new VerifyEmailUrlComponents();
-
-        foreach ($urlComponents as $component => $value) {
-            $method = 'set'.ucfirst($component);
-            $components->$method($value);
-        }
-
-        return $components;
     }
 }
