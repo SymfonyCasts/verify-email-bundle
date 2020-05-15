@@ -38,8 +38,11 @@ important stuff. Using `make:registration-form` is still the easiest and
 simplest way.
 
 The example below demonstrates the basic steps to generate a signed URL
-that is to be emailed to a user after they have registered using Symfony components.
-The URL is then validated once the user were to "click" the link in their email.
+that is to be emailed to a user after they have registered. The URL is then 
+validated once the user "clicks" the link in their email. 
+
+The example below utilizes Symfony's `AbstractController` available in the 
+[Framework Bundle](https://github.com/symfony/framework-bundle)
 
 ```
 // RegistrationController.php
