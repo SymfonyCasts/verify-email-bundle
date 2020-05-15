@@ -26,7 +26,6 @@ final class VerifyEmailServiceDefinitionTest extends TestCase
         yield [$prefix.'query_utility'];
         yield [$prefix.'uri_signer'];
         yield [$prefix.'helper'];
-        yield [$prefix.'url_utility'];
         yield [$prefix.'token_generator'];
     }
 

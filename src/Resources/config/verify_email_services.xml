@@ -9,11 +9,7 @@
             <argument>%kernel.secret%</argument>
         </service>
 
-        <service id="symfonycasts.verify_email.url_utility" class="SymfonyCasts\Bundle\VerifyEmail\Util\VerifyEmailUrlUtility" public="false" />
-
-        <service id="symfonycasts.verify_email.query_utility" class="SymfonyCasts\Bundle\VerifyEmail\Util\VerifyEmailQueryUtility" public="false">
-            <argument type="service" id="symfonycasts.verify_email.url_utility" />
-        </service>
+        <service id="symfonycasts.verify_email.query_utility" class="SymfonyCasts\Bundle\VerifyEmail\Util\VerifyEmailQueryUtility" public="false" />
 
         <service id="symfonycasts.verify_email.uri_signer" class="Symfony\Component\HttpKernel\UriSigner">
             <argument>%kernel.secret%</argument>
