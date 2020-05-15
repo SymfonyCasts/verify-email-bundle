@@ -9,6 +9,8 @@
 
 namespace SymfonyCasts\Bundle\VerifyEmail\Util;
 
+use SymfonyCasts\Bundle\VerifyEmail\Model\VerifyEmailUrlComponents;
+
 /**
  * Provides methods to manipulate a query string in a URI.
  *
@@ -20,19 +22,19 @@ namespace SymfonyCasts\Bundle\VerifyEmail\Util;
  */
 class VerifyEmailQueryUtility
 {
-    private $urlUtility;
+//    private $urlUtility;
+//
+//    public function __construct(VerifyEmailUrlUtility $urlUtility)
+//    {
+//        $this->urlUtility = $urlUtility;
+//    }
 
-    public function __construct(VerifyEmailUrlUtility $urlUtility)
-    {
-        $this->urlUtility = $urlUtility;
-    }
-
-    public function getTokenFromQuery(string $uri): string
-    {
-        $params = $this->getQueryParams($uri);
-
-        return $params['token'];
-    }
+//    public function getTokenFromQuery(string $uri): string
+//    {
+//        $params = $this->getQueryParams($uri);
+//
+//        return $params['token'];
+//    }
 
     public function getExpiryTimestamp(string $uri): int
     {
@@ -48,7 +50,7 @@ class VerifyEmailQueryUtility
     private function getQueryParams(string $uri): array
     {
         $params = [];
-        $components = $this->urlUtility->parseUrl($uri);
+        $components = $this->parseUrl($uri);
         $queryString = $components->getQuery();
 
         if (null !== $queryString) {
@@ -56,5 +58,19 @@ class VerifyEmailQueryUtility
         }
 
         return $params;
+    }
+
+    private function parseUrl(string $url): VerifyEmailUrlComponents
+    {
+        $urlComponents = parse_url($url);
+
+        $components = new VerifyEmailUrlComponents();
+
+        foreach ($urlComponents as $component => $value) {
+            $method = 'set'.ucfirst($component);
+            $components->$method($value);
+        }
+
+        return $components;
     }
 }

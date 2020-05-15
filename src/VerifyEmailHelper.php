@@ -69,13 +69,13 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
         if ($expiresAt <= time()) {
             throw new ExpiredSignatureException();
         }
-
-        $knownToken = $this->tokenGenerator->createToken($userId, $userEmail, $expiresAt);
-        $userToken = $this->queryUtility->getTokenFromQuery($signedUrl);
-
-        if (!hash_equals($knownToken, $userToken)) {
-            return false;
-        }
+//
+//        $knownToken = $this->tokenGenerator->createToken($userId, $userEmail, $expiresAt);
+//        $userToken = $this->queryUtility->getTokenFromQuery($signedUrl);
+//
+//        if (!hash_equals($knownToken, $userToken)) {
+//            return false;
+//        }
 
         return $this->uriSigner->check($signedUrl);
     }
