@@ -1,50 +1,41 @@
-# VerifyEmailBundle
+# VerifyEmailBundle: Love Confirming Emails
 
 Don't know if your user's have a valid email address? The VerifyEmailBundle can
 help! 
 
-Because it's stateless, Verify Email Bundle will generate and validated
- fully qualified and secure signed URL's that can be emailed to your users using
- your existing entities with only minor modifications.
+VerifyEmailBundle generates - and validates - a secure, signed URL
+that can be emailed to users to confirm their email address. It
+does this without needing any storage, so you can use your existing
+entities with minor modifications. This bundle provides:
+
+1) A generator to create a signed URL that should be emailed to the user.
+
+2) A signed URL validator.
+
+3) Peace of mind knowing that this is done without leaking the user's
+   email address into your server logs (avoiding PII problems).
 
 ## Installation
 
-The bundle can be installed using Composer or the [Symfony binary](https://symfony.com/download):
+Using Composer of course!
 
 ```
 composer require symfonycasts/verify-email-bundle
 ```
 
-## What this bundle provides
-
-1) A generator to create secure fully qualified signed URL's comprised of a unique
- user identifier, unique user email address, and any other query params your
- business logic requires.
- This URL should be emailed to the user for validation.
-
-2) A signed URL validator.
-
-3) Peace of mind knowing user credentials, personally identified information, and
-design principles of your app will not be leaked in to server logs or emails.
-
 ## Usage
 
-We strongly suggest using Symfony Maker Bundle's `make:registration-form` to get
- a feel for how the bundle should be used. It's super simple! Answer a couple 
- questions, and you'll have a fully functional secure registration system with
- email verification.
- 
-_If your business logic requires additonal query parameters to be used in the signed
- URL for email validation - please note that the `expires`, `signature`, & `token` 
- query parameter keys are reserved for use by the Verify Email Bundle._
+We strongly suggest using Symfony MakerBundle's `make:registration-form` to get
+a feel for how the bundle should be used. It's super simple! Answer a couple
+questions, and you'll have a fully functional secure registration system with
+email verification.
 
 ## Setting things up manually
 
-_Implementing this bundle manually without fully understanding the design principles
- behind it - may result in security vulnerabilities within your application._
- 
- _You really should try `make:registration-form` first before rolling-your-own
- implementation._
+If you want to set things up manually, you can! But do so carefully: email
+verification is a sensitive, security process. We'll guide you through the
+important stuff. Using `make:registration-form` is still the easiest and
+simplest way.
 
 After running `make:registration-form` and understanding how to use this bundle,
 you can validate a users email address anytime. An example would be if the 
@@ -97,22 +88,14 @@ public function validateSignedUrlEmailedToTheUser(Request $request)
 }
 ```
 
-It is _critical_ that - 
-
-1) The user identifier and email address should be retrieved from within your
-application, not from the user when validating the signed URL. e.g. Require user
-to be logged in and retrieve user identifier from the session.
-
-2) The URL being signed then validated should be fully qualified. e.g. 
-`https://your-domain.com/verify/user` not just `/verify/user`
-
-Failure to follow the above guidelines will circumvent the security features this
-bundle provides.
+It is _critical_ that you require the user to be logged in and fetch the
+user identifier and email (e.g. `$user->getid()` and `$user->getEmail()`)
+from that authenticated user (not from anywhere in the URL).
 
 ## Configuration
 
-You can change the default configuration parameters for the bundle in a 
-`config/packages/verify_email.yaml` config file.
+You can change the default configuration parameters for the bundle by creating
+a `config/packages/verify_email.yaml` config file.
 
 ```
 symfonycasts_verify_email:
