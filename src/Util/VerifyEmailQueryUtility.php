@@ -22,20 +22,6 @@ use SymfonyCasts\Bundle\VerifyEmail\Model\VerifyEmailUrlComponents;
  */
 class VerifyEmailQueryUtility
 {
-//    private $urlUtility;
-//
-//    public function __construct(VerifyEmailUrlUtility $urlUtility)
-//    {
-//        $this->urlUtility = $urlUtility;
-//    }
-
-//    public function getTokenFromQuery(string $uri): string
-//    {
-//        $params = $this->getQueryParams($uri);
-//
-//        return $params['token'];
-//    }
-
     public function getExpiryTimestamp(string $uri): int
     {
         $params = $this->getQueryParams($uri);
@@ -50,8 +36,8 @@ class VerifyEmailQueryUtility
     private function getQueryParams(string $uri): array
     {
         $params = [];
-        $components = $this->parseUrl($uri);
-        $queryString = $components->getQuery();
+        $queryString = $this->parseUrl($uri);
+//        $queryString = $components->getQuery();
 
         if (null !== $queryString) {
             parse_str($queryString, $params);
@@ -60,17 +46,22 @@ class VerifyEmailQueryUtility
         return $params;
     }
 
-    private function parseUrl(string $url): VerifyEmailUrlComponents
+    private function parseUrl(string $url): ?string
     {
         $urlComponents = parse_url($url);
 
-        $components = new VerifyEmailUrlComponents();
+//        $components = new VerifyEmailUrlComponents();
 
+        //@TODO native array_key_exists would make more sense here.
         foreach ($urlComponents as $component => $value) {
-            $method = 'set'.ucfirst($component);
-            $components->$method($value);
+//            $method = 'set'.ucfirst($component);
+//            $components->$method($value);
+
+            if ('query' === $component) {
+                return $value;
+            }
         }
 
-        return $components;
+        return null;
     }
 }
