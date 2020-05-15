@@ -14,7 +14,6 @@ use Symfony\Bridge\PhpUnit\ClockMock;
 use Symfony\Component\HttpKernel\UriSigner;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Generator\VerifyEmailTokenGenerator;
-use SymfonyCasts\Bundle\VerifyEmail\Tests\Fixtures\VerifyEmailFixtureUser;
 use SymfonyCasts\Bundle\VerifyEmail\Util\VerifyEmailQueryUtility;
 use SymfonyCasts\Bundle\VerifyEmail\Util\VerifyEmailUrlUtility;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelper;
@@ -42,8 +41,6 @@ class VerifyEmailHelperFunctionalTest extends TestCase
 
     public function testGenerateSignature(): void
     {
-        $user = new VerifyEmailFixtureUser();
-
         $token = $this->getTestToken();
 
         $this->mockRouter
@@ -53,7 +50,7 @@ class VerifyEmailHelperFunctionalTest extends TestCase
             ->willReturn(sprintf('/verify?expires=%s&token=%s', $this->expiryTimeStamp, urlencode($token)))
         ;
 
-        $result = $this->getHelper()->generateSignature('app_verify_route', $user->id, $user->email);
+        $result = $this->getHelper()->generateSignature('app_verify_route', '1234', 'jr@rushlow.dev');
 
         $parsedUri = parse_url($result->getSignedUrl());
         parse_str($parsedUri['query'], $queryParams);
@@ -70,11 +67,9 @@ class VerifyEmailHelperFunctionalTest extends TestCase
 
     public function testValidSignature(): void
     {
-        $user = new VerifyEmailFixtureUser();
-
         $testSignature = $this->getTestSignedUri();
 
-        self::assertTrue($this->getHelper()->isValidSignature($testSignature, $user->id, $user->email));
+        self::assertTrue($this->getHelper()->isValidSignature($testSignature, '1234', 'jr@rushlow.dev'));
     }
 
     private function getTestToken(): string

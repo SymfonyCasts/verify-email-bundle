@@ -35,7 +35,6 @@ class VerifyEmailQueryUtility
 
     public function getExpiryTimeStamp(string $uri): int
     {
-        //@TODO - validate timestamp before return
         $params = $this->getQueryParams($uri);
 
         if (empty($params['expires'])) {

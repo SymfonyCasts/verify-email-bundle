@@ -15,7 +15,6 @@ use Symfony\Component\HttpKernel\UriSigner;
 use Symfony\Component\Routing\RouterInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\ExpiredSignatureException;
 use SymfonyCasts\Bundle\VerifyEmail\Generator\VerifyEmailTokenGenerator;
-use SymfonyCasts\Bundle\VerifyEmail\Tests\Fixtures\VerifyEmailFixtureUser;
 use SymfonyCasts\Bundle\VerifyEmail\Util\VerifyEmailQueryUtility;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelper;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
@@ -77,7 +76,6 @@ final class VerifyEmailHelperTest extends TestCase
 
     public function testIsValidSignature(): void
     {
-        $user = new VerifyEmailFixtureUser();
         $expires = time() + 3600;
         $signature = '/verify?signature=1234';
 
@@ -91,7 +89,7 @@ final class VerifyEmailHelperTest extends TestCase
         $this->tokenGenerator
             ->expects($this->once())
             ->method('createToken')
-            ->with($user->id, $user->email, $expires)
+            ->with('1234', 'jr@rushlow.dev', $expires)
             ->willReturn('someToken')
         ;
 
@@ -110,7 +108,7 @@ final class VerifyEmailHelperTest extends TestCase
         ;
 
         $helper = $this->getHelper();
-        $helper->isValidSignature($signature, $user->id, $user->email);
+        $helper->isValidSignature($signature, '1234', 'jr@rushlow.dev');
     }
 
     public function testExceptionThrownWithExpiredSignature(): void

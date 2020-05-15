@@ -12,7 +12,6 @@ namespace SymfonyCasts\Bundle\VerifyEmail\Tests\AcceptanceTests;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\KernelInterface;
-use SymfonyCasts\Bundle\VerifyEmail\Tests\Fixtures\VerifyEmailFixtureUser;
 use SymfonyCasts\Bundle\VerifyEmail\Tests\VerifyEmailTestKernel;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelper;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
@@ -32,14 +31,13 @@ final class VerifyEmailAcceptanceTest extends TestCase
 
         /** @var VerifyEmailHelper $helper */
         $helper = ($container->get(VerifyEmailAcceptanceFixture::class))->helper;
-        $user = new VerifyEmailFixtureUser();
 
-        $components = $helper->generateSignature('verify-test', $user->id, $user->email);
+        $components = $helper->generateSignature('verify-test', '1234', 'jr@rushlow.dev');
 
         $signature = $components->getSignedUrl();
         $expiresAt = ($components->getExpiryTime())->getTimestamp();
 
-        $expectedUserData = json_encode([$user->id, $user->email, $expiresAt]);
+        $expectedUserData = json_encode(['1234', 'jr@rushlow.dev', $expiresAt]);
 
         $expectedToken = base64_encode(hash_hmac('sha256', $expectedUserData, 'foo', true));
 
@@ -68,7 +66,6 @@ final class VerifyEmailAcceptanceTest extends TestCase
 
         /** @var VerifyEmailHelper $helper */
         $helper = ($container->get(VerifyEmailAcceptanceFixture::class))->helper;
-        $user = new VerifyEmailFixtureUser();
         $expires = new \DateTimeImmutable('+1 hour');
 
         $uriToTest = sprintf(
@@ -77,7 +74,7 @@ final class VerifyEmailAcceptanceTest extends TestCase
                 'expires' => $expires->getTimestamp(),
                 'token' => base64_encode(hash_hmac(
                     'sha256',
-                    json_encode([$user->id, $user->email, $expires->getTimestamp()]),
+                    json_encode(['1234', 'jr@rushlow.dev', $expires->getTimestamp()]),
                     'foo',
                     true
                 )),
@@ -88,7 +85,7 @@ final class VerifyEmailAcceptanceTest extends TestCase
 
         $test = sprintf('%s&signature=%s', $uriToTest, urlencode($signature));
 
-        self::assertTrue($helper->isValidSignature($test, $user->id, $user->email));
+        self::assertTrue($helper->isValidSignature($test, '1234', 'jr@rushlow.dev'));
     }
 
     private function getBootedKernel(): KernelInterface
