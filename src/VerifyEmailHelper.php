@@ -62,7 +62,7 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
     /**
      * {@inheritdoc}
      */
-    public function isValidSignature(string $signedUrl, string $userId, string $userEmail): bool
+    public function isSignedUrlValid(string $signedUrl, string $userId, string $userEmail): bool
     {
         $expiresAt = $this->queryUtility->getExpiryTimeStamp($signedUrl);
 

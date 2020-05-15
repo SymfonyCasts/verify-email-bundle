@@ -108,7 +108,7 @@ final class VerifyEmailHelperTest extends TestCase
         ;
 
         $helper = $this->getHelper();
-        $helper->isValidSignature($signature, '1234', 'jr@rushlow.dev');
+        $helper->isSignedUrlValid($signature, '1234', 'jr@rushlow.dev');
     }
 
     public function testExceptionThrownWithExpiredSignature(): void
@@ -125,7 +125,7 @@ final class VerifyEmailHelperTest extends TestCase
 
         $this->expectException(ExpiredSignatureException::class);
         $helper = $this->getHelper();
-        $helper->isValidSignature($signature, '1234', 'jr@rushlow.dev');
+        $helper->isSignedUrlValid($signature, '1234', 'jr@rushlow.dev');
     }
 
     public function testGetLifetimeReturnsIntFromLifetimeProperty(): void

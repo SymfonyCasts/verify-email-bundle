@@ -48,14 +48,15 @@ interface VerifyEmailHelperInterface
      * the signature is valid for any of the email addresses. If you find the
      * one that is valid, you could then mark that email as "confirmed".
      *
-     * @param string $signedUrl the URI that was submitted by the user
+     * @param string $signedUrl the signed URL, usually the current URL that the
+     *                          user has just clicked in their email
      * @param string $userId    currently-authenticated user's unique identifier
      * @param string $userEmail currently-authenticated user's email, or, more specifically,
      *                          the email that the current user is attempting to validate
      *
      * @throws ExpiredSignatureException
      */
-    public function isValidSignature(string $signedUrl, string $userId, string $userEmail): bool;
+    public function isSignedUrlValid(string $signedUrl, string $userId, string $userEmail): bool;
 
     /**
      * Get the length of time in seconds that a signed uri is valid.

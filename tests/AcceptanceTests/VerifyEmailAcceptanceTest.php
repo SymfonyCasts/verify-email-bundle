@@ -85,7 +85,7 @@ final class VerifyEmailAcceptanceTest extends TestCase
 
         $test = sprintf('%s&signature=%s', $uriToTest, urlencode($signature));
 
-        self::assertTrue($helper->isValidSignature($test, '1234', 'jr@rushlow.dev'));
+        self::assertTrue($helper->isSignedUrlValid($test, '1234', 'jr@rushlow.dev'));
     }
 
     private function getBootedKernel(): KernelInterface

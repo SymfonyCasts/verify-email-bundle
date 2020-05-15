@@ -69,7 +69,7 @@ class VerifyEmailHelperFunctionalTest extends TestCase
     {
         $testSignature = $this->getTestSignedUri();
 
-        self::assertTrue($this->getHelper()->isValidSignature($testSignature, '1234', 'jr@rushlow.dev'));
+        self::assertTrue($this->getHelper()->isSignedUrlValid($testSignature, '1234', 'jr@rushlow.dev'));
     }
 
     private function getTestToken(): string
