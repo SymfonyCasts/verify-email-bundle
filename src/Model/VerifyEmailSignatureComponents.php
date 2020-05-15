@@ -42,7 +42,7 @@ final class VerifyEmailSignatureComponents
     /**
      * Get the length of time in seconds that a signature is valid for.
      */
-    public function getExpiryTime(): \DateTimeInterface
+    public function getExpiresAt(): \DateTimeInterface
     {
         return $this->expiresAt;
     }
