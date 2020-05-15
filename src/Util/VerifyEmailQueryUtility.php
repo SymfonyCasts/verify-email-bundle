@@ -34,7 +34,7 @@ class VerifyEmailQueryUtility
         return $params['token'];
     }
 
-    public function getExpiryTimeStamp(string $uri): int
+    public function getExpiryTimestamp(string $uri): int
     {
         $params = $this->getQueryParams($uri);
 

@@ -31,9 +31,9 @@ class VerifyEmailTokenGenerator
     /**
      * Get a cryptographically secure token.
      */
-    public function createToken(string $userId, string $email, int $expiryTimeStamp): string
+    public function createToken(string $userId, string $email, int $expiryTimestamp): string
     {
-        $encodedData = json_encode([$userId, $email, $expiryTimeStamp]);
+        $encodedData = json_encode([$userId, $email, $expiryTimestamp]);
 
         return base64_encode(hash_hmac('sha256', $encodedData, $this->signingKey, true));
     }

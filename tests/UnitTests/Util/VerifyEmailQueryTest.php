@@ -43,7 +43,7 @@ class VerifyEmailQueryTest extends TestCase
         ;
 
         $queryUtility = new VerifyEmailQueryUtility($this->mockUrlUtility);
-        $result = $queryUtility->getExpiryTimeStamp($uri);
+        $result = $queryUtility->getExpiryTimestamp($uri);
 
         self::assertSame(
             1234567890,

@@ -81,7 +81,7 @@ final class VerifyEmailHelperTest extends TestCase
 
         $this->mockQueryUtility
             ->expects($this->once())
-            ->method('getExpiryTimeStamp')
+            ->method('getExpiryTimestamp')
             ->with($signature)
             ->willReturn($expires)
         ;
@@ -118,7 +118,7 @@ final class VerifyEmailHelperTest extends TestCase
 
         $this->mockQueryUtility
             ->expects($this->once())
-            ->method('getExpiryTimeStamp')
+            ->method('getExpiryTimestamp')
             ->with($signature)
             ->willReturn($timestamp)
         ;
