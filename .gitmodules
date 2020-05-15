@@ -1,3 +1,0 @@
-[submodule ".docker"]
-	path = .docker
-	url = https://github.com/jrushlow/docker-symfony

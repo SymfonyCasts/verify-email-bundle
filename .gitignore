@@ -1,4 +1,2 @@
-.docker/.env
-.*.cache
 composer.lock
 vendor/*
