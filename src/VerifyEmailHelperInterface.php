@@ -46,11 +46,10 @@ interface VerifyEmailHelperInterface
      * the signature is valid for any of the email addresses. If you find the
      * one that is valid, you could then mark that email as "confirmed".
      *
-     *
      * @param string $signedUrl the URI that was submitted by the user
      * @param string $userId    currently-authenticated user's unique identifier
      * @param string $userEmail currently-authenticated user's email, or, more specifically,
-     *                          the email that the current user is attempting to validate.
+     *                          the email that the current user is attempting to validate
      *
      * @throws ExpiredSignatureException
      */
