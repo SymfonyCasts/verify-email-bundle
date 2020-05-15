@@ -14,6 +14,7 @@ use SymfonyCasts\Bundle\VerifyEmail\DependencyInjection\SymfonyCastsVerifyEmailE
 
 /**
  * @author Jesse Rushlow <jr@rushlow.dev>
+ * @author Ryan Weaver   <ryan@symfonycasts.com>
  */
 class SymfonyCastsVerifyEmailBundle extends Bundle
 {

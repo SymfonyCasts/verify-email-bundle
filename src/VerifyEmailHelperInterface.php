@@ -13,7 +13,8 @@ use SymfonyCasts\Bundle\VerifyEmail\Exception\ExpiredSignatureException;
 use SymfonyCasts\Bundle\VerifyEmail\Model\VerifyEmailSignatureComponents;
 
 /**
- * @author  Jesse Rushlow <jr@rushlow.dev>
+ * @author Jesse Rushlow <jr@rushlow.dev>
+ * @author Ryan Weaver   <ryan@symfonycasts.com>
  */
 interface VerifyEmailHelperInterface
 {

@@ -16,6 +16,7 @@ use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 
 /**
  * @author Jesse Rushlow <jr@rushlow.dev>
+ * @author Ryan Weaver   <ryan@symfonycasts.com>
  */
 final class SymfonyCastsVerifyEmailExtension extends Extension
 {

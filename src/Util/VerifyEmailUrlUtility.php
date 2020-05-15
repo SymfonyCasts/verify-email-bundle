@@ -13,6 +13,7 @@ use SymfonyCasts\Bundle\VerifyEmail\Model\VerifyEmailUrlComponents;
 
 /**
  * @author Jesse Rushlow <jr@rushlow.dev>
+ * @author Ryan Weaver   <ryan@symfonycasts.com>
  *
  * @internal
  * @final

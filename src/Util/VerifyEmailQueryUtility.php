@@ -13,6 +13,7 @@ namespace SymfonyCasts\Bundle\VerifyEmail\Util;
  * Provides methods to manipulate a query string in a URI.
  *
  * @author Jesse Rushlow <jr@rushlow.dev>
+ * @author Ryan Weaver   <ryan@symfonycasts.com>
  *
  * @internal
  * @final
