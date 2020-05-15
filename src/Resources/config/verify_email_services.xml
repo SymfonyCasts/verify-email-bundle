@@ -23,7 +23,7 @@
         <service id="SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface" alias="symfonycasts.verify_email.helper" />
 
         <service id="symfonycasts.verify_email.helper" class="SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelper">
-            <argument type="service" id="router.default" />
+            <argument type="service" id="router" />
             <argument type="service" id="symfonycasts.verify_email.uri_signer" />
             <argument type="service" id="symfonycasts.verify_email.query_utility" />
             <argument type="service" id="symfonycasts.verify_email.token_generator" />
