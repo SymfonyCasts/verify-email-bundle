@@ -19,11 +19,16 @@ class VerifyEmailQueryTest extends TestCase
         $uri = '/?a=x&expires=1234567890';
 
         $queryUtility = new VerifyEmailQueryUtility();
-        $result = $queryUtility->getExpiryTimestamp($uri);
 
-        self::assertSame(
-            1234567890,
-            $result
-        );
+        self::assertSame(1234567890, $queryUtility->getExpiryTimestamp($uri));
+    }
+
+    public function testGetsTokenFromQueryString(): void
+    {
+        $uri = 'https://symfonycasts.com/test?token=xyz';
+
+        $queryUtil = new VerifyEmailQueryUtility();
+
+        self::assertSame('xyz', $queryUtil->getTokenFromQuery($uri));
     }
 }
