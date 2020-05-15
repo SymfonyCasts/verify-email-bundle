@@ -20,7 +20,6 @@
         "vimeo/psalm": "^3.8"
     },
     "conflict": {
-        "symfony/http-foundation": "<4.4",
         "symfony/framework-bundle": "<4.4"
     },
     "autoload": {
