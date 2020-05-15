@@ -24,6 +24,6 @@ class SymfonyCastsVerifyEmailBundle extends Bundle
             $this->extension = new SymfonyCastsVerifyEmailExtension();
         }
 
-        return $this->extension ?: null;
+        return $this->extension;
     }
 }
