@@ -26,9 +26,11 @@ interface VerifyEmailHelperInterface
      * @param string $routeName   name of route that will be used to verify users
      * @param string $userId      unique user identifier
      * @param string $userEmail   the email that is being verified
-     * @param array  $queryParams any additional query string parameters that will be a part of the signed URL
+     * @param array  $extraParams any additional parameters (route wildcards or query parameters)
+     *                            that will be used when generating the route for
+     *                            signed URL.
      */
-    public function generateSignature(string $routeName, string $userId, string $userEmail, array $queryParams = []): VerifyEmailSignatureComponents;
+    public function generateSignature(string $routeName, string $userId, string $userEmail, array $extraParams = []): VerifyEmailSignatureComponents;
 
     /**
      * Validate a signed Url provided by the user.
