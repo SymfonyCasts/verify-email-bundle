@@ -128,12 +128,6 @@ final class VerifyEmailHelperTest extends TestCase
         $helper->isSignedUrlValid($signature, '1234', 'jr@rushlow.dev');
     }
 
-    public function testGetLifetimeReturnsIntFromLifetimeProperty(): void
-    {
-        $helper = $this->getHelper();
-        self::assertSame(3600, $helper->getSignatureLifetime());
-    }
-
     private function getHelper(): VerifyEmailHelperInterface
     {
         return new VerifyEmailHelper($this->mockRouter, $this->mockSigner, $this->mockQueryUtility, $this->tokenGenerator, 3600);

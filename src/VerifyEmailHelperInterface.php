@@ -57,9 +57,4 @@ interface VerifyEmailHelperInterface
      * @throws ExpiredSignatureException
      */
     public function isSignedUrlValid(string $signedUrl, string $userId, string $userEmail): bool;
-
-    /**
-     * Get the length of time in seconds that a signed uri is valid.
-     */
-    public function getSignatureLifetime(): int;
 }

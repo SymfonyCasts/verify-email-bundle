@@ -79,12 +79,4 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
 
         return $this->uriSigner->check($signedUrl);
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getSignatureLifetime(): int
-    {
-        return $this->lifetime;
-    }
 }
