@@ -32,7 +32,7 @@ final class VerifyEmailSignatureComponents
     }
 
     /**
-     * Returns the full signed URI that a user should use.
+     * Returns the full signed URL that should be sent to the user.
      */
     public function getSignedUrl(): string
     {
