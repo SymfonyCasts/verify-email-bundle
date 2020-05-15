@@ -9,8 +9,6 @@
 
 namespace SymfonyCasts\Bundle\VerifyEmail\Util;
 
-use SymfonyCasts\Bundle\VerifyEmail\Model\VerifyEmailUrlComponents;
-
 /**
  * Provides methods to manipulate a query string in a URI.
  *
@@ -45,7 +43,7 @@ class VerifyEmailQueryUtility
         $params = [];
         $urlComponents = parse_url($uri);
 
-        if (array_key_exists('query', $urlComponents)) {
+        if (\array_key_exists('query', $urlComponents)) {
             parse_str($urlComponents['query'], $params);
         }
 
