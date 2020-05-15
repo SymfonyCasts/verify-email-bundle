@@ -37,54 +37,90 @@ verification is a sensitive, security process. We'll guide you through the
 important stuff. Using `make:registration-form` is still the easiest and
 simplest way.
 
-After running `make:registration-form` and understanding how to use this bundle,
-you can validate a users email address anytime. An example would be if the 
-user updates their email address.
+The example below demonstrates the basic steps to generate a signed URL
+that is to be emailed to a user after they have registered using Symfony components.
+The URL is then validated once the user were to "click" the link in their email.
 
 ```
-// ExampleUserProfileController.php
+// RegistrationController.php
 
-class ExampleUserProfileController extends AbstractController
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\Mailer\MailerInterface;
+use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
+
+class RegistrationController extends AbstractController
+{
+    private $verifyEmailHelper;
+    private $mailer;
+    
+    public function __construct(VerifyEmailHelperInterface $helper, MailerInterface $mailer)
+    {
+        $this->verifyEmailHelper = $helper;
+        $this->mailer = $mailer;
+    }
+    
+    /**
+     * @Route("/register", name="register-user")
+     */
+    public function register(): Response
+    {
+        $user = new User();
+    
+        // handle the user registration form and persist the new user...
+    
+        $signatureComponents = $this->verifyEmailHelper->generateSignature(
+                'registration_confirmation_route',
+                $user->getId(),
+                $user->getEmail()
+            );
+        
+        $email = new TemplatedEmail();
+        $email->to($user->getEmail());
+        $email->htmlTemplate('registration/confirmation_email.html.twig);
+        $email->context(['signedUrl' => $signatureComponents->getSignedUrl()]);
+        
+        $this-mailer->send($email)
+    
+        // generate and return a response for the browser
+    }
 ....
 
-/**
- * @Route("/user/new-email", name="update-user-email")
- */
-public function updateMyEmailAddress()
+```
+
+Once the user has received their email and clicked on the link, the RegistrationController
+would then validate the signed URL using the following method:
+
+```
+// RegistrationController.php
+
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\Mailer\MailerInterface;
+use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
+
+class RegistrationController extends AbstractController
 {
-    $user = $this->getUser();
-
-    // Use a form to change the users email and then persist the updated user object
-    
-    $helper = new VerifyEmailHelper(....);
-    $signatureComponents = $helper->generateSignature(
-        'validate-user-email-route-name',
-        $user->getId(),
-        $user->getEmail()
-    );
-    
-    $signedUrl = $signatureComponents->getSignedUrl();
-
-    // email the $signedUrl to the user
-}
-
-/**
- * @Route("/user/validate", name="validate-user-email-route-name")
- */
-public function validateSignedUrlEmailedToTheUser(Request $request)
-{
-    // Deny access to this method if the user is not authenticated
-
-    $user = $this->getUser();
-    
-    $helper = new VerifyEmailHelper(....)
-    $bool = $helper->isValidSignature($request->getUri(), $user->getId(), $user->getEmail());
-    
-    // If $bool is true, the email address is presumed valid, carry on with your
-    // business logic. e.g. mark the user object as verified and persist.
-}
-
 ....
+
+    /**
+     * @Route("/verify", name="registration_confirmation_route")
+     */
+    public function verifyUserEmail(Request $request): Response
+    {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
+        // Remember do not get the User's Id & Email Address from the Request object
+        if (!$this->helper->isValidSignature($request->getUri(), $user->getId(), $user->getEmail())) {
+            $this->addFlash('verify_email_error', 'The email confirmation signature could not be validated.');
+            
+            return $this->redirectToRoute('app_register');
+        }
+
+        // Mark your user as verified. e.g. switch a User::verified property to true
+
+        $this->addFlash('success', 'Your e-mail address has been verified.');
+
+        return $this->redirectToRoute('app_home');
+    }
 }
 ```
 
