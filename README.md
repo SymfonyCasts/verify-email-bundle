@@ -50,6 +50,7 @@ The example below utilizes Symfony's `AbstractController` available in the
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
+....
 
 class RegistrationController extends AbstractController
 {
@@ -91,17 +92,11 @@ class RegistrationController extends AbstractController
 ```
 
 Once the user has received their email and clicked on the link, the RegistrationController
-would then validate the signed URL using the following method:
+would then validate the signed URL in following method:
 
 ```
 // RegistrationController.php
 
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
-use Symfony\Component\Mailer\MailerInterface;
-use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
-
-class RegistrationController extends AbstractController
-{
 ....
 
     /**
@@ -111,7 +106,7 @@ class RegistrationController extends AbstractController
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
-        // Remember do not get the User's Id & Email Address from the Request object
+        // Do not get the User's Id or Email Address from the Request object
         if (!$this->helper->isValidSignature($request->getUri(), $user->getId(), $user->getEmail())) {
             $this->addFlash('verify_email_error', 'The email confirmation signature could not be validated.');
             
