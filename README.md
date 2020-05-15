@@ -1,16 +1,11 @@
 # VerifyEmailBundle
-# Bundle is a WIP and not ready for use.
 
 Don't know if your user's have a valid email address? The VerifyEmailBundle can
-help!
+help! 
 
-As the Verify Email Bundle is stateless, you don't need to create new objects in
-persistent.
-
-The stateless Verify Email Bundle will generate and validate fully qualified
- signed URL's ~~comprised of a unique user identifier, unique user email address, 
- and any other query string parameters needed by your application.~~ that can be
- emailed to users.
+Because it's stateless, Verify Email Bundle will generate and validated
+ fully qualified and secure signed URL's that can be provided to your users using
+ your existing entities with only minor modifications.
 
 ## Installation
 
@@ -22,21 +17,21 @@ composer require symfonycasts/verify-email-bundle
 
 ## What this bundle provides
 
-1) Generator to create secure fully qualified signed URL's comprised of a unique user 
-identifier, unique user email address, and any other query params provided. This
- URL should be emailed to the user for validation.
+1) A generator to create secure fully qualified signed URL's comprised of a unique
+ user identifier, unique user email address, and any other query params provided.
+ This URL should be emailed to the user for validation.
 
-2) Signed URL validator.
+2) A signed URL validator.
 
 3) Peace of mind knowing user credentials, personally identified information, and
 design principles of your app will not be leaked in to server logs or emails.
 
 ## Usage
 
-We strongly suggest using Symfony Maker Bundle's `make:registration-form` to 
-create a registration form and get a feel for how the bundle should be used. It's
-super simple! Answer a couple questions, and you'll have a fully functional secure
-registration system with email verification.
+We strongly suggest using Symfony Maker Bundle's `make:registration-form` to get
+ a feel for how the bundle should be used. It's super simple! Answer a couple 
+ questions, and you'll have a fully functional secure registration system with
+ email verification.
 
 ## Setting things up manually
 
@@ -47,7 +42,7 @@ _Implementing this bundle manually without fully understanding the design princi
  implementation._
 
 After running `make:registration-form` and understanding how to use this bundle,
-you can also validate a users email address anytime. An example would be if the 
+you can validate a users email address anytime. An example would be if the 
 user updates their email address.
 
 ```
@@ -99,14 +94,11 @@ public function validateSignedUrlEmailedToTheUser(Request $request)
 
 It is _critical_ that - 
 
-1) ~~You do not allow access to the validation route unless the user has been
-authenticated (logged in).~~ 
-
-2) The user identifier and email address should be retrieved from within your
+1) The user identifier and email address should be retrieved from within your
 application, not from the user when validating the signed URL. e.g. Require user
-to be logged in, retrieve user identifier from the session.
+to be logged in and retrieve user identifier from the session.
 
-3) The URL being signed then validated should be fully qualified. e.g. 
+2) The URL being signed then validated should be fully qualified. e.g. 
 `https://your-domain.com/verify/user` not just `/verify/user`
 
 Failure to follow the above guidelines will circumvent the security features this
