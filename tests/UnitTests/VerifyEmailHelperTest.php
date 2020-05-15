@@ -50,7 +50,7 @@ final class VerifyEmailHelperTest extends TestCase
         $this->tokenGenerator
             ->expects($this->once())
             ->method('createToken')
-            ->with('1234', 'jr@rushlow.dev', $expires)
+            ->with('1234', 'jr@rushlow.dev')
             ->willReturn('hashedToken')
         ;
 
@@ -89,7 +89,7 @@ final class VerifyEmailHelperTest extends TestCase
         $this->tokenGenerator
             ->expects($this->once())
             ->method('createToken')
-            ->with('1234', 'jr@rushlow.dev', $expires)
+            ->with('1234', 'jr@rushlow.dev')
             ->willReturn('someToken')
         ;
 
