@@ -50,7 +50,7 @@ The example below utilizes Symfony's `AbstractController` available in the
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
-....
+...
 
 class RegistrationController extends AbstractController
 {
@@ -87,7 +87,7 @@ class RegistrationController extends AbstractController
     
         // generate and return a response for the browser
     }
-....
+...
 
 ```
 
