@@ -48,7 +48,7 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
     {
         $expiryTimestamp = time() + $this->lifetime;
 
-        $extraParams['token'] = $this->tokenGenerator->createToken($userId, $userEmail, $expiryTimestamp);
+        $extraParams['token'] = $this->tokenGenerator->createToken($userId, $userEmail);
         $extraParams['expires'] = $expiryTimestamp;
 
         $uri = $this->router->generate($routeName, $extraParams, UrlGeneratorInterface::ABSOLUTE_URL);
@@ -64,19 +64,17 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
      */
     public function isSignedUrlValid(string $signedUrl, string $userId, string $userEmail): bool
     {
-        $expiresAt = $this->queryUtility->getExpiryTimestamp($signedUrl);
-
-        if ($expiresAt <= time()) {
-            throw new ExpiredSignatureException();
-        }
-
-        $knownToken = $this->tokenGenerator->createToken($userId, $userEmail, $expiresAt);
-        $userToken = $this->queryUtility->getTokenFromQuery($signedUrl);
-
-        if (!hash_equals($knownToken, $userToken)) {
+        if (!$this->uriSigner->check($signedUrl)) {
             return false;
         }
 
-        return $this->uriSigner->check($signedUrl);
+        if ($this->queryUtility->getExpiryTimestamp($signedUrl) <= time()) {
+            throw new ExpiredSignatureException();
+        }
+
+        $knownToken = $this->tokenGenerator->createToken($userId, $userEmail);
+        $userToken = $this->queryUtility->getTokenFromQuery($signedUrl);
+
+        return hash_equals($knownToken, $userToken);
     }
 }

@@ -45,12 +45,12 @@ final class VerifyEmailHelperTest extends TestCase
     {
         $expires = time() + 3600;
 
-        $expectedSignature = '/verify?signature=1234';
+        $expectedSignedUrl = sprintf('/verify?expires=%s&signature=1234&token=hashedToken', $expires);
 
         $this->tokenGenerator
             ->expects($this->once())
             ->method('createToken')
-            ->with('1234', 'jr@rushlow.dev', $expires)
+            ->with('1234', 'jr@rushlow.dev')
             ->willReturn('hashedToken')
         ;
 
@@ -58,74 +58,111 @@ final class VerifyEmailHelperTest extends TestCase
             ->expects($this->once())
             ->method('generate')
             ->with('app_verify_route', ['token' => 'hashedToken', 'expires' => $expires])
-            ->willReturn('/verify')
+            ->willReturn(sprintf('/verify?expires=%s&token=hashedToken', $expires))
         ;
 
         $this->mockSigner
             ->expects($this->once())
             ->method('sign')
-            ->with('/verify')
-            ->willReturn($expectedSignature)
+            ->with(sprintf('/verify?expires=%s&token=hashedToken', $expires))
+            ->willReturn($expectedSignedUrl)
         ;
 
         $helper = $this->getHelper();
         $components = $helper->generateSignature('app_verify_route', '1234', 'jr@rushlow.dev');
 
-        self::assertSame($expectedSignature, $components->getSignedUrl());
+        self::assertSame($expectedSignedUrl, $components->getSignedUrl());
     }
 
-    public function testIsValidSignature(): void
+    public function testValidationExitsEarlyOnInvalidSignature(): void
     {
-        $expires = time() + 3600;
-        $signature = '/verify?signature=1234';
-
-        $this->mockQueryUtility
-            ->expects($this->once())
-            ->method('getExpiryTimestamp')
-            ->with($signature)
-            ->willReturn($expires)
-        ;
-
-        $this->tokenGenerator
-            ->expects($this->once())
-            ->method('createToken')
-            ->with('1234', 'jr@rushlow.dev', $expires)
-            ->willReturn('someToken')
-        ;
-
-        $this->mockQueryUtility
-            ->expects($this->once())
-            ->method('getTokenFromQuery')
-            ->with($signature)
-            ->willReturn('someToken')
-        ;
+        $signedUrl = '/verify?expires=1&signature=1234%token=xyz';
 
         $this->mockSigner
             ->expects($this->once())
             ->method('check')
-            ->with($signature)
+            ->with($signedUrl)
             ->willReturn(false)
         ;
 
+        $this->mockQueryUtility
+            ->expects($this->never())
+            ->method('getExpiryTimestamp')
+        ;
+
+        $this->mockQueryUtility
+            ->expects($this->never())
+            ->method('getTokenFromQuery')
+        ;
+
+        $this->tokenGenerator
+            ->expects($this->never())
+            ->method('createToken')
+        ;
+
         $helper = $this->getHelper();
-        $helper->isSignedUrlValid($signature, '1234', 'jr@rushlow.dev');
+
+        self::assertFalse($helper->isSignedUrlValid($signedUrl, '1234', 'jr@rushlow.dev'));
     }
 
     public function testExceptionThrownWithExpiredSignature(): void
     {
         $timestamp = (new \DateTimeImmutable('-1 seconds'))->getTimestamp();
-        $signature = '/?expires='.$timestamp;
+        $signedUrl = '/?expires='.$timestamp;
+
+        $this->mockSigner
+            ->expects($this->once())
+            ->method('check')
+            ->willReturn(true)
+        ;
 
         $this->mockQueryUtility
             ->expects($this->once())
             ->method('getExpiryTimestamp')
-            ->with($signature)
+            ->with($signedUrl)
             ->willReturn($timestamp)
         ;
 
         $this->expectException(ExpiredSignatureException::class);
+
         $helper = $this->getHelper();
-        $helper->isSignedUrlValid($signature, '1234', 'jr@rushlow.dev');
+        $helper->isSignedUrlValid($signedUrl, '1234', 'jr@rushlow.dev');
+    }
+
+    public function testValidationReturnsFalseWithInvalidToken(): void
+    {
+        $signedUrl = '/verify?token=badToken';
+
+        $this->mockSigner
+            ->expects($this->once())
+            ->method('check')
+            ->with($signedUrl)
+            ->willReturn(true)
+        ;
+
+        $this->mockQueryUtility
+            ->expects($this->once())
+            ->method('getExpiryTimestamp')
+            ->with($signedUrl)
+            ->willReturn(9999999999999999)
+        ;
+
+        $this->tokenGenerator
+            ->expects($this->once())
+            ->method('createToken')
+            ->with('1234', 'jr@rushlow.dev')
+            ->willReturn(base64_encode(hash_hmac('sha256', 'data', 'foo', true)))
+        ;
+
+        $this->mockQueryUtility
+            ->expects($this->once())
+            ->method('getTokenFromQuery')
+            ->with($signedUrl)
+            ->willReturn('badToken')
+        ;
+
+        $helper = $this->getHelper();
+        self::assertFalse($helper->isSignedUrlValid($signedUrl, '1234', 'jr@rushlow.dev'));
     }
 
     private function getHelper(): VerifyEmailHelperInterface

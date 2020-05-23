@@ -37,7 +37,7 @@ final class VerifyEmailAcceptanceTest extends TestCase
         $signature = $components->getSignedUrl();
         $expiresAt = ($components->getExpiresAt())->getTimestamp();
 
-        $expectedUserData = json_encode(['1234', 'jr@rushlow.dev', $expiresAt]);
+        $expectedUserData = json_encode(['1234', 'jr@rushlow.dev']);
 
         $expectedToken = base64_encode(hash_hmac('sha256', $expectedUserData, 'foo', true));
 
@@ -74,7 +74,7 @@ final class VerifyEmailAcceptanceTest extends TestCase
                 'expires' => $expires->getTimestamp(),
                 'token' => base64_encode(hash_hmac(
                     'sha256',
-                    json_encode(['1234', 'jr@rushlow.dev', $expires->getTimestamp()]),
+                    json_encode(['1234', 'jr@rushlow.dev']),
                     'foo',
                     true
                 )),
