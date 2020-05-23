@@ -16,8 +16,6 @@ use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 /**
  * @author Jesse Rushlow <jr@rushlow.dev>
  * @author Ryan Weaver   <ryan@symfonycasts.com>
- *
- * @internal
  */
 final class VerifyEmailExceptionTest extends TestCase
 {

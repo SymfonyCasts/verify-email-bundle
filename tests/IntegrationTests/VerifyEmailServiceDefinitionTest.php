@@ -17,8 +17,6 @@ use SymfonyCasts\Bundle\VerifyEmail\Tests\VerifyEmailTestKernel;
 /**
  * @author Jesse Rushlow <jr@rushlow.dev>
  * @author Ryan Weaver   <ryan@symfonycasts.com>
- *
- * @internal
  */
 final class VerifyEmailServiceDefinitionTest extends TestCase
 {

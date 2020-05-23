@@ -18,8 +18,6 @@ use SymfonyCasts\Bundle\VerifyEmail\Util\VerifyEmailUrlUtility;
 /**
  * @author Jesse Rushlow <jr@rushlow.dev>
  * @author Ryan Weaver   <ryan@symfonycasts.com>
- *
- * @internal
  */
 final class VerifyEmailQueryTest extends TestCase
 {

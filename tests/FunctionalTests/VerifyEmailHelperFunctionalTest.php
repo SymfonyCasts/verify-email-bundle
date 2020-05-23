@@ -24,8 +24,6 @@ use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
  * @author Ryan Weaver   <ryan@symfonycasts.com>
  *
  * @group time-sensitive
- *
- * @internal
  */
 final class VerifyEmailHelperFunctionalTest extends TestCase
 {
