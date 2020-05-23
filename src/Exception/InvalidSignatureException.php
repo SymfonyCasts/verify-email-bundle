@@ -10,15 +10,13 @@
 namespace SymfonyCasts\Bundle\VerifyEmail\Exception;
 
 /**
- * An exception that is thrown by VerifyEmailHelperInterface::validateEmailConfirmation().
- *
  * @author Jesse Rushlow <jr@rushlow.dev>
  * @author Ryan Weaver   <ryan@symfonycasts.com>
  */
-interface VerifyEmailExceptionInterface extends \Throwable
+final class InvalidSignatureException extends \Exception implements VerifyEmailExceptionInterface
 {
-    /**
-     * Returns a safe string that describes why verification failed.
-     */
-    public function getReason(): string;
+    public function getReason(): string
+    {
+        return 'The link to verify your email is invalid. Please request a new link.';
+    }
 }

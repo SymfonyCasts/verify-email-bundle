@@ -14,6 +14,8 @@ use Symfony\Bridge\PhpUnit\ClockMock;
 use Symfony\Component\HttpKernel\UriSigner;
 use Symfony\Component\Routing\RouterInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\ExpiredSignatureException;
+use SymfonyCasts\Bundle\VerifyEmail\Exception\InvalidSignatureException;
+use SymfonyCasts\Bundle\VerifyEmail\Exception\WrongEmailVerifyException;
 use SymfonyCasts\Bundle\VerifyEmail\Generator\VerifyEmailTokenGenerator;
 use SymfonyCasts\Bundle\VerifyEmail\Util\VerifyEmailQueryUtility;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelper;
@@ -74,7 +76,7 @@ final class VerifyEmailHelperTest extends TestCase
         self::assertSame($expectedSignedUrl, $components->getSignedUrl());
     }
 
-    public function testValidationExitsEarlyOnInvalidSignature(): void
+    public function testValidationThrowsEarlyOnInvalidSignature(): void
     {
         $signedUrl = '/verify?expires=1&signature=1234%token=xyz';
 
@@ -102,7 +104,9 @@ final class VerifyEmailHelperTest extends TestCase
 
         $helper = $this->getHelper();
 
-        self::assertFalse($helper->isSignedUrlValid($signedUrl, '1234', 'jr@rushlow.dev'));
+        $this->expectException(InvalidSignatureException::class);
+
+        $helper->validateEmailConfirmation($signedUrl, '1234', 'jr@rushlow.dev');
     }
 
     public function testExceptionThrownWithExpiredSignature(): void
@@ -126,10 +130,10 @@ final class VerifyEmailHelperTest extends TestCase
         $this->expectException(ExpiredSignatureException::class);
 
         $helper = $this->getHelper();
-        $helper->isSignedUrlValid($signedUrl, '1234', 'jr@rushlow.dev');
+        $helper->validateEmailConfirmation($signedUrl, '1234', 'jr@rushlow.dev');
     }
 
-    public function testValidationReturnsFalseWithInvalidToken(): void
+    public function testValidationThrowsWithInvalidToken(): void
     {
         $signedUrl = '/verify?token=badToken';
 
@@ -161,8 +165,10 @@ final class VerifyEmailHelperTest extends TestCase
             ->willReturn('badToken')
         ;
 
+        $this->expectException(WrongEmailVerifyException::class);
+
         $helper = $this->getHelper();
-        self::assertFalse($helper->isSignedUrlValid($signedUrl, '1234', 'jr@rushlow.dev'));
+        $helper->validateEmailConfirmation($signedUrl, '1234', 'jr@rushlow.dev');
     }
 
     private function getHelper(): VerifyEmailHelperInterface

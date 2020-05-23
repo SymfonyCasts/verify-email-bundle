@@ -12,6 +12,8 @@ namespace SymfonyCasts\Bundle\VerifyEmail;
 use Symfony\Component\HttpKernel\UriSigner;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\ExpiredSignatureException;
+use SymfonyCasts\Bundle\VerifyEmail\Exception\InvalidSignatureException;
+use SymfonyCasts\Bundle\VerifyEmail\Exception\WrongEmailVerifyException;
 use SymfonyCasts\Bundle\VerifyEmail\Generator\VerifyEmailTokenGenerator;
 use SymfonyCasts\Bundle\VerifyEmail\Model\VerifyEmailSignatureComponents;
 use SymfonyCasts\Bundle\VerifyEmail\Util\VerifyEmailQueryUtility;
@@ -62,10 +64,10 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
     /**
      * {@inheritdoc}
      */
-    public function isSignedUrlValid(string $signedUrl, string $userId, string $userEmail): bool
+    public function validateEmailConfirmation(string $signedUrl, string $userId, string $userEmail): void
     {
         if (!$this->uriSigner->check($signedUrl)) {
-            return false;
+            throw new InvalidSignatureException();
         }
 
         if ($this->queryUtility->getExpiryTimestamp($signedUrl) <= time()) {
@@ -75,6 +77,8 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
         $knownToken = $this->tokenGenerator->createToken($userId, $userEmail);
         $userToken = $this->queryUtility->getTokenFromQuery($signedUrl);
 
-        return hash_equals($knownToken, $userToken);
+        if (!hash_equals($knownToken, $userToken)) {
+            throw new WrongEmailVerifyException();
+        }
     }
 }
