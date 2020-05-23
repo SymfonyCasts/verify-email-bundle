@@ -20,13 +20,6 @@ namespace SymfonyCasts\Bundle\VerifyEmail\Util;
  */
 class VerifyEmailQueryUtility
 {
-    private $urlUtility;
-
-    public function __construct(VerifyEmailUrlUtility $urlUtility)
-    {
-        $this->urlUtility = $urlUtility;
-    }
-
     public function getTokenFromQuery(string $uri): string
     {
         $params = $this->getQueryParams($uri);
@@ -48,11 +41,10 @@ class VerifyEmailQueryUtility
     private function getQueryParams(string $uri): array
     {
         $params = [];
-        $components = $this->urlUtility->parseUrl($uri);
-        $queryString = $components->getQuery();
+        $urlComponents = parse_url($uri);
 
-        if (null !== $queryString) {
-            parse_str($queryString, $params);
+        if (\array_key_exists('query', $urlComponents)) {
+            parse_str(($urlComponents['query'] ?? ''), $params);
         }
 
         return $params;

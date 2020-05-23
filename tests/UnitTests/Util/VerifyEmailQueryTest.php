@@ -9,45 +9,26 @@
 
 namespace SymfonyCasts\Bundle\VerifyEmail\Tests\UnitTests\Util;
 
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use SymfonyCasts\Bundle\VerifyEmail\Model\VerifyEmailUrlComponents;
 use SymfonyCasts\Bundle\VerifyEmail\Util\VerifyEmailQueryUtility;
-use SymfonyCasts\Bundle\VerifyEmail\Util\VerifyEmailUrlUtility;
 
 class VerifyEmailQueryTest extends TestCase
 {
-    /**
-     * @var MockObject|VerifyEmailUrlUtility
-     */
-    private $mockUrlUtility;
-
-    protected function setUp(): void
-    {
-        $this->mockUrlUtility = $this->createMock(VerifyEmailUrlUtility::class);
-    }
-
     public function testGetsExpiryTimeFromQueryString(): void
     {
         $uri = '/?a=x&expires=1234567890';
 
-        $components = new VerifyEmailUrlComponents();
-        $components->setPath('/');
-        $components->setQuery('a=x&expires=1234567890');
+        $queryUtility = new VerifyEmailQueryUtility();
 
-        $this->mockUrlUtility
-            ->expects($this->once())
-            ->method('parseUrl')
-            ->with($uri)
-            ->willReturn($components)
-        ;
+        self::assertSame(1234567890, $queryUtility->getExpiryTimestamp($uri));
+    }
 
-        $queryUtility = new VerifyEmailQueryUtility($this->mockUrlUtility);
-        $result = $queryUtility->getExpiryTimestamp($uri);
+    public function testGetsTokenFromQueryString(): void
+    {
+        $uri = 'https://symfonycasts.com/test?token=xyz';
 
-        self::assertSame(
-            1234567890,
-            $result
-        );
+        $queryUtil = new VerifyEmailQueryUtility();
+
+        self::assertSame('xyz', $queryUtil->getTokenFromQuery($uri));
     }
 }

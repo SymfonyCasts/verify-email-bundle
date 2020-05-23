@@ -33,11 +33,7 @@
 
         <MissingClosureReturnType errorLevel="info" />
         <MissingReturnType errorLevel="info" />
-        <MissingPropertyType errorLevel="info">
-            <errorLevel type="suppress">
-                <file name="src/Model/VerifyEmailUrlComponents.php"/>
-            </errorLevel>
-        </MissingPropertyType>
+        <MissingPropertyType errorLevel="info" />
         <InvalidDocblock errorLevel="info" />
         <MisplacedRequiredParam errorLevel="info" />
 
