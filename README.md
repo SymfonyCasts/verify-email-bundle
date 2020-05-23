@@ -97,7 +97,8 @@ would then validate the signed URL in following method:
 ```
 // RegistrationController.php
 
-....
+use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
+...
 
     /**
      * @Route("/verify", name="registration_confirmation_route")
@@ -107,9 +108,11 @@ would then validate the signed URL in following method:
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
         // Do not get the User's Id or Email Address from the Request object
-        if (!$this->helper->isValidSignature($request->getUri(), $user->getId(), $user->getEmail())) {
-            $this->addFlash('verify_email_error', 'The email confirmation signature could not be validated.');
-            
+        try {
+            $this->helper->validateEmailConfirmation($request->getUri(), $user->getId(), $user->getEmail())
+        } catch (VerifyEmailExceptionInterface $e) {
+            $this->addFlash('verify_email_error', $e->getReason());
+
             return $this->redirectToRoute('app_register');
         }
 

@@ -9,7 +9,7 @@
 
 namespace SymfonyCasts\Bundle\VerifyEmail;
 
-use SymfonyCasts\Bundle\VerifyEmail\Exception\ExpiredSignatureException;
+use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Model\VerifyEmailSignatureComponents;
 
 /**
@@ -33,7 +33,10 @@ interface VerifyEmailHelperInterface
     public function generateSignature(string $routeName, string $userId, string $userEmail, array $extraParams = []): VerifyEmailSignatureComponents;
 
     /**
-     * Validate a signed Url provided by the user.
+     * Validate a signed an email confirmation request.
+     *
+     * If something is wrong with the email confirmation, a
+     * VerifyEmailExceptionInterface will be thrown.
      *
      * The $userEmail should be the email address that the currently-authenticated
      * user is trying to get validated. This is usually the current user's
@@ -54,7 +57,7 @@ interface VerifyEmailHelperInterface
      * @param string $userEmail currently-authenticated user's email, or, more specifically,
      *                          the email that the current user is attempting to validate
      *
-     * @throws ExpiredSignatureException
+     * @throws VerifyEmailExceptionInterface
      */
-    public function isSignedUrlValid(string $signedUrl, string $userId, string $userEmail): bool;
+    public function validateEmailConfirmation(string $signedUrl, string $userId, string $userEmail): void;
 }

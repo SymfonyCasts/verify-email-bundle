@@ -58,7 +58,7 @@ final class VerifyEmailAcceptanceTest extends TestCase
         );
     }
 
-    public function testIsValidSignature(): void
+    public function testValidateEmailSignature(): void
     {
         $kernel = $this->getBootedKernel();
 
@@ -85,7 +85,8 @@ final class VerifyEmailAcceptanceTest extends TestCase
 
         $test = sprintf('%s&signature=%s', $uriToTest, urlencode($signature));
 
-        self::assertTrue($helper->isSignedUrlValid($test, '1234', 'jr@rushlow.dev'));
+        $helper->validateEmailConfirmation($test, '1234', 'jr@rushlow.dev');
+        $this->assertTrue(true, 'Test correctly does not throw an exception');
     }
 
     private function getBootedKernel(): KernelInterface
