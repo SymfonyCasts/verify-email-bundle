@@ -5,8 +5,8 @@ find a change that break's semver, please create an issue.*
 
 ## NEXT
 
-## vX.x.x
+## v1.0.0
 
-*May Xth, 2020*
+*May 24th, 2020*
 
 - Initial release
