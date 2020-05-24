@@ -18,8 +18,7 @@ use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
 
 /**
  * @author Jesse Rushlow <jr@rushlow.dev>
- *
- * @internal
+ * @author Ryan Weaver   <ryan@symfonycasts.com>
  */
 final class VerifyEmailAcceptanceTest extends TestCase
 {

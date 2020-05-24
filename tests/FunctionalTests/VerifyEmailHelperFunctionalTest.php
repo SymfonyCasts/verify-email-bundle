@@ -19,9 +19,12 @@ use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelper;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
 
 /**
+ * @author Jesse Rushlow <jr@rushlow.dev>
+ * @author Ryan Weaver   <ryan@symfonycasts.com>
+ *
  * @group time-sensitive
  */
-class VerifyEmailHelperFunctionalTest extends TestCase
+final class VerifyEmailHelperFunctionalTest extends TestCase
 {
     private $mockRouter;
     private $expiryTimestamp;

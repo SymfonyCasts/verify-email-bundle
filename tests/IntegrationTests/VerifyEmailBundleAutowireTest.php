@@ -14,7 +14,11 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use SymfonyCasts\Bundle\VerifyEmail\Tests\VerifyEmailTestKernel;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
 
-class VerifyEmailBundleAutowireTest extends TestCase
+/**
+ * @author Jesse Rushlow <jr@rushlow.dev>
+ * @author Ryan Weaver   <ryan@symfonycasts.com>
+ */
+final class VerifyEmailBundleAutowireTest extends TestCase
 {
     public function testVerifyEmailBundleInterfaceIsAutowiredByContainer(): void
     {

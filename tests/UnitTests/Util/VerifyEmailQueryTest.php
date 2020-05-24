@@ -12,7 +12,11 @@ namespace SymfonyCasts\Bundle\VerifyEmail\Tests\UnitTests\Util;
 use PHPUnit\Framework\TestCase;
 use SymfonyCasts\Bundle\VerifyEmail\Util\VerifyEmailQueryUtility;
 
-class VerifyEmailQueryTest extends TestCase
+/**
+ * @author Jesse Rushlow <jr@rushlow.dev>
+ * @author Ryan Weaver   <ryan@symfonycasts.com>
+ */
+final class VerifyEmailQueryTest extends TestCase
 {
     public function testGetsExpiryTimeFromQueryString(): void
     {
