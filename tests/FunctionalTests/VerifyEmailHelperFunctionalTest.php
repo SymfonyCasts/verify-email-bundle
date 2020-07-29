@@ -113,7 +113,8 @@ final class VerifyEmailHelperFunctionalTest extends TestCase
             new UriSigner('foo', 'signature'),
             new VerifyEmailQueryUtility(),
             new VerifyEmailTokenGenerator('foo'),
-            3600
+            3600,
+            false
         );
     }
 }

@@ -174,6 +174,6 @@ final class VerifyEmailHelperTest extends TestCase
 
     private function getHelper(): VerifyEmailHelperInterface
     {
-        return new VerifyEmailHelper($this->mockRouter, $this->mockSigner, $this->mockQueryUtility, $this->tokenGenerator, 3600);
+        return new VerifyEmailHelper($this->mockRouter, $this->mockSigner, $this->mockQueryUtility, $this->tokenGenerator, 3600, false);
     }
 }
