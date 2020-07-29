@@ -58,8 +58,7 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
 
         $extraParams['token'] = $this->tokenGenerator->createToken($userId, $userEmail);
         $extraParams['expires'] = $expiryTimestamp;
-        if( $this->useEmail === true )
-        {
+        if (true === $this->useEmail) {
             $extraParams['useremail'] = $userEmail;
         }
 
