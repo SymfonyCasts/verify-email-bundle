@@ -33,14 +33,19 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
      * @var int The length of time in seconds that a signed URI is valid for after it is created
      */
     private $lifetime;
+    /**
+     * @var bool Should the user email also be part of the email verification link
+     */
+    private $useEmail;
 
-    public function __construct(UrlGeneratorInterface $router, UriSigner $uriSigner, VerifyEmailQueryUtility $queryUtility, VerifyEmailTokenGenerator $generator, int $lifetime)
+    public function __construct(UrlGeneratorInterface $router, UriSigner $uriSigner, VerifyEmailQueryUtility $queryUtility, VerifyEmailTokenGenerator $generator, int $lifetime, bool $useEmail)
     {
         $this->router = $router;
         $this->uriSigner = $uriSigner;
         $this->queryUtility = $queryUtility;
         $this->tokenGenerator = $generator;
         $this->lifetime = $lifetime;
+        $this->useEmail = $useEmail;
     }
 
     /**
@@ -53,6 +58,10 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
 
         $extraParams['token'] = $this->tokenGenerator->createToken($userId, $userEmail);
         $extraParams['expires'] = $expiryTimestamp;
+        if( $this->useEmail === true )
+        {
+            $extraParams['useremail'] = $userEmail;
+        }
 
         $uri = $this->router->generate($routeName, $extraParams, UrlGeneratorInterface::ABSOLUTE_URL);
 

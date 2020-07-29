@@ -29,6 +29,10 @@ class Configuration implements ConfigurationInterface
                     ->defaultValue(3600)
                     ->info('The length of time in seconds that a signed URI is valid for after it is created.')
                 ->end()
+                ->booleanNode('use_email')
+                    ->defaultFalse()
+                    ->info('Use the user email address in the verification link for anonymous verification')
+                ->end()
             ->end();
 
         return $treeBuilder;

@@ -24,6 +24,7 @@
             <argument type="service" id="symfonycasts.verify_email.query_utility" />
             <argument type="service" id="symfonycasts.verify_email.token_generator" />
             <argument /> <!-- verify user signature lifetime -->
+            <argument /> <!-- use user email in verification url -->
         </service>
     </services>
 </container>

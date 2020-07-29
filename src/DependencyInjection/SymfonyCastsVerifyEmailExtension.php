@@ -31,6 +31,9 @@ final class SymfonyCastsVerifyEmailExtension extends Extension
 
         $helperDefinition = $container->getDefinition('symfonycasts.verify_email.helper');
         $helperDefinition->replaceArgument(4, $config['lifetime']);
+        $helperDefinition->replaceArgument(5, $config['use_email']);
+        // expose configuration value so it can be used in controllers
+        $container->setParameter("symfonycasts.verify_email.use_email", $config['use_email']);
     }
 
     public function getAlias()
