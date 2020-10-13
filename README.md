@@ -80,7 +80,7 @@ class RegistrationController extends AbstractController
         
         $email = new TemplatedEmail();
         $email->to($user->getEmail());
-        $email->htmlTemplate('registration/confirmation_email.html.twig);
+        $email->htmlTemplate('registration/confirmation_email.html.twig');
         $email->context(['signedUrl' => $signatureComponents->getSignedUrl()]);
         
         $this->mailer->send($email)
