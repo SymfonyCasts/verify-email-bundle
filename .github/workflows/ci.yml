@@ -105,7 +105,7 @@ jobs:
         run: vendor/bin/simple-phpunit -c $GITHUB_WORKSPACE/phpunit.xml.dist --testsuite acceptance
         if: always()
 
-  dev-master-tests:
+  dev-main-tests:
     name: Test against Symfony 5.x
     runs-on: ubuntu-latest
 
