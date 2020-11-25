@@ -44,7 +44,7 @@ validated once the user "clicks" the link in their email.
 The example below utilizes Symfony's `AbstractController` available in the 
 [Framework Bundle](https://github.com/symfony/framework-bundle)
 
-```
+```php
 // RegistrationController.php
 
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
@@ -94,7 +94,7 @@ class RegistrationController extends AbstractController
 Once the user has received their email and clicked on the link, the RegistrationController
 would then validate the signed URL in following method:
 
-```
+```php
 // RegistrationController.php
 
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
@@ -134,7 +134,7 @@ from that authenticated user (not from anywhere in the URL).
 You can change the default configuration parameters for the bundle by creating
 a `config/packages/verify_email.yaml` config file.
 
-```
+```yml
 symfonycasts_verify_email:
     lifetime: 3600
 ```
