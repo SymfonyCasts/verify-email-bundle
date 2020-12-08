@@ -5,8 +5,10 @@ find a change that break's semver, please create an issue.*
 
 ## NEXT
 
+## v1.1.0
+
+* Added PHP 8 support - see #42 thanks to @ker0x!
+
 ## v1.0.0
 
-*May 24th, 2020*
-
-- Initial release
+* Initial release
