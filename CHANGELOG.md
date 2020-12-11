@@ -5,6 +5,9 @@ find a change that break's semver, please create an issue.*
 
 ## NEXT
 
+* Add translation support for signature expiration time
+* Fixed invalid signature expiration time
+
 ## v1.1.0
 
 * Added PHP 8 support - see #42 thanks to @ker0x!
