@@ -48,7 +48,8 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
      */
     public function generateSignature(string $routeName, string $userId, string $userEmail, array $extraParams = []): VerifyEmailSignatureComponents
     {
-        $expiryTimestamp = time() + $this->lifetime;
+        $generatedAt = time();
+        $expiryTimestamp = $generatedAt + $this->lifetime;
 
         $extraParams['token'] = $this->tokenGenerator->createToken($userId, $userEmail);
         $extraParams['expires'] = $expiryTimestamp;
@@ -58,7 +59,7 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
         $signature = $this->uriSigner->sign($uri);
 
         /** @psalm-suppress PossiblyFalseArgument */
-        return new VerifyEmailSignatureComponents(\DateTimeImmutable::createFromFormat('U', (string) $expiryTimestamp), $signature);
+        return new VerifyEmailSignatureComponents(\DateTimeImmutable::createFromFormat('U', (string) $expiryTimestamp), $signature, $generatedAt);
     }
 
     /**
