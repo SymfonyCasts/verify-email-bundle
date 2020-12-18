@@ -5,6 +5,8 @@ find a change that break's semver, please create an issue.*
 
 ## NEXT
 
+## v1.1.1
+
 * Add translation support for signature expiration time
 * Fixed invalid signature expiration time
 
