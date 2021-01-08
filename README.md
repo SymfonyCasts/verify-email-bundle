@@ -125,10 +125,6 @@ use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 }
 ```
 
-It is _critical_ that you require the user to be logged in and fetch the
-user identifier and email (e.g. `$user->getid()` and `$user->getEmail()`)
-from that authenticated user (not from anywhere in the URL).
-
 ## Anonymous Validation
 
 It is also possible to allow users to verify their email address without having
