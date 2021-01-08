@@ -83,7 +83,7 @@ class RegistrationController extends AbstractController
         $email->htmlTemplate('registration/confirmation_email.html.twig');
         $email->context(['signedUrl' => $signatureComponents->getSignedUrl()]);
         
-        $this->mailer->send($email)
+        $this->mailer->send($email);
     
         // generate and return a response for the browser
     }
@@ -109,7 +109,7 @@ use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
         // Do not get the User's Id or Email Address from the Request object
         try {
-            $this->helper->validateEmailConfirmation($request->getUri(), $user->getId(), $user->getEmail())
+            $this->helper->validateEmailConfirmation($request->getUri(), $user->getId(), $user->getEmail());
         } catch (VerifyEmailExceptionInterface $e) {
             $this->addFlash('verify_email_error', $e->getReason());
 
@@ -128,6 +128,111 @@ use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 It is _critical_ that you require the user to be logged in and fetch the
 user identifier and email (e.g. `$user->getid()` and `$user->getEmail()`)
 from that authenticated user (not from anywhere in the URL).
+
+## Anonymous Validation
+
+It is also possible to allow users to verify their email address without having
+to be authenticated. A use case for this would be if a user registers on their laptop,
+but clicks the verification link on their phone. Normally, the user would be
+required to log in before their email was verified. 
+
+We can overcome this by passing a user identifier as a query parameter in the
+signed url. The examples below demonstrate how this is done.
+
+```php
+// RegistrationController.php
+
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\Mailer\MailerInterface;
+use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
+...
+
+class RegistrationController extends AbstractController
+{
+    private $verifyEmailHelper;
+    private $mailer;
+    
+    public function __construct(VerifyEmailHelperInterface $helper, MailerInterface $mailer)
+    {
+        $this->verifyEmailHelper = $helper;
+        $this->mailer = $mailer;
+    }
+    
+    /**
+     * @Route("/register", name="register-user")
+     */
+    public function register(): Response
+    {
+        $user = new User();
+    
+        // handle the user registration form and persist the new user...
+    
+        $signatureComponents = $this->verifyEmailHelper->generateSignature(
+                'registration_confirmation_route',
+                $user->getId(),
+                $user->getEmail(),
+                ['id' => $user->getId()] // add the users id as an extra query param
+            );
+        
+        $email = new TemplatedEmail();
+        $email->to($user->getEmail());
+        $email->htmlTemplate('registration/confirmation_email.html.twig');
+        $email->context(['signedUrl' => $signatureComponents->getSignedUrl()]);
+        
+        $this->mailer->send($email);
+    
+        // generate and return a response for the browser
+    }
+...
+
+```
+
+Once the user has received their email and clicked on the link, the RegistrationController
+would then validate the signed URL in following method:
+
+```php
+// RegistrationController.php
+
+use App\Repository\UserRepository;
+use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
+...
+
+    /**
+     * @Route("/verify", name="registration_confirmation_route")
+     */
+    public function verifyUserEmail(Request $request, UserRepository $userRepository): Response
+    {
+        $id = $request->get('id'); // retrieve the user id from the url
+        
+        // Verify the user if exists and is not null
+        if (null === $id) {
+            return $this->redirectToRoute('app_home');
+        }
+        
+        $userRepository->find($id);
+
+        // Ensure the user exists in persistence
+        if (null === $user) {
+            return $this->redirectToRoute('app_home');
+        }
+
+        // validate email confirmation link
+        try {
+            $this->helper->validateEmailConfirmation($request->getUri(), $user->getId(), $user->getEmail());
+        } catch (VerifyEmailExceptionInterface $e) {
+            $this->addFlash('verify_email_error', $e->getReason());
+
+            return $this->redirectToRoute('app_register');
+        }
+
+        // Mark your user as verified. e.g. switch a User::verified property to true
+
+        $this->addFlash('success', 'Your e-mail address has been verified.');
+
+        return $this->redirectToRoute('app_home');
+    }
+}
+```
 
 ## Configuration
 
