@@ -137,30 +137,12 @@ but clicks the verification link on their phone. Normally, the user would be
 required to log in before their email was verified. 
 
 We can overcome this by passing a user identifier as a query parameter in the
-signed url. The examples below demonstrate how this is done.
+signed url. The diff below demonstrate how this is done based off of the previous
+examples.
 
-```php
+```diff
 // RegistrationController.php
 
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
-use Symfony\Component\Mailer\MailerInterface;
-use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
-...
-
-class RegistrationController extends AbstractController
-{
-    private $verifyEmailHelper;
-    private $mailer;
-    
-    public function __construct(VerifyEmailHelperInterface $helper, MailerInterface $mailer)
-    {
-        $this->verifyEmailHelper = $helper;
-        $this->mailer = $mailer;
-    }
-    
-    /**
-     * @Route("/register", name="register-user")
-     */
     public function register(): Response
     {
         $user = new User();
@@ -170,68 +152,36 @@ class RegistrationController extends AbstractController
         $signatureComponents = $this->verifyEmailHelper->generateSignature(
                 'registration_confirmation_route',
                 $user->getId(),
-                $user->getEmail(),
-                ['id' => $user->getId()] // add the users id as an extra query param
-            );
-        
-        $email = new TemplatedEmail();
-        $email->to($user->getEmail());
-        $email->htmlTemplate('registration/confirmation_email.html.twig');
-        $email->context(['signedUrl' => $signatureComponents->getSignedUrl()]);
-        
-        $this->mailer->send($email);
-    
-        // generate and return a response for the browser
-    }
-...
-
+-               $user->getEmail()
++               $user->getEmail(),
++               ['id' => $user->getId()] // add the users id as an extra query param
+         );
 ```
 
 Once the user has received their email and clicked on the link, the RegistrationController
 would then validate the signed URL in following method:
 
-```php
+```diff
 // RegistrationController.php
 
-use App\Repository\UserRepository;
-use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
++ use App\Repository\UserRepository;
 ...
-
-    /**
-     * @Route("/verify", name="registration_confirmation_route")
-     */
-    public function verifyUserEmail(Request $request, UserRepository $userRepository): Response
+-   public function verifyUserEmail(Request $request): Response
++   public function verifyUserEmail(Request $request, UserRepository $userRepository): Response
     {
-        $id = $request->get('id'); // retrieve the user id from the url
-        
-        // Verify the user id exists and is not null
-        if (null === $id) {
-            return $this->redirectToRoute('app_home');
-        }
-        
-        $userRepository->find($id);
-
-        // Ensure the user exists in persistence
-        if (null === $user) {
-            return $this->redirectToRoute('app_home');
-        }
-
-        // validate email confirmation link
-        try {
-            $this->helper->validateEmailConfirmation($request->getUri(), $user->getId(), $user->getEmail());
-        } catch (VerifyEmailExceptionInterface $e) {
-            $this->addFlash('verify_email_error', $e->getReason());
-
-            return $this->redirectToRoute('app_register');
-        }
-
-        // Mark your user as verified. e.g. switch a User::verified property to true
-
-        $this->addFlash('success', 'Your e-mail address has been verified.');
-
-        return $this->redirectToRoute('app_home');
-    }
-}
++       $id = $request->get('id'); // retrieve the user id from the url
++       
++       // Verify the user id exists and is not null
++       if (null === $id) {
++           return $this->redirectToRoute('app_home');
++       }
++       
++       $userRepository->find($id);
++
++       // Ensure the user exists in persistence
++       if (null === $user) {
++           return $this->redirectToRoute('app_home');
++       }
 ```
 
 ## Configuration
