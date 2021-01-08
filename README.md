@@ -161,17 +161,17 @@ would then validate the signed URL in following method:
 // RegistrationController.php
 
 + use App\Repository\UserRepository;
-...
+
 -   public function verifyUserEmail(Request $request): Response
 +   public function verifyUserEmail(Request $request, UserRepository $userRepository): Response
     {
 +       $id = $request->get('id'); // retrieve the user id from the url
-+       
++
 +       // Verify the user id exists and is not null
 +       if (null === $id) {
 +           return $this->redirectToRoute('app_home');
 +       }
-+       
++
 +       $userRepository->find($id);
 +
 +       // Ensure the user exists in persistence
