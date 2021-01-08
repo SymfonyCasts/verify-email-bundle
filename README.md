@@ -204,7 +204,7 @@ use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
     {
         $id = $request->get('id'); // retrieve the user id from the url
         
-        // Verify the user if exists and is not null
+        // Verify the user id exists and is not null
         if (null === $id) {
             return $this->redirectToRoute('app_home');
         }
