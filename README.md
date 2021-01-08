@@ -150,12 +150,12 @@ examples.
                 $user->getId(),
 -               $user->getEmail()
 +               $user->getEmail(),
-+               ['id' => $user->getId()] // add the users id as an extra query param
++               ['id' => $user->getId()] // add the user's id as an extra query param
          );
 ```
 
 Once the user has received their email and clicked on the link, the RegistrationController
-would then validate the signed URL in following method:
+would then validate the signed URL in the following method:
 
 ```diff
 // RegistrationController.php
@@ -165,6 +165,9 @@ would then validate the signed URL in following method:
 -   public function verifyUserEmail(Request $request): Response
 +   public function verifyUserEmail(Request $request, UserRepository $userRepository): Response
     {
+-       $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+-       $user = $this->getUser();
+
 +       $id = $request->get('id'); // retrieve the user id from the url
 +
 +       // Verify the user id exists and is not null
@@ -172,12 +175,17 @@ would then validate the signed URL in following method:
 +           return $this->redirectToRoute('app_home');
 +       }
 +
-+       $userRepository->find($id);
++       $user = $userRepository->find($id);
 +
 +       // Ensure the user exists in persistence
 +       if (null === $user) {
 +           return $this->redirectToRoute('app_home');
 +       }
+
+        try {
+            $this->helper->validateEmailConfirmation($request->getUri(), $user->getId(), $user->getEmail());
+        } catch (VerifyEmailExceptionInterface $e) {
+        // ...
 ```
 
 ## Configuration
