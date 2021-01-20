@@ -5,6 +5,8 @@ find a change that break's semver, please create an issue.*
 
 ## NEXT
 
+* [#52](https://github.com/SymfonyCasts/verify-email-bundle/pull/52) Add German translations
+
 ## v1.1.1
 
 * Add translation support for signature expiration time
