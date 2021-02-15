@@ -5,6 +5,12 @@ find a change that break's semver, please create an issue.*
 
 ## NEXT
 
+## 1.3.0
+
+* [#56](https://github.com/SymfonyCasts/verify-email-bundle/pull/56) Add Polish translations
+
+## 1.2.0
+
 * [#52](https://github.com/SymfonyCasts/verify-email-bundle/pull/52) Add German translations
 * [#54](https://github.com/SymfonyCasts/verify-email-bundle/pull/54) Add Serbian translations
 * [#55](https://github.com/SymfonyCasts/verify-email-bundle/pull/55) Add French translations
