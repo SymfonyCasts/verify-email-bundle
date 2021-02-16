@@ -9,6 +9,7 @@ find a change that break's semver, please create an issue.*
 * [#54](https://github.com/SymfonyCasts/verify-email-bundle/pull/54) Add Serbian translations
 * [#55](https://github.com/SymfonyCasts/verify-email-bundle/pull/55) Add French translations
 * [#57](https://github.com/SymfonyCasts/verify-email-bundle/pull/57) Add Ukrainian translation
+* [#58](https://github.com/SymfonyCasts/verify-email-bundle/pull/58) Add Russian translation
 
 ## v1.1.1
 
