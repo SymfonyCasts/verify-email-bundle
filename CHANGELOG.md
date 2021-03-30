@@ -7,7 +7,7 @@ find a change that break's semver, please create an issue.*
 
 ## 1.3.0
 
-* [#60](https://github.com/SymfonyCasts/verify-email-bundle/pull/56) Add Dutch translations
+* [#60](https://github.com/SymfonyCasts/verify-email-bundle/pull/60) Add Dutch translations
 * [#56](https://github.com/SymfonyCasts/verify-email-bundle/pull/56) Add Polish translations
 
 ## 1.2.0
