@@ -6,6 +6,7 @@ find a change that break's semver, please create an issue.*
 ## NEXT
 
 * [#69](https://github.com/SymfonyCasts/verify-email-bundle/pull/69) Add Italian translations
+* [#68](https://github.com/SymfonyCasts/verify-email-bundle/pull/68) Add Portuguese translations
 * [#66](https://github.com/SymfonyCasts/verify-email-bundle/pull/66) Add Spanish translations
 
 ## 1.3.0
