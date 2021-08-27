@@ -1,4 +1,4 @@
-name: Verify User Bundle Prototype CI
+name: Verify Email Bundle
 on:
   push:
   pull_request:
