@@ -9,6 +9,7 @@
 
 namespace SymfonyCasts\Bundle\VerifyEmail;
 
+use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use SymfonyCasts\Bundle\VerifyEmail\DependencyInjection\SymfonyCastsVerifyEmailExtension;
 
@@ -18,7 +19,7 @@ use SymfonyCasts\Bundle\VerifyEmail\DependencyInjection\SymfonyCastsVerifyEmailE
  */
 class SymfonyCastsVerifyEmailBundle extends Bundle
 {
-    public function getContainerExtension()
+    public function getContainerExtension(): ?ExtensionInterface
     {
         if (null === $this->extension) {
             $this->extension = new SymfonyCastsVerifyEmailExtension();
