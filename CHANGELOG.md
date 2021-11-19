@@ -3,6 +3,14 @@
 *We intend to follow [Semantic Versioning 2.0.0](https://semver.org/), if you 
 find a change that break's semver, please create an issue.*
 
+## [v1.6.0](https://github.com/SymfonyCasts/verify-email-bundle/releases/tag/v1.6.0)
+
+*August 99th, 2021*
+
+### Feature
+
+- [#76](https://github.com/SymfonyCasts/verify-email-bundle/pull/76) - add missing return types for Symfony 6 support - *@jrushlow*
+
 ## [v1.5.0](https://github.com/SymfonyCasts/verify-email-bundle/releases/tag/v1.5.0)
 
 *May 5th, 2021*
