@@ -1,0 +1,139 @@
+---------------------------------------------------------------------------
+
+by tacman at 2021-11-08T16:08:43Z
+
+I'm new to making PR requests, but was hoping I could figure this out.
+
+It looks like something related to phpunit (file iterator) is failing, so I
+was experimenting with bumping the php version.  I'll revert the changes I
+make, any idea why it fails on php 7.4 though?
+
+On Mon, Nov 8, 2021 at 10:55 AM Jesse Rushlow ***@***.***>
+wrote:
+
+> ***@***.**** requested changes on this pull request.
+>
+> Thanks for the PR to add Symfony 6 support. I have a couple of comments on
+> this.
+> ------------------------------
+>
+> In composer.json
+> <https://github.com/SymfonyCasts/verify-email-bundle/pull/85#discussion_r744858962>
+> :
+>
+> > @@ -5,20 +5,21 @@
+>      "license": "MIT",
+>      "minimum-stability": "dev",
+>      "require": {
+> -        "php": ">=7.2.5",
+>
+> What is the reason for bumping the minimum PHP requirement from 7.2.5 ->
+> 7.3.0 ? This would be a BC break of which I'm not sure we're ready to do.
+> ------------------------------
+>
+> In composer.json
+> <https://github.com/SymfonyCasts/verify-email-bundle/pull/85#discussion_r744860043>
+> :
+>
+> >          "symfony/phpunit-bridge": "^5.0",
+> -        "vimeo/psalm": "^4.3"
+> +        "vimeo/psalm": "^4.3",
+> +        "phpstan/phpstan": "^1.1"
+>
+> I don't think we need to add phpstan as a dev dependency seeing as we
+> already use psalm and we dont not have any ci workflows setup for phpstan.
+>
+> —
+> You are receiving this because you authored the thread.
+> Reply to this email directly, view it on GitHub
+> <https://github.com/SymfonyCasts/verify-email-bundle/pull/85#pullrequestreview-800300664>,
+> or unsubscribe
+> <https://github.com/notifications/unsubscribe-auth/AAEXIQNVDCV3CZVPXN63QOTUK7XF3ANCNFSM5HOHBSUA>
+> .
+> Triage notifications on the go with GitHub Mobile for iOS
+> <https://apps.apple.com/app/apple-store/id1477376905?ct=notification-email&mt=8&pt=524675>
+> or Android
+> <https://play.google.com/store/apps/details?id=com.github.android&referrer=utm_campaign%3Dnotification-email%26utm_medium%3Demail%26utm_source%3Dgithub>.
+>
+>
+
+---------------------------------------------------------------------------
+
+by tacman at 2021-11-08T16:15:52Z
+
+In particular, this is what I'm stuck on:
+
+https://github.com/tacman/verify-email-bundle/runs/4141429345?check_suite_focus=true
+
+On Mon, Nov 8, 2021 at 11:08 AM Tac Tacelosky ***@***.***> wrote:
+
+> I'm new to making PR requests, but was hoping I could figure this out.
+>
+> It looks like something related to phpunit (file iterator) is failing, so
+> I was experimenting with bumping the php version.  I'll revert the changes
+> I make, any idea why it fails on php 7.4 though?
+>
+> On Mon, Nov 8, 2021 at 10:55 AM Jesse Rushlow ***@***.***>
+> wrote:
+>
+>> ***@***.**** requested changes on this pull request.
+>>
+>> Thanks for the PR to add Symfony 6 support. I have a couple of comments
+>> on this.
+>> ------------------------------
+>>
+>> In composer.json
+>> <https://github.com/SymfonyCasts/verify-email-bundle/pull/85#discussion_r744858962>
+>> :
+>>
+>> > @@ -5,20 +5,21 @@
+>>      "license": "MIT",
+>>      "minimum-stability": "dev",
+>>      "require": {
+>> -        "php": ">=7.2.5",
+>>
+>> What is the reason for bumping the minimum PHP requirement from 7.2.5 ->
+>> 7.3.0 ? This would be a BC break of which I'm not sure we're ready to do.
+>> ------------------------------
+>>
+>> In composer.json
+>> <https://github.com/SymfonyCasts/verify-email-bundle/pull/85#discussion_r744860043>
+>> :
+>>
+>> >          "symfony/phpunit-bridge": "^5.0",
+>> -        "vimeo/psalm": "^4.3"
+>> +        "vimeo/psalm": "^4.3",
+>> +        "phpstan/phpstan": "^1.1"
+>>
+>> I don't think we need to add phpstan as a dev dependency seeing as we
+>> already use psalm and we dont not have any ci workflows setup for phpstan
+>> .
+>>
+>> —
+>> You are receiving this because you authored the thread.
+>> Reply to this email directly, view it on GitHub
+>> <https://github.com/SymfonyCasts/verify-email-bundle/pull/85#pullrequestreview-800300664>,
+>> or unsubscribe
+>> <https://github.com/notifications/unsubscribe-auth/AAEXIQNVDCV3CZVPXN63QOTUK7XF3ANCNFSM5HOHBSUA>
+>> .
+>> Triage notifications on the go with GitHub Mobile for iOS
+>> <https://apps.apple.com/app/apple-store/id1477376905?ct=notification-email&mt=8&pt=524675>
+>> or Android
+>> <https://play.google.com/store/apps/details?id=com.github.android&referrer=utm_campaign%3Dnotification-email%26utm_medium%3Demail%26utm_source%3Dgithub>.
+>>
+>>
+>
+
+---------------------------------------------------------------------------
+
+by jrushlow at 2021-11-08T16:40:54Z
+
+@tacman The failing CI run was actually a deprecation in a package that is maintained outside of the bundle. I've just merged in a fix (PR #86) that prevents such deprecation's from messing with our tests.. You should be able to:
+
+`git fetch upstream`
+&&
+`git rebase upstream/main`
+then
+`git push --force`
+
+and we'll see a green CI if all goes well.
