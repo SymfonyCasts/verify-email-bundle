@@ -5,11 +5,15 @@ find a change that break's semver, please create an issue.*
 
 ## [v1.6.0](https://github.com/SymfonyCasts/verify-email-bundle/releases/tag/v1.6.0)
 
-*August 99th, 2021*
+*November 18th, 2021*
 
 ### Feature
 
 - [#76](https://github.com/SymfonyCasts/verify-email-bundle/pull/76) - add missing return types for Symfony 6 support - *@jrushlow*
+- [#79](https://github.com/SymfonyCasts/verify-email-bundle/pull/79) - [translations] add Finnish translations - *@jrushlow*
+- [#80](https://github.com/SymfonyCasts/verify-email-bundle/pull/80) - [translations] add Czech translations - *@jnovakdev*
+- [#84](https://github.com/SymfonyCasts/verify-email-bundle/pull/84) - [translations] Add Japanese translation - *@nabbisen*
+- [#85](https://github.com/SymfonyCasts/verify-email-bundle/pull/85) - allow symfony6 - *@tacman*
 
 ## [v1.5.0](https://github.com/SymfonyCasts/verify-email-bundle/releases/tag/v1.5.0)
 
