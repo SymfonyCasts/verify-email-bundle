@@ -58,8 +58,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-versions: ['7.2', '7.3', '7.4', '8.0']
-        symfony-version: ['4.4.*', '5.2.*']
+        php-versions: ['7.3', '7.4', '8.0']
+        symfony-version: ['4.4.*', '5.3.*']
 
     steps:
       - name: Set PHP Version
@@ -108,6 +108,56 @@ jobs:
         run: vendor/bin/simple-phpunit -c $GITHUB_WORKSPACE/phpunit.xml.dist --testsuite acceptance
         if: always()
 
+  dev-54-tests:
+    name: Symfony 5.4
+    runs-on: ubuntu-18.04
+    strategy:
+      fail-fast: false
+      matrix:
+        php-versions: ['8.0']
+        symfony-version: ['5.4.*', '6.0.*']
+
+    steps:
+      - name: Set PHP Version
+        run: sudo update-alternatives --set php /usr/bin/php${{ matrix.php-versions }}
+
+      - name: Get PHP Version
+        run: |
+          ver=$(php -v | grep -oP '(?<=PHP )\d.\d')
+          echo "::set-output name=version::$ver"
+        id: php-ver
+
+      - name: Using PHP Version from matrix
+        run: |
+          echo "Runner is not using PHP Version defined in the php-versions matrix."
+          php -v
+          exit 1
+        if: steps.php-ver.outputs.version != matrix.php-versions
+
+      - name: Checkout
+        uses: actions/checkout@v2.0.0
+
+      - name: Install dependencies
+        run: |
+          composer config minimum-stability beta
+          composer update --prefer-dist --no-progress
+
+      - name: Unit Tests
+        run: vendor/bin/simple-phpunit -c $GITHUB_WORKSPACE/phpunit.xml.dist --testsuite unit
+        if: always()
+
+      - name: Functional Tests
+        run: vendor/bin/simple-phpunit -c $GITHUB_WORKSPACE/phpunit.xml.dist --testsuite functional
+        if: always()
+
+      - name: Integration Tests
+        run: vendor/bin/simple-phpunit -c $GITHUB_WORKSPACE/phpunit.xml.dist --testsuite integration
+        if: always()
+
+      - name: Acceptance Tests
+        run: vendor/bin/simple-phpunit -c $GITHUB_WORKSPACE/phpunit.xml.dist --testsuite acceptance
+        if: always()
+
   dev-main-tests:
     name: Symfony 5.x
     runs-on: ubuntu-18.04
@@ -115,7 +165,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-versions: ['7.2', '7.3', '7.4', '8.0']
+        php-versions: ['7.3', '7.4', '8.0']
 
     steps:
       - name: Set PHP Version
@@ -163,7 +213,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-versions: ['7.2', '7.3', '7.4', '8.0']
+        php-versions: ['7.3', '7.4', '8.0']
 
     steps:
       - name: Set PHP Version
