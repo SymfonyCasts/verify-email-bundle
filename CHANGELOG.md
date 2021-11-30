@@ -3,6 +3,14 @@
 *We intend to follow [Semantic Versioning 2.0.0](https://semver.org/), if you 
 find a change that break's semver, please create an issue.*
 
+## [v1.7.0](https://github.com/SymfonyCasts/verify-email-bundle/releases/tag/v1.7.0)
+
+*November 30th, 2021*
+
+### Feature
+
+- [#90](https://github.com/SymfonyCasts/verify-email-bundle/pull/90) - allow deprecation contracts 3.0 - *@jrushlow*
+
 ## [v1.6.0](https://github.com/SymfonyCasts/verify-email-bundle/releases/tag/v1.6.0)
 
 *November 18th, 2021*
