@@ -215,6 +215,7 @@ they will be overwritten by this bundle:
 
 - ``token``
 - ``expires``
+- ``signature``
 
 ## Support
 
