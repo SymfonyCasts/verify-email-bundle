@@ -209,13 +209,13 @@ been created.
 
 ## Reserved Query Parameters
 
-If you add any extra query parameters in the 5th argument of ``verifyEmailHelper::generateSignature()``,
+If you add any extra query parameters in the 5th argument of `verifyEmailHelper::generateSignature()`,
 such as we did for `id` above, take note that you cannot use the following query parameters, because
 they will be overwritten by this bundle:
 
-- ``token``
-- ``expires``
-- ``signature``
+- `token`
+- `expires`
+- `signature`
 
 ## Support
 
