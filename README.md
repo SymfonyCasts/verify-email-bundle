@@ -207,6 +207,16 @@ _Optional_ - Defaults to `3600` seconds
 This is the length of time a signed URL is valid for in seconds after it has
 been created. 
 
+## Reserved Query Parameters
+
+If you add any extra query parameters in the 5th argument of `verifyEmailHelper::generateSignature()`,
+such as we did for `id` above, take note that you cannot use the following query parameters, because
+they will be overwritten by this bundle:
+
+- `token`
+- `expires`
+- `signature`
+
 ## Support
 
 Feel free to open an issue for questions, problems, or suggestions with our bundle.
