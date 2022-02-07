@@ -1,6 +1,6 @@
 # VerifyEmailBundle: Love Confirming Emails
 
-Don't know if your user's have a valid email address? The VerifyEmailBundle can
+Don't know if your users have a valid email address? The VerifyEmailBundle can
 help! 
 
 VerifyEmailBundle generates - and validates - a secure, signed URL
@@ -8,29 +8,31 @@ that can be emailed to users to confirm their email address. It
 does this without needing any storage, so you can use your existing
 entities with minor modifications. This bundle provides:
 
-1) A generator to create a signed URL that should be emailed to the user.
-
-2) A signed URL validator.
-
-3) Peace of mind knowing that this is done without leaking the user's
+- A generator to create a signed URL that should be emailed to the user.
+- A signed URL validator.
+- Peace of mind knowing that this is done without leaking the user's
    email address into your server logs (avoiding PII problems).
 
 ## Installation
 
 Using Composer of course!
 
-```
+```bash
 composer require symfonycasts/verify-email-bundle
 ```
 
 ## Usage
 
-We strongly suggest using Symfony MakerBundle's `make:registration-form` to get
-a feel for how the bundle should be used. It's super simple! Answer a couple
+We strongly suggest using Symfony MakerBundle's `make:registration-form` command
+to get a feel for how the bundle should be used. It's super simple! Answer a couple
 questions, and you'll have a fully functional secure registration system with
 email verification.
 
-## Setting things up manually
+```bash
+bin/console make:registration-form
+```
+
+## Setting Things Up Manually
 
 If you want to set things up manually, you can! But do so carefully: email
 verification is a sensitive, security process. We'll guide you through the
@@ -42,7 +44,7 @@ that is to be emailed to a user after they have registered. The URL is then
 validated once the user "clicks" the link in their email. 
 
 The example below utilizes Symfony's `AbstractController` available in the 
-[Framework Bundle](https://github.com/symfony/framework-bundle)
+[FrameworkBundle](https://github.com/symfony/framework-bundle):
 
 ```php
 // RegistrationController.php
@@ -50,7 +52,7 @@ The example below utilizes Symfony's `AbstractController` available in the
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
-...
+// ...
 
 class RegistrationController extends AbstractController
 {
@@ -88,19 +90,21 @@ class RegistrationController extends AbstractController
     
         // generate and return a response for the browser
     }
-...
-
+}
 ```
 
-Once the user has received their email and clicked on the link, the RegistrationController
+Once the user has received their email and clicked on the link, the `RegistrationController`
 would then validate the signed URL in following method:
 
 ```php
 // RegistrationController.php
 
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
-...
+// ...
 
+class RegistrationController extends AbstractController
+{
+    // ...
     /**
      * @Route("/verify", name="registration_confirmation_route")
      */
@@ -136,11 +140,13 @@ required to log in before their email was verified.
 
 We can overcome this by passing a user identifier as a query parameter in the
 signed url. The diff below demonstrate how this is done based off of the previous
-examples.
+examples:
 
 ```diff
 // RegistrationController.php
 
+class RegistrationController extends AbstractController
+{
     public function register(): Response
     {
         $user = new User();
@@ -153,7 +159,9 @@ examples.
 -               $user->getEmail()
 +               $user->getEmail(),
 +               ['id' => $user->getId()] // add the user's id as an extra query param
-         );
+            );
+    }
+}
 ```
 
 Once the user has received their email and clicked on the link, the RegistrationController
@@ -162,8 +170,10 @@ would then validate the signed URL in the following method:
 ```diff
 // RegistrationController.php
 
-+ use App\Repository\UserRepository;
++use App\Repository\UserRepository;
 
+class RegistrationController extends AbstractController
+{
 -   public function verifyUserEmail(Request $request): Response
 +   public function verifyUserEmail(Request $request, UserRepository $userRepository): Response
     {
@@ -188,14 +198,16 @@ would then validate the signed URL in the following method:
             $this->verifyEmailHelper->validateEmailConfirmation($request->getUri(), $user->getId(), $user->getEmail());
         } catch (VerifyEmailExceptionInterface $e) {
         // ...
+    }
+}
 ```
 
 ## Configuration
 
 You can change the default configuration parameters for the bundle by creating
-a `config/packages/verify_email.yaml` config file.
+a `config/packages/verify_email.yaml` config file:
 
-```yml
+```yaml
 symfonycasts_verify_email:
     lifetime: 3600
 ```
@@ -220,7 +232,7 @@ they will be overwritten by this bundle:
 ## Support
 
 Feel free to open an issue for questions, problems, or suggestions with our bundle.
-Issues pertaining to Symfony's Maker Bundle, specifically `make:registration-form`,
+Issues pertaining to Symfony's MakerBundle, specifically `make:registration-form`,
 should be addressed in the [Symfony Maker repository](https://github.com/symfony/maker-bundle).
 
 ## Security Issues
