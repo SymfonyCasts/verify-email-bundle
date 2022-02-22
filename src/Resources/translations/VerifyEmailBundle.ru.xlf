@@ -22,6 +22,18 @@
                 <source>%count% minute|%count% minutes</source>
                 <target>%count% минута|%count% минуты|%count% минут</target>
             </trans-unit>
+            <trans-unit id="6">
+                <source>The link to verify your email has expired. Please request a new link.</source>
+                <target>Срок действия ссылки для проверки вашей электронной почты истек. Пожалуйста, запросите новую ссылку.</target>
+            </trans-unit>
+            <trans-unit id="7">
+                <source>The link to verify your email is invalid. Please request a new link.</source>
+                <target>Ссылка для проверки вашей электронной почты недействительна. Пожалуйста, запросите новую ссылку.</target>
+            </trans-unit>
+            <trans-unit id="8">
+                <source>The link to verify your email appears to be for a different account or email. Please request a new link.</source>
+                <target>Ссылка для проверки вашей электронной почты, по-видимому, предназначена для другой учетной записи или электронной почты. Пожалуйста, запросите новую ссылку.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
