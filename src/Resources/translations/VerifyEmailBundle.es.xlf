@@ -22,10 +22,6 @@
                 <source>%count% minute|%count% minutes</source>
                 <target>%count% minuto|%count% minutos</target>
             </trans-unit>
-            <trans-unit id="5">
-                <source>%count% minute|%count% minutes</source>
-                <target>%count% minute|%count% minutes</target>
-            </trans-unit>
             <trans-unit id="6">
                 <source>The link to verify your email has expired. Please request a new link.</source>
                 <target>Ha expirado el enlace para verificar tu correo. Favor de solicitar un nuevo enlace.</target>
