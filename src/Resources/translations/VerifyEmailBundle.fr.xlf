@@ -22,6 +22,18 @@
                 <source>%count% minute|%count% minutes</source>
                 <target>%count% minute|%count% minutes</target>
             </trans-unit>
+            <trans-unit id="6">
+                <source>The link to verify your email has expired. Please request a new link.</source>
+                <target>Le lien pour vérifier votre adresse e-mail a expiré. Veuillez refaire une demande de réinitialisation.</target>
+            </trans-unit>
+            <trans-unit id="7">
+                <source>The link to verify your email is invalid. Please request a new link.</source>
+                <target>Le lien pour vérifier votre adresse e-mail est invalide. Veuillez refaire une demande de réinitialisation.</target>
+            </trans-unit>
+            <trans-unit id="8">
+                <source>The link to verify your email appears to be for a different account or email. Please request a new link.</source>
+                <target>Le lien permettant de vérifier votre adresse e-mail semble correspondre à un autre compte ou e-mail. Veuillez refaire une demande de réinitialisation.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
