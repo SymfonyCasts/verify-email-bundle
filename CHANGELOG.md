@@ -3,6 +3,19 @@
 *We intend to follow [Semantic Versioning 2.0.0](https://semver.org/), if you 
 find a change that break's semver, please create an issue.*
 
+## [v1.9.0](https://github.com/symfonycasts/verify-email-bundle/releases/tag/v1.9.0)
+
+*February 23rd, 2022*
+
+### Feature
+
+
+- [#109](https://github.com/symfonycasts/verify-email-bundle/pull/109) - [translations] Slovak - *@jrushlow*
+- [#107](https://github.com/symfonycasts/verify-email-bundle/pull/107) - Translate exception reasons to French - *@PauchardThomas*
+- [#106](https://github.com/symfonycasts/verify-email-bundle/pull/106) - Translate exception reasons to Russian - *@bocharsky-bw*
+- [#105](https://github.com/symfonycasts/verify-email-bundle/pull/105) - Translate exception reasons to Ukrainian - *@bocharsky-bw*
+- [#103](https://github.com/symfonycasts/verify-email-bundle/pull/103) - RFC: Add translations for exception reasons - *@bocharsky-bw*
+
 ## [v1.8.0](https://github.com/SymfonyCasts/verify-email-bundle/releases/tag/v1.8.0)
 
 *January 31st, 2022*
