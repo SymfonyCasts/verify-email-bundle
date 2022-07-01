@@ -46,10 +46,10 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
     /**
      * {@inheritdoc}
      */
-    public function generateSignature(string $routeName, string $userId, string $userEmail, array $extraParams = []): VerifyEmailSignatureComponents
+    public function generateSignature(string $routeName, string $userId, string $userEmail, array $extraParams = [], ?int $lifetime = null): VerifyEmailSignatureComponents
     {
         $generatedAt = time();
-        $expiryTimestamp = $generatedAt + $this->lifetime;
+        $expiryTimestamp = $generatedAt + ($lifetime ?: $this->lifetime);
 
         $extraParams['token'] = $this->tokenGenerator->createToken($userId, $userEmail);
         $extraParams['expires'] = $expiryTimestamp;
