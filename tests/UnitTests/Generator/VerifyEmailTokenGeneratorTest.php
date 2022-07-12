@@ -34,6 +34,6 @@ final class VerifyEmailTokenGeneratorTest extends TestCase
         self::assertTrue(hash_equals(
             $knownHash,
             $generator->createToken('1234', 'jr@rushlow.dev'
-        )));
+            )));
     }
 }

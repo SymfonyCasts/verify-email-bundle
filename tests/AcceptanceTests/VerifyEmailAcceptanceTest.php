@@ -29,12 +29,12 @@ final class VerifyEmailAcceptanceTest extends TestCase
         $container = $kernel->getContainer();
 
         /** @var VerifyEmailHelper $helper */
-        $helper = ($container->get(VerifyEmailAcceptanceFixture::class))->helper;
+        $helper = $container->get(VerifyEmailAcceptanceFixture::class)->helper;
 
         $components = $helper->generateSignature('verify-test', '1234', 'jr@rushlow.dev');
 
         $signature = $components->getSignedUrl();
-        $expiresAt = ($components->getExpiresAt())->getTimestamp();
+        $expiresAt = $components->getExpiresAt()->getTimestamp();
 
         $expectedUserData = json_encode(['1234', 'jr@rushlow.dev']);
 
@@ -64,7 +64,7 @@ final class VerifyEmailAcceptanceTest extends TestCase
         $container = $kernel->getContainer();
 
         /** @var VerifyEmailHelper $helper */
-        $helper = ($container->get(VerifyEmailAcceptanceFixture::class))->helper;
+        $helper = $container->get(VerifyEmailAcceptanceFixture::class)->helper;
         $expires = new \DateTimeImmutable('+1 hour');
 
         $uriToTest = sprintf(
