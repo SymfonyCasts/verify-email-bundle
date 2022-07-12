@@ -44,7 +44,7 @@ class VerifyEmailQueryUtility
         $urlComponents = parse_url($uri);
 
         if (\array_key_exists('query', $urlComponents)) {
-            parse_str(($urlComponents['query'] ?? ''), $params);
+            parse_str($urlComponents['query'] ?? '', $params);
         }
 
         return $params;
