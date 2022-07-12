@@ -3,6 +3,17 @@
 *We intend to follow [Semantic Versioning 2.0.0](https://semver.org/), if you 
 find a change that break's semver, please create an issue.*
 
+## [v1.11.0](https://github.com/symfonycasts/verify-email-bundle/releases/tag/v1.11.0)
+
+*July 12th, 2022*
+
+### Feature
+
+- [#118](https://github.com/symfonycasts/verify-email-bundle/pull/118) - Add catalan translations - *@victormhg*
+### Bug
+
+- [#121](https://github.com/symfonycasts/verify-email-bundle/pull/121) - Add missing target-language attr to all translations - *@bocharsky-bw*
+
 ## [v1.10.0](https://github.com/symfonycasts/verify-email-bundle/releases/tag/v1.10.0)
 
 *March 8th, 2022*
