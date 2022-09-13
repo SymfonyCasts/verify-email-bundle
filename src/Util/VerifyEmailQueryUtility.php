@@ -16,6 +16,7 @@ namespace SymfonyCasts\Bundle\VerifyEmail\Util;
  * @author Ryan Weaver   <ryan@symfonycasts.com>
  *
  * @internal
+ *
  * @final
  */
 class VerifyEmailQueryUtility

@@ -14,6 +14,7 @@ namespace SymfonyCasts\Bundle\VerifyEmail\Generator;
  * @author Ryan Weaver   <ryan@symfonycasts.com>
  *
  * @internal
+ *
  * @final
  */
 class VerifyEmailTokenGenerator

@@ -73,6 +73,7 @@ class VerifyEmailTestKernel extends Kernel
                         'type' => 'service',
                         'utf8' => true,
                     ],
+                    'http_method_override' => false,
                 ]
             );
 
