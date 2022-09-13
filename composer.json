@@ -20,9 +20,6 @@
         "symfony/phpunit-bridge": "^5.4 | ^6.0",
         "vimeo/psalm": "^4.3"
     },
-    "conflict": {
-        "symfony/framework-bundle": "<4.4"
-    },
     "autoload": {
         "psr-4": {
             "SymfonyCasts\\Bundle\\VerifyEmail\\": "src/"
