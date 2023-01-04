@@ -60,5 +60,10 @@
                 <file name="src/DependencyInjection/SymfonyCastsVerifyEmailExtension.php"/>
             </errorLevel>
         </PossiblyNullArgument>
+        <TooManyArguments>
+            <errorLevel type="suppress">
+                <file name="src/Model/VerifyEmailSignatureComponents.php"/>
+            </errorLevel>
+        </TooManyArguments>
     </issueHandlers>
 </psalm>
