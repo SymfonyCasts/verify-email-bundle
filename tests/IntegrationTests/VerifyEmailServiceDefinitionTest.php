@@ -53,7 +53,7 @@ final class DefinitionPublicCompilerPass implements CompilerPassInterface
 {
     public $definition;
 
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         $container->getDefinition($this->definition)
             ->setPublic(true)
@@ -65,7 +65,7 @@ final class VerifyEmailDefinitionTestKernel extends VerifyEmailTestKernel
 {
     public $compilerPass;
 
-    protected function build(ContainerBuilder $container)
+    protected function build(ContainerBuilder $container): void
     {
         $container->addCompilerPass($this->compilerPass);
     }
