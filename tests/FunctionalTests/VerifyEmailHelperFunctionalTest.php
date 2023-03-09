@@ -106,7 +106,7 @@ final class VerifyEmailHelperFunctionalTest extends TestCase
         return \sprintf('/verify?%s', $sortedParams);
     }
 
-    private function getHelper(): VerifyEmailHelperInterface
+    private function getHelper(bool $useRelativePath = false): VerifyEmailHelperInterface
     {
         if (class_exists(UriSigner::class)) {
             $this->uriSigner = new UriSigner('foo', 'signature');
@@ -119,7 +119,8 @@ final class VerifyEmailHelperFunctionalTest extends TestCase
             $this->uriSigner,
             new VerifyEmailQueryUtility(),
             new VerifyEmailTokenGenerator('foo'),
-            3600
+            3600,
+            $useRelativePath
         );
     }
 }
