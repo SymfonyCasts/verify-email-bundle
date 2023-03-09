@@ -29,16 +29,19 @@ class VerifyEmailTestKernel extends Kernel
     private $builder;
     private $routes;
     private $extraBundles;
+    /** @var array */
+    private $customConfig;
 
     /**
-     * @param array             $routes  Routes to be added to the container e.g. ['name' => 'path']
+     * @param array $routes Routes to be added to the container e.g. ['name' => 'path']
      * @param BundleInterface[] $bundles Additional bundles to be registered e.g. [new Bundle()]
      */
-    public function __construct(ContainerBuilder $builder = null, array $routes = [], array $bundles = [])
+    public function __construct(ContainerBuilder $builder = null, array $routes = [], array $bundles = [], array $customConfig = [])
     {
         $this->builder = $builder;
         $this->routes = $routes;
         $this->extraBundles = $bundles;
+        $this->customConfig = $customConfig;
 
         parent::__construct('test', true);
     }
@@ -54,6 +57,7 @@ class VerifyEmailTestKernel extends Kernel
         );
     }
 
+    /** @noinspection PhpParamsInspection */
     public function registerContainerConfiguration(LoaderInterface $loader): void
     {
         if (null === $this->builder) {
@@ -62,7 +66,7 @@ class VerifyEmailTestKernel extends Kernel
 
         $builder = $this->builder;
 
-        $loader->load(function (ContainerBuilder $container) use ($builder) {
+        $loader->load(function(ContainerBuilder $container) use ($builder) {
             $container->merge($builder);
             $container->loadFromExtension(
                 'framework',
@@ -77,13 +81,17 @@ class VerifyEmailTestKernel extends Kernel
                 ]
             );
 
+            if (!empty($this->customConfig)) {
+                $container->loadFromExtension('symfonycasts_verify_email', $this->customConfig);
+            }
+
             $container->register('kernel', static::class)
-                ->setPublic(true)
-            ;
+                ->setPublic(true);
 
             $kernelDefinition = $container->getDefinition('kernel');
             $kernelDefinition->addTag('routing.route_loader');
         });
+
     }
 
     /**
@@ -102,11 +110,11 @@ class VerifyEmailTestKernel extends Kernel
 
     public function getCacheDir(): string
     {
-        return sys_get_temp_dir().'/cache'.spl_object_hash($this);
+        return sys_get_temp_dir() . '/cache' . spl_object_hash($this);
     }
 
     public function getLogDir(): string
     {
-        return sys_get_temp_dir().'/logs'.spl_object_hash($this);
+        return sys_get_temp_dir() . '/logs' . spl_object_hash($this);
     }
 }

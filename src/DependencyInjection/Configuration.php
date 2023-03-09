@@ -29,6 +29,10 @@ class Configuration implements ConfigurationInterface
                     ->defaultValue(3600)
                     ->info('The length of time in seconds that a signed URI is valid for after it is created.')
                 ->end()
+                ->booleanNode('use_relative_path')
+                    ->defaultValue(false)
+                    ->info('Decides whether to use an absolute url or a relative path for signing.')
+                ->end()
             ->end();
 
         return $treeBuilder;
