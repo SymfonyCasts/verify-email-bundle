@@ -125,7 +125,6 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
         return $this->generateBaseUrl($uri) . $signature;
     }
 
-
     public function getQueryStringFromParsedUrl(array $parsedUrl): string
     {
         if (!array_key_exists('query', $parsedUrl)) {
