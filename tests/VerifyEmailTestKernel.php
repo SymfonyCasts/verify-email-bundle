@@ -33,7 +33,7 @@ class VerifyEmailTestKernel extends Kernel
     private $customConfig;
 
     /**
-     * @param array $routes Routes to be added to the container e.g. ['name' => 'path']
+     * @param array             $routes  Routes to be added to the container e.g. ['name' => 'path']
      * @param BundleInterface[] $bundles Additional bundles to be registered e.g. [new Bundle()]
      */
     public function __construct(ContainerBuilder $builder = null, array $routes = [], array $bundles = [], array $customConfig = [])
@@ -66,7 +66,7 @@ class VerifyEmailTestKernel extends Kernel
 
         $builder = $this->builder;
 
-        $loader->load(function(ContainerBuilder $container) use ($builder) {
+        $loader->load(function (ContainerBuilder $container) use ($builder) {
             $container->merge($builder);
             $container->loadFromExtension(
                 'framework',
@@ -91,7 +91,6 @@ class VerifyEmailTestKernel extends Kernel
             $kernelDefinition = $container->getDefinition('kernel');
             $kernelDefinition->addTag('routing.route_loader');
         });
-
     }
 
     /**
@@ -110,11 +109,11 @@ class VerifyEmailTestKernel extends Kernel
 
     public function getCacheDir(): string
     {
-        return sys_get_temp_dir() . '/cache' . spl_object_hash($this);
+        return sys_get_temp_dir().'/cache'.spl_object_hash($this);
     }
 
     public function getLogDir(): string
     {
-        return sys_get_temp_dir() . '/logs' . spl_object_hash($this);
+        return sys_get_temp_dir().'/logs'.spl_object_hash($this);
     }
 }

@@ -59,7 +59,7 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
         $uri = $this->router->generate($routeName, $extraParams, UrlGeneratorInterface::ABSOLUTE_URL);
 
         /** @psalm-suppress PossiblyFalseArgument */
-        return new VerifyEmailSignatureComponents(\DateTimeImmutable::createFromFormat('U', (string)$expiryTimestamp), $this->getSignedUrl($uri), $generatedAt);
+        return new VerifyEmailSignatureComponents(\DateTimeImmutable::createFromFormat('U', (string) $expiryTimestamp), $this->getSignedUrl($uri), $generatedAt);
     }
 
     /**
@@ -89,9 +89,9 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
 
         $path = $parsedUri['path'] ?? '';
         $query = $this->getQueryStringFromParsedUrl($parsedUri);
-        $fragment = isset($parsedUri['fragment']) ? '#' . $parsedUri['fragment'] : '';
+        $fragment = isset($parsedUri['fragment']) ? '#'.$parsedUri['fragment'] : '';
 
-        return $path . $query . $fragment;
+        return $path.$query.$fragment;
     }
 
     public function generateSigningString(string $uri): string
@@ -106,10 +106,10 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
     private function generateBaseUrl(string $absoluteUri): string
     {
         $parsedUri = parse_url($absoluteUri);
-        $scheme = isset($parsedUri['scheme']) ? $parsedUri['scheme'] . '://' : '';
+        $scheme = isset($parsedUri['scheme']) ? $parsedUri['scheme'].'://' : '';
         $host = $parsedUri['host'] ?? '';
 
-        return $scheme . $host;
+        return $scheme.$host;
     }
 
     private function getSignedUrl(string $uri): string
@@ -120,15 +120,15 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
             return $signature;
         }
 
-        return $this->generateBaseUrl($uri) . $signature;
+        return $this->generateBaseUrl($uri).$signature;
     }
 
-    public function getQueryStringFromParsedUrl(array $parsedUrl): string
+    private function getQueryStringFromParsedUrl(array $parsedUrl): string
     {
-        if (!array_key_exists('query', $parsedUrl)) {
+        if (!\array_key_exists('query', $parsedUrl)) {
             return '';
         }
 
-        return $parsedUrl['query'] ? ('?' . $parsedUrl['query']) : '';
+        return $parsedUrl['query'] ? ('?'.$parsedUrl['query']) : '';
     }
 }

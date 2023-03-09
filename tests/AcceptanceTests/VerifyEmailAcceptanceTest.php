@@ -11,7 +11,6 @@ namespace SymfonyCasts\Bundle\VerifyEmail\Tests\AcceptanceTests;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\HttpKernel\KernelInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Tests\VerifyEmailTestKernel;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelper;
@@ -114,7 +113,6 @@ final class VerifyEmailAcceptanceTest extends TestCase
             'foo',
             true
         ));
-
 
         $parsed = parse_url($signature);
         parse_str($parsed['query'], $result);

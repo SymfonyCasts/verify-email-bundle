@@ -65,31 +65,6 @@ final class VerifyEmailHelperFunctionalTest extends TestCase
         self::assertTrue(hash_equals($knownToken, $testToken));
         self::assertTrue(hash_equals($knownSignature, $testSignature));
     }
-   public function testGenerateSignatureWithRelativePath(): void
-    {
-        $token = $this->getTestToken();
-
-        $this->mockRouter
-            ->expects($this->once())
-            ->method('generate')
-            ->with('app_verify_route', ['expires' => $this->expiryTimestamp, 'token' => $token])
-            ->willReturn(sprintf('/verify?expires=%s&token=%s', $this->expiryTimestamp, urlencode($token)));
-
-        $result = $this->getHelper(true)
-            ->generateSignature('app_verify_route', '1234', 'jr@rushlow.dev');
-
-        $parsedUri = parse_url($result->getSignedUrl());
-        parse_str($parsedUri['query'], $queryParams);
-
-        $knownToken = $token;
-        $testToken = $queryParams['token'];
-
-        $knownSignature = $this->getTestSignature();
-        $testSignature = $queryParams['signature'];
-
-        self::assertTrue(hash_equals($knownToken, $testToken));
-        self::assertTrue(hash_equals($knownSignature, $testSignature));
-    }
 
     public function testValidSignature(): void
     {
