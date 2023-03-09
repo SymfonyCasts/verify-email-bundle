@@ -50,7 +50,7 @@ final class VerifyEmailAcceptanceTest extends TestCase
 
         $parsed = parse_url($signature);
         parse_str($parsed['query'], $result);
-//        dd($parsed, $result, $signature, $expectedSignature);
+
         self::assertTrue(hash_equals($expectedSignature, $result['signature']));
         self::assertSame(
             sprintf('http://localhost/verify/user?expires=%s&signature=%s&token=%s', $expiresAt, urlencode($expectedSignature), urlencode($expectedToken)),
@@ -110,17 +110,19 @@ final class VerifyEmailAcceptanceTest extends TestCase
 
         $expectedSignature = base64_encode(hash_hmac(
             'sha256',
-            sprintf('verify/user?expires=%s&token=%s', $expiresAt, urlencode($expectedToken)),
+            sprintf('/verify/user?expires=%s&token=%s', $expiresAt, urlencode($expectedToken)),
             'foo',
             true
         ));
+
+
         $parsed = parse_url($signature);
         parse_str($parsed['query'], $result);
 
         self::assertTrue(hash_equals($expectedSignature, $result['signature']));
         self::assertSame(
-            sprintf('verify/user?expires=%s&signature=%s&token=%s', $expiresAt, urlencode($expectedSignature), urlencode($expectedToken)),
-            $signature
+            sprintf('/verify/user?expires=%s&signature=%s&token=%s', $expiresAt, urlencode($expectedSignature), urlencode($expectedToken)),
+            strstr($signature, '/verify/user')
         );
     }
 

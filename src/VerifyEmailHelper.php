@@ -60,10 +60,8 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
             $this->useRelativePath ? UrlGeneratorInterface::RELATIVE_PATH : UrlGeneratorInterface::ABSOLUTE_URL
         );
 
-        $signature = $this->uriSigner->sign($uri);
-
         /** @psalm-suppress PossiblyFalseArgument */
-        return new VerifyEmailSignatureComponents(\DateTimeImmutable::createFromFormat('U', (string) $expiryTimestamp), $signature, $generatedAt);
+        return new VerifyEmailSignatureComponents(\DateTimeImmutable::createFromFormat('U', (string)$expiryTimestamp), $this->getSignedUrl($uri), $generatedAt);
     }
 
     /**
@@ -85,5 +83,55 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
         if (!hash_equals($knownToken, $userToken)) {
             throw new WrongEmailVerifyException();
         }
+    }
+
+    private function generateAbsolutePath(string $absoluteUri): string
+    {
+        $parsedUri = parse_url($absoluteUri);
+
+        $path = $parsedUri['path'] ?? '';
+        $query = $this->getQueryStringFromParsedUrl($parsedUri);
+        $fragment = isset($parsedUri['fragment']) ? '#' . $parsedUri['fragment'] : '';
+
+        return $path . $query . $fragment;
+    }
+
+    public function generateSigningString(string $uri): string
+    {
+        if (!$this->useRelativePath) {
+            return $uri;
+        }
+
+        return $this->generateAbsolutePath($uri);
+    }
+
+    private function generateBaseUrl(string $absoluteUri): string
+    {
+        $parsedUri = parse_url($absoluteUri);
+        $scheme = isset($parsedUri['scheme']) ? $parsedUri['scheme'] . '://' : '';
+        $host = $parsedUri['host'] ?? '';
+
+        return $scheme . $host;
+    }
+
+    private function getSignedUrl(string $uri): string
+    {
+        $signature = $this->uriSigner->sign($this->generateSigningString($uri));
+
+        if (!$this->useRelativePath) {
+            return $signature;
+        }
+
+        return $this->generateBaseUrl($uri) . $signature;
+    }
+
+
+    public function getQueryStringFromParsedUrl(array $parsedUrl): string
+    {
+        if (!array_key_exists('query', $parsedUrl)) {
+            return '';
+        }
+
+        return $parsedUrl['query'] ? ('?' . $parsedUrl['query']) : '';
     }
 }
