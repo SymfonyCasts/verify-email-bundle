@@ -273,6 +273,13 @@ _Optional_ - Defaults to `3600` seconds
 This is the length of time a signed URL is valid for in seconds after it has
 been created. 
 
+#### `use_relative_path`
+
+_Optional_ – Defaults to `false`
+
+If set to `true`, the generated verification URL will use a relative path instead of an absolute URL.
+This is useful if your app is accessible under multiple domains or customer-specific subdomains, as the host will be determined dynamically by the user's current request.
+
 ## Reserved Query Parameters
 
 If you add any extra query parameters in the 5th argument of `verifyEmailHelper::generateSignature()`,
