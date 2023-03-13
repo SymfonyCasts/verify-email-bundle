@@ -56,9 +56,7 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
         $extraParams['token'] = $this->tokenGenerator->createToken($userId, $userEmail);
         $extraParams['expires'] = $expiryTimestamp;
 
-        $uri = $this->router->generate($routeName, $extraParams,
-            $this->useRelativePath ? UrlGeneratorInterface::RELATIVE_PATH : UrlGeneratorInterface::ABSOLUTE_URL
-        );
+        $uri = $this->router->generate($routeName, $extraParams, UrlGeneratorInterface::ABSOLUTE_URL);
 
         /** @psalm-suppress PossiblyFalseArgument */
         return new VerifyEmailSignatureComponents(\DateTimeImmutable::createFromFormat('U', (string)$expiryTimestamp), $this->getSignedUrl($uri), $generatedAt);
