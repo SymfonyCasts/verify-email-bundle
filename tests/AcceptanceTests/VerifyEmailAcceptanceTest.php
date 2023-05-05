@@ -160,7 +160,8 @@ final class VerifyEmailAcceptanceTest extends TestCase
         $builder = new ContainerBuilder();
 
         $builder->autowire(VerifyEmailAcceptanceFixture::class)
-            ->setPublic(true);
+            ->setPublic(true)
+        ;
 
         $kernel = new VerifyEmailTestKernel(
             $builder,

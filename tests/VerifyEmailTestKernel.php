@@ -86,7 +86,8 @@ class VerifyEmailTestKernel extends Kernel
             }
 
             $container->register('kernel', static::class)
-                ->setPublic(true);
+                ->setPublic(true)
+            ;
 
             $kernelDefinition = $container->getDefinition('kernel');
             $kernelDefinition->addTag('routing.route_loader');
