@@ -41,92 +41,145 @@ simplest way.
 
 The example below demonstrates the basic steps to generate a signed URL
 that is to be emailed to a user after they have registered. The URL is then 
-validated once the user "clicks" the link in their email. 
-
-The example below utilizes Symfony's `AbstractController` available in the 
-[FrameworkBundle](https://github.com/symfony/framework-bundle):
+validated once the user "clicks" the link in their email.
 
 ```php
 // RegistrationController.php
+namespace App\Controller;
 
+use App\Entity\User;
+use App\Form\RegistrationFormType;
+use App\Security\EmailVerifier;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
-use Symfony\Component\Mailer\MailerInterface;
-use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
-// ...
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mime\Address;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Routing\Annotation\Route;
+use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
 class RegistrationController extends AbstractController
 {
-    private $verifyEmailHelper;
-    private $mailer;
-    
-    public function __construct(VerifyEmailHelperInterface $helper, MailerInterface $mailer)
+    private EmailVerifier $emailVerifier;
+
+    public function __construct(EmailVerifier $emailVerifier)
     {
-        $this->verifyEmailHelper = $helper;
-        $this->mailer = $mailer;
+        $this->emailVerifier = $emailVerifier;
     }
-    
-    /**
-     * @Route("/register", name="register-user")
-     */
-    public function register(): Response
+
+    #[Route('/register', name: 'app_register')]
+    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
     {
         $user = new User();
-    
-        // handle the user registration form and persist the new user...
-    
-        $signatureComponents = $this->verifyEmailHelper->generateSignature(
-                'registration_confirmation_route',
-                $user->getId(),
-                $user->getEmail()
+        $form = $this->createForm(RegistrationFormType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // encode the plain password
+            $user->setPassword(
+                $userPasswordHasher->hashPassword(
+                    $user,
+                    $form->get('plainPassword')->getData()
+                )
             );
-        
-        $email = new TemplatedEmail();
-        $email->from('send@example.com');
-        $email->to($user->getEmail());
-        $email->htmlTemplate('registration/confirmation_email.html.twig');
-        $email->context(['signedUrl' => $signatureComponents->getSignedUrl()]);
-        
-        $this->mailer->send($email);
-    
-        // generate and return a response for the browser
+
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+            // generate a signed url and email it to the user
+            $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
+                (new TemplatedEmail())
+                    ->from(new Address('mailer@example.com', 'AcmeMailBot'))
+                    ->to($user->getEmail())
+                    ->subject('Please Confirm your Email')
+                    ->htmlTemplate('registration/confirmation_email.html.twig')
+            );
+            // do anything else you need here, like send an email
+
+            return $this->redirectToRoute('_preview_error');
+        }
+
+        return $this->render('registration/register.html.twig', [
+            'registrationForm' => $form->createView(),
+        ]);
     }
-}
-```
 
-Once the user has received their email and clicked on the link, the `RegistrationController`
-would then validate the signed URL in following method:
-
-```php
-// RegistrationController.php
-
-use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
-// ...
-
-class RegistrationController extends AbstractController
-{
-    // ...
-    /**
-     * @Route("/verify", name="registration_confirmation_route")
-     */
+    #[Route('/verify/email', name: 'app_verify_email')]
     public function verifyUserEmail(Request $request): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-        $user = $this->getUser();
 
-        // Do not get the User's Id or Email Address from the Request object
+        // validate email confirmation link, sets User::isVerified=true and persists
         try {
-            $this->verifyEmailHelper->validateEmailConfirmation($request->getUri(), $user->getId(), $user->getEmail());
-        } catch (VerifyEmailExceptionInterface $e) {
-            $this->addFlash('verify_email_error', $e->getReason());
+            $this->emailVerifier->handleEmailConfirmation($request, $this->getUser());
+        } catch (VerifyEmailExceptionInterface $exception) {
+            $this->addFlash('verify_email_error', $exception->getReason());
 
             return $this->redirectToRoute('app_register');
         }
 
-        // Mark your user as verified. e.g. switch a User::verified property to true
+        // @TODO Change the redirect on success and handle or remove the flash message in your templates
+        $this->addFlash('success', 'Your email address has been verified.');
 
-        $this->addFlash('success', 'Your e-mail address has been verified.');
+        return $this->redirectToRoute('app_register');
+    }
+}
+```
 
-        return $this->redirectToRoute('app_home');
+This uses an `EmailVerifier` class that you should also add to your app::
+
+```php
+// src/Security/EmailVerifier.php
+namespace App\Security;
+
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
+use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
+
+class EmailVerifier
+{
+    public function __construct(
+        private VerifyEmailHelperInterface $verifyEmailHelper,
+        private MailerInterface $mailer,
+        private EntityManagerInterface $entityManager
+    ) {
+    }
+
+    public function sendEmailConfirmation(string $verifyEmailRouteName, UserInterface $user, TemplatedEmail $email): void
+    {
+        $signatureComponents = $this->verifyEmailHelper->generateSignature(
+            $verifyEmailRouteName,
+            $user->getId(),
+            $user->getEmail()
+        );
+
+        $context = $email->getContext();
+        $context['signedUrl'] = $signatureComponents->getSignedUrl();
+        $context['expiresAtMessageKey'] = $signatureComponents->getExpirationMessageKey();
+        $context['expiresAtMessageData'] = $signatureComponents->getExpirationMessageData();
+
+        $email->context($context);
+
+        $this->mailer->send($email);
+    }
+
+    /**
+     * @throws VerifyEmailExceptionInterface
+     */
+    public function handleEmailConfirmation(Request $request, UserInterface $user): void
+    {
+        $this->verifyEmailHelper->validateEmailConfirmation($request->getUri(), $user->getId(), $user->getEmail());
+
+        $user->setIsVerified(true);
+
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
     }
 }
 ```
@@ -143,21 +196,22 @@ signed url. The diff below demonstrate how this is done based off of the previou
 examples:
 
 ```diff
-// RegistrationController.php
+// src/Security/EmailVerifier.php
 
-class RegistrationController extends AbstractController
+class EmailVerifier
 {
-    public function register(): Response
+    // ...
+
+    public function sendEmailConfirmation(string $verifyEmailRouteName, UserInterface $user, TemplatedEmail $email): void
     {
         $user = new User();
-    
+
         // handle the user registration form and persist the new user...
     
         $signatureComponents = $this->verifyEmailHelper->generateSignature(
-                'registration_confirmation_route',
+                $verifyEmailRouteName,
                 $user->getId(),
--               $user->getEmail()
-+               $user->getEmail(),
+                $user->getEmail(),
 +               ['id' => $user->getId()] // add the user's id as an extra query param
             );
     }
@@ -180,7 +234,7 @@ class RegistrationController extends AbstractController
 -       $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 -       $user = $this->getUser();
 
-+       $id = $request->get('id'); // retrieve the user id from the url
++       $id = $request->query->get('id'); // retrieve the user id from the url
 +
 +       // Verify the user id exists and is not null
 +       if (null === $id) {
@@ -236,8 +290,8 @@ Issues pertaining to Symfony's MakerBundle, specifically `make:registration-form
 should be addressed in the [Symfony Maker repository](https://github.com/symfony/maker-bundle).
 
 ## Security Issues
-For **security related vulnerabilities**, we ask that you send an email to 
-`ryan [at] symfonycasts.com` instead of creating an issue. 
+For **security related vulnerabilities**, we ask that you email
+`ryan@symfonycasts.com` instead of creating an issue.
 
 This will give us the opportunity to address the issue without exposing the
 vulnerability before a fix can be published.
