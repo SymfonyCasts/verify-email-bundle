@@ -43,9 +43,6 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
         $this->lifetime = $lifetime;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function generateSignature(string $routeName, string $userId, string $userEmail, array $extraParams = []): VerifyEmailSignatureComponents
     {
         $generatedAt = time();
@@ -62,9 +59,6 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
         return new VerifyEmailSignatureComponents(\DateTimeImmutable::createFromFormat('U', (string) $expiryTimestamp), $signature, $generatedAt);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function validateEmailConfirmation(string $signedUrl, string $userId, string $userEmail): void
     {
         if (!$this->uriSigner->check($signedUrl)) {

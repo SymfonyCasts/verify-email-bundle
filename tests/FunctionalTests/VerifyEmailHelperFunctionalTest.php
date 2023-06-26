@@ -29,9 +29,6 @@ final class VerifyEmailHelperFunctionalTest extends TestCase
     private $mockRouter;
     private $expiryTimestamp;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         ClockMock::register(VerifyEmailHelper::class);
