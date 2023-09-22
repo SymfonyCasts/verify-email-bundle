@@ -46,8 +46,7 @@ final class VerifyEmailHelperFunctionalTest extends TestCase
             ->expects($this->once())
             ->method('generate')
             ->with('app_verify_route', ['expires' => $this->expiryTimestamp, 'token' => $token])
-            ->willReturn(sprintf('/verify?expires=%s&token=%s', $this->expiryTimestamp, urlencode($token)))
-        ;
+            ->willReturn(sprintf('/verify?expires=%s&token=%s', $this->expiryTimestamp, urlencode($token)));
 
         $result = $this->getHelper()->generateSignature('app_verify_route', '1234', 'jr@rushlow.dev');
 
@@ -69,6 +68,9 @@ final class VerifyEmailHelperFunctionalTest extends TestCase
         $testSignature = $this->getTestSignedUri();
 
         $this->getHelper()->validateEmailConfirmation($testSignature, '1234', 'jr@rushlow.dev');
+        $this->assertTrue(true, 'Test correctly does not throw an exception');
+
+        $this->getHelper(true)->validateEmailConfirmation($testSignature, '1234', 'jr@rushlow.dev');
         $this->assertTrue(true, 'Test correctly does not throw an exception');
     }
 
@@ -103,14 +105,15 @@ final class VerifyEmailHelperFunctionalTest extends TestCase
         return sprintf('/verify?%s', $sortedParams);
     }
 
-    private function getHelper(): VerifyEmailHelperInterface
+    private function getHelper(?bool $useRelativePath = false): VerifyEmailHelperInterface
     {
         return new VerifyEmailHelper(
             $this->mockRouter,
             new UriSigner('foo', 'signature'),
             new VerifyEmailQueryUtility(),
             new VerifyEmailTokenGenerator('foo'),
-            3600
+            3600,
+            $useRelativePath
         );
     }
 }

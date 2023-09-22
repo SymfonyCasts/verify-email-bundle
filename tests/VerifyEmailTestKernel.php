@@ -29,16 +29,19 @@ class VerifyEmailTestKernel extends Kernel
     private $builder;
     private $routes;
     private $extraBundles;
+    /** @var array */
+    private $customConfig;
 
     /**
      * @param array             $routes  Routes to be added to the container e.g. ['name' => 'path']
      * @param BundleInterface[] $bundles Additional bundles to be registered e.g. [new Bundle()]
      */
-    public function __construct(ContainerBuilder $builder = null, array $routes = [], array $bundles = [])
+    public function __construct(ContainerBuilder $builder = null, array $routes = [], array $bundles = [], array $customConfig = [])
     {
         $this->builder = $builder;
         $this->routes = $routes;
         $this->extraBundles = $bundles;
+        $this->customConfig = $customConfig;
 
         parent::__construct('test', true);
     }
@@ -54,6 +57,7 @@ class VerifyEmailTestKernel extends Kernel
         );
     }
 
+    /** @noinspection PhpParamsInspection */
     public function registerContainerConfiguration(LoaderInterface $loader): void
     {
         if (null === $this->builder) {
@@ -76,6 +80,10 @@ class VerifyEmailTestKernel extends Kernel
                     'http_method_override' => false,
                 ]
             );
+
+            if (!empty($this->customConfig)) {
+                $container->loadFromExtension('symfonycasts_verify_email', $this->customConfig);
+            }
 
             $container->register('kernel', static::class)
                 ->setPublic(true)
