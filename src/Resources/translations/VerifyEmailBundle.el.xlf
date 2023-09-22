@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+    <file original="file.ext" source-language="en" target-language="el" datatype="plaintext">
+        <body>
+            <trans-unit id="1">
+                <source>%count% year|%count% years</source>
+                <target>%count% έτος|%count% έτη</target>
+            </trans-unit>
+            <trans-unit id="2">
+                <source>%count% month|%count% months</source>
+                <target>%count% μήνας|%count% μήνες</target>
+            </trans-unit>
+            <trans-unit id="3">
+                <source>%count% day|%count% days</source>
+                <target>%count% ημέρα|%count% ημέρες</target>
+            </trans-unit>
+            <trans-unit id="4">
+                <source>%count% hour|%count% hours</source>
+                <target>%count% ώρα|%count% ώρες</target>
+            </trans-unit>
+            <trans-unit id="5">
+                <source>%count% minute|%count% minutes</source>
+                <target>%count% λεπτό|%count% λεπτά</target>
+            </trans-unit>
+            <trans-unit id="6">
+                <source>The link to verify your email has expired. Please request a new link.</source>
+                <target>Ο σύνδεσμος για την επαλήθευση του ηλεκτρονικού ταχυδρομείου σας έχει λήξει. Παρακαλούμε ζητήστε νέο σύνδεσμο.</target>
+            </trans-unit>
+            <trans-unit id="7">
+                <source>The link to verify your email is invalid. Please request a new link.</source>
+                <target>Ο σύνδεσμος για την επαλήθευση του ηλεκτρονικού ταχυδρομείου σας δεν είναι έγκυρος. Παρακαλούμε ζητήστε νέο σύνδεσμο.</target>
+            </trans-unit>
+            <trans-unit id="8">
+                <source>The link to verify your email appears to be for a different account or email. Please request a new link.</source>
+                <target>Ο σύνδεσμος για την επαλήθευση του ηλεκτρονικού ταχυδρομείου σας φαίνεται να είναι για διαφορετικό λογαριασμό ή για άλλη διεύθυνση ηλεκτρονικού ταχυδρομείου. Παρακαλούμε ζητήστε νέο σύνδεσμο.</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

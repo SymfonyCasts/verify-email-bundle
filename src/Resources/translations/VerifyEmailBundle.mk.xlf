@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+    <file original="file.ext" source-language="en" target-language="mk" datatype="plaintext">
+        <body>
+            <trans-unit id="1">
+                <source>%count% year|%count% years</source>
+                <target>%count% година|%count% години</target>
+            </trans-unit>
+            <trans-unit id="2">
+                <source>%count% month|%count% months</source>
+                <target>%count% месец|%count% месеци</target>
+            </trans-unit>
+            <trans-unit id="3">
+                <source>%count% day|%count% days</source>
+                <target>%count% ден|%count% денови</target>
+            </trans-unit>
+            <trans-unit id="4">
+                <source>%count% hour|%count% hours</source>
+                <target>%count% час|%count% часови</target>
+            </trans-unit>
+            <trans-unit id="5">
+                <source>%count% minute|%count% minutes</source>
+                <target>%count% минута|%count% минути</target>
+            </trans-unit>
+            <trans-unit id="6">
+                <source>The link to verify your email has expired. Please request a new link.</source>
+                <target>Врската за верификација на вашата е-пошта е истечена. Ве молиме побарајте нова врска.</target>
+            </trans-unit>
+            <trans-unit id="7">
+                <source>The link to verify your email is invalid. Please request a new link.</source>
+                <target>Врската за верификација на вашата е-пошта е невалидна. Ве молиме побарајте нова врска.</target>
+            </trans-unit>
+            <trans-unit id="8">
+                <source>The link to verify your email appears to be for a different account or email. Please request a new link.</source>
+                <target>Врската за верификација изгледа дека е за друга корисничка сметка или за друга е-пошта. Ве молиме побарајте нова врска.</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>
