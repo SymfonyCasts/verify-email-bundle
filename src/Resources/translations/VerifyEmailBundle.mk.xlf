@@ -32,7 +32,7 @@
             </trans-unit>
             <trans-unit id="8">
                 <source>The link to verify your email appears to be for a different account or email. Please request a new link.</source>
-                <target>Врската за верификација е за друга корисничка сметка или за друга е-пошта. Ве молиме побарајте нова врска.</target>
+                <target>Врската за верификација изгледа дека е за друга корисничка сметка или за друга е-пошта. Ве молиме побарајте нова врска.</target>
             </trans-unit>
         </body>
     </file>

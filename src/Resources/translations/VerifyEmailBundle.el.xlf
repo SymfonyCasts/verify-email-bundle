@@ -32,7 +32,7 @@
             </trans-unit>
             <trans-unit id="8">
                 <source>The link to verify your email appears to be for a different account or email. Please request a new link.</source>
-                <target>Ο σύνδεσμος για την επαλήθευση του email σας φαίνεται να είναι για διαφορετικό λογαριασμό ή για άλλη διεύθυνση ηλεκτρονικού ταχυδρομείου. Παρακαλούμε ζητήστε νέο σύνδεσμο.</target>
+                <target>Ο σύνδεσμος για την επαλήθευση του ηλεκτρονικού ταχυδρομείου σας φαίνεται να είναι για διαφορετικό λογαριασμό ή για άλλη διεύθυνση ηλεκτρονικού ταχυδρομείου. Παρακαλούμε ζητήστε νέο σύνδεσμο.</target>
             </trans-unit>
         </body>
     </file>
