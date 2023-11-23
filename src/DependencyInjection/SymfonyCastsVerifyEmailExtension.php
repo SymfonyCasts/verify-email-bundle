@@ -26,6 +26,9 @@ final class SymfonyCastsVerifyEmailExtension extends Extension
         $loader->load('verify_email_services.xml');
 
         $configuration = $this->getConfiguration($configs, $container);
+        if (!$configuration) {
+            throw new \Exception('Configuration is not expected to be null');
+        }
 
         $config = $this->processConfiguration($configuration, $configs);
 

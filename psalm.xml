@@ -50,35 +50,23 @@
         <RawObjectIteration errorLevel="info" />
 
         <InvalidStringClass errorLevel="info" />
-        <PossiblyUndefinedMethod>
-            <errorLevel type="suppress">
-                <file name="src/DependencyInjection/Configuration.php"/>
-            </errorLevel>
-        </PossiblyUndefinedMethod>
-        <PossiblyNullArgument>
-            <errorLevel type="suppress">
-                <file name="src/DependencyInjection/SymfonyCastsVerifyEmailExtension.php"/>
-            </errorLevel>
-        </PossiblyNullArgument>
-        <TooManyArguments>
-            <errorLevel type="suppress">
-                <file name="src/Model/VerifyEmailSignatureComponents.php"/>
-            </errorLevel>
-        </TooManyArguments>
-        <UndefinedDocblockClass>
-            <errorLevel type="suppress">
-                <file name="src/Factory/UriSignerFactory.php"/>
-            </errorLevel>
-        </UndefinedDocblockClass>
+
         <UndefinedClass>
             <errorLevel type="suppress">
                 <referencedClass name="Symfony\Component\HttpKernel\UriSigner"/>
             </errorLevel>
         </UndefinedClass>
-<!--        <UndefinedFunction>-->
-<!--            <errorLevel type="suppress">-->
-<!--                <file name="src/Model/VerifyEmailSignatureComponents.php" />-->
-<!--            </errorLevel>-->
-<!--        </UndefinedFunction>-->
+        <UndefinedDocblockClass>
+            <errorLevel type="suppress">
+                <file name="src/Factory/UriSignerFactory.php"/>
+                <referencedClass name="Symfony\Component\HttpKernel\UriSigner" />
+            </errorLevel>
+        </UndefinedDocblockClass>
+        <UndefinedMethod>
+            <errorLevel type="suppress">
+                <file name="src/DependencyInjection/Configuration.php" />
+                <referencedMethod name="Symfony\Component\Config\Definition\Builder\NodeDefinition::children" />
+            </errorLevel>
+        </UndefinedMethod>
     </issueHandlers>
 </psalm>
