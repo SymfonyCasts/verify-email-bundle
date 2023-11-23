@@ -10,13 +10,13 @@
 namespace SymfonyCasts\Bundle\VerifyEmail\Tests\FunctionalTests;
 
 use PHPUnit\Framework\TestCase;
-use Symfony\Bridge\PhpUnit\ClockMock;
-use Symfony\Component\HttpKernel\UriSigner;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Generator\VerifyEmailTokenGenerator;
+use SymfonyCasts\Bundle\VerifyEmail\Util\UriSignerFactory;
 use SymfonyCasts\Bundle\VerifyEmail\Util\VerifyEmailQueryUtility;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelper;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
+use Symfony\Bridge\PhpUnit\ClockMock;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * @author Jesse Rushlow <jr@rushlow.dev>
@@ -107,7 +107,7 @@ final class VerifyEmailHelperFunctionalTest extends TestCase
     {
         return new VerifyEmailHelper(
             $this->mockRouter,
-            new UriSigner('foo', 'signature'),
+            new UriSignerFactory('foo', 'signature'),
             new VerifyEmailQueryUtility(),
             new VerifyEmailTokenGenerator('foo'),
             3600

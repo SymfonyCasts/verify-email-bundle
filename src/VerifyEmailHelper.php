@@ -9,13 +9,13 @@
 
 namespace SymfonyCasts\Bundle\VerifyEmail;
 
-use Symfony\Component\HttpKernel\UriSigner;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\ExpiredSignatureException;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\InvalidSignatureException;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\WrongEmailVerifyException;
 use SymfonyCasts\Bundle\VerifyEmail\Generator\VerifyEmailTokenGenerator;
 use SymfonyCasts\Bundle\VerifyEmail\Model\VerifyEmailSignatureComponents;
+use SymfonyCasts\Bundle\VerifyEmail\Util\UriSignerFactory;
 use SymfonyCasts\Bundle\VerifyEmail\Util\VerifyEmailQueryUtility;
 
 /**
@@ -34,10 +34,10 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
      */
     private $lifetime;
 
-    public function __construct(UrlGeneratorInterface $router, UriSigner $uriSigner, VerifyEmailQueryUtility $queryUtility, VerifyEmailTokenGenerator $generator, int $lifetime)
+    public function __construct(UrlGeneratorInterface $router, UriSignerFactory $uriSignerFactory, VerifyEmailQueryUtility $queryUtility, VerifyEmailTokenGenerator $generator, int $lifetime)
     {
         $this->router = $router;
-        $this->uriSigner = $uriSigner;
+        $this->uriSigner = $uriSignerFactory->createUriSigner();
         $this->queryUtility = $queryUtility;
         $this->tokenGenerator = $generator;
         $this->lifetime = $lifetime;

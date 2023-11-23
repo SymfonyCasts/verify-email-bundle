@@ -10,16 +10,18 @@
 namespace SymfonyCasts\Bundle\VerifyEmail\Tests\UnitTests;
 
 use PHPUnit\Framework\TestCase;
-use Symfony\Bridge\PhpUnit\ClockMock;
-use Symfony\Component\HttpKernel\UriSigner;
-use Symfony\Component\Routing\RouterInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\ExpiredSignatureException;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\InvalidSignatureException;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\WrongEmailVerifyException;
 use SymfonyCasts\Bundle\VerifyEmail\Generator\VerifyEmailTokenGenerator;
+use SymfonyCasts\Bundle\VerifyEmail\Util\UriSignerFactory;
 use SymfonyCasts\Bundle\VerifyEmail\Util\VerifyEmailQueryUtility;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelper;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
+use Symfony\Bridge\PhpUnit\ClockMock;
+use Symfony\Component\HttpFoundation\UriSigner;
+use Symfony\Component\HttpKernel\UriSigner as LegacyUriSigner;
+use Symfony\Component\Routing\RouterInterface;
 
 /**
  * @author Jesse Rushlow <jr@rushlow.dev>
@@ -31,6 +33,7 @@ final class VerifyEmailHelperTest extends TestCase
 {
     private $mockRouter;
     private $mockSigner;
+    private $mockSignerFactory;
     private $mockQueryUtility;
     private $tokenGenerator;
 
@@ -39,7 +42,14 @@ final class VerifyEmailHelperTest extends TestCase
         ClockMock::register(VerifyEmailHelper::class);
 
         $this->mockRouter = $this->createMock(RouterInterface::class);
-        $this->mockSigner = $this->createMock(UriSigner::class);
+        if (class_exists(UriSigner::class)) {
+            $this->mockSigner = $this->createMock(UriSigner::class);
+        } else {
+            $this->mockSigner = $this->createMock(LegacyUriSigner::class);
+        }
+        $this->mockSignerFactory = $this->createMock(UriSignerFactory::class);
+        $this->mockSignerFactory->method('createUriSigner')
+            ->willReturn($this->mockSigner);
         $this->mockQueryUtility = $this->createMock(VerifyEmailQueryUtility::class);
         $this->tokenGenerator = $this->createMock(VerifyEmailTokenGenerator::class);
     }
@@ -174,6 +184,6 @@ final class VerifyEmailHelperTest extends TestCase
 
     private function getHelper(): VerifyEmailHelperInterface
     {
-        return new VerifyEmailHelper($this->mockRouter, $this->mockSigner, $this->mockQueryUtility, $this->tokenGenerator, 3600);
+        return new VerifyEmailHelper($this->mockRouter, $this->mockSignerFactory, $this->mockQueryUtility, $this->tokenGenerator, 3600);
     }
 }
