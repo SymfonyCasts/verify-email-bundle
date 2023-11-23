@@ -10,6 +10,10 @@
 namespace SymfonyCasts\Bundle\VerifyEmail\Tests\UnitTests;
 
 use PHPUnit\Framework\TestCase;
+use Symfony\Bridge\PhpUnit\ClockMock;
+use Symfony\Component\HttpFoundation\UriSigner;
+use Symfony\Component\HttpKernel\UriSigner as LegacyUriSigner;
+use Symfony\Component\Routing\RouterInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\ExpiredSignatureException;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\InvalidSignatureException;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\WrongEmailVerifyException;
@@ -18,10 +22,6 @@ use SymfonyCasts\Bundle\VerifyEmail\Util\UriSignerFactory;
 use SymfonyCasts\Bundle\VerifyEmail\Util\VerifyEmailQueryUtility;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelper;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
-use Symfony\Bridge\PhpUnit\ClockMock;
-use Symfony\Component\HttpFoundation\UriSigner;
-use Symfony\Component\HttpKernel\UriSigner as LegacyUriSigner;
-use Symfony\Component\Routing\RouterInterface;
 
 /**
  * @author Jesse Rushlow <jr@rushlow.dev>

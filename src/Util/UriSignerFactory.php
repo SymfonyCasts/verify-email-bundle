@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the SymfonyCasts VerifyEmailBundle package.
+ * Copyright (c) SymfonyCasts <https://symfonycasts.com/>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace SymfonyCasts\Bundle\VerifyEmail\Util;
 
 use Symfony\Component\HttpFoundation\UriSigner;
@@ -19,7 +26,7 @@ class UriSignerFactory
     /**
      * @return UriSigner|LegacyUriSigner
      */
-    public function createUriSigner(): object
+    public function createUriSigner()
     {
         if (class_exists(UriSigner::class)) {
             return new UriSigner($this->secret, $this->parameter);
