@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-namespace SymfonyCasts\Bundle\VerifyEmail\Util;
+namespace SymfonyCasts\Bundle\VerifyEmail\Factory;
 
 use Symfony\Component\HttpFoundation\UriSigner;
 use Symfony\Component\HttpKernel\UriSigner as LegacyUriSigner;

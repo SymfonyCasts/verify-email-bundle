@@ -18,7 +18,7 @@
         </service>
          -->
 
-        <service id="symfonycasts.verify_email.uri_signer_factory" class="SymfonyCasts\Bundle\VerifyEmail\Util\UriSignerFactory">
+        <service id="symfonycasts.verify_email.uri_signer_factory" class="SymfonyCasts\Bundle\VerifyEmail\Factory\UriSignerFactory">
             <argument>%kernel.secret%</argument>
             <argument>signature</argument>
         </service>
