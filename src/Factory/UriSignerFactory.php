@@ -12,6 +12,10 @@ namespace SymfonyCasts\Bundle\VerifyEmail\Factory;
 use Symfony\Component\HttpFoundation\UriSigner;
 use Symfony\Component\HttpKernel\UriSigner as LegacyUriSigner;
 
+/**
+ * @author Victor Bocharsky <victor@symfonycasts.com>
+ * @author Ryan Weaver      <ryan@symfonycasts.com>
+ */
 class UriSignerFactory
 {
     private $secret;
@@ -26,7 +30,7 @@ class UriSignerFactory
     /**
      * @return UriSigner|LegacyUriSigner
      */
-    public function createUriSigner()
+    public function createUriSigner(): object
     {
         if (class_exists(UriSigner::class)) {
             return new UriSigner($this->secret, $this->parameter);

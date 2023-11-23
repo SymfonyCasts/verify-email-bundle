@@ -65,5 +65,20 @@
                 <file name="src/Model/VerifyEmailSignatureComponents.php"/>
             </errorLevel>
         </TooManyArguments>
+        <UndefinedDocblockClass>
+            <errorLevel type="suppress">
+                <file name="src/Factory/UriSignerFactory.php"/>
+            </errorLevel>
+        </UndefinedDocblockClass>
+        <UndefinedClass>
+            <errorLevel type="suppress">
+                <referencedClass name="Symfony\Component\HttpKernel\UriSigner"/>
+            </errorLevel>
+        </UndefinedClass>
+<!--        <UndefinedFunction>-->
+<!--            <errorLevel type="suppress">-->
+<!--                <file name="src/Model/VerifyEmailSignatureComponents.php" />-->
+<!--            </errorLevel>-->
+<!--        </UndefinedFunction>-->
     </issueHandlers>
 </psalm>
