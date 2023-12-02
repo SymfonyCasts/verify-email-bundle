@@ -17,7 +17,6 @@ use Symfony\Component\Routing\RouterInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\ExpiredSignatureException;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\InvalidSignatureException;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\WrongEmailVerifyException;
-use SymfonyCasts\Bundle\VerifyEmail\Factory\UriSignerFactory;
 use SymfonyCasts\Bundle\VerifyEmail\Generator\VerifyEmailTokenGenerator;
 use SymfonyCasts\Bundle\VerifyEmail\Util\VerifyEmailQueryUtility;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelper;
@@ -33,7 +32,6 @@ final class VerifyEmailHelperTest extends TestCase
 {
     private $mockRouter;
     private $mockSigner;
-    private $mockSignerFactory;
     private $mockQueryUtility;
     private $tokenGenerator;
 
@@ -47,9 +45,6 @@ final class VerifyEmailHelperTest extends TestCase
         } else {
             $this->mockSigner = $this->createMock(LegacyUriSigner::class);
         }
-        $this->mockSignerFactory = $this->createMock(UriSignerFactory::class);
-        $this->mockSignerFactory->method('createUriSigner')
-            ->willReturn($this->mockSigner);
         $this->mockQueryUtility = $this->createMock(VerifyEmailQueryUtility::class);
         $this->tokenGenerator = $this->createMock(VerifyEmailTokenGenerator::class);
     }
@@ -184,6 +179,6 @@ final class VerifyEmailHelperTest extends TestCase
 
     private function getHelper(): VerifyEmailHelperInterface
     {
-        return new VerifyEmailHelper($this->mockRouter, $this->mockSignerFactory, $this->mockQueryUtility, $this->tokenGenerator, 3600);
+        return new VerifyEmailHelper($this->mockRouter, $this->mockSigner, $this->mockQueryUtility, $this->tokenGenerator, 3600);
     }
 }

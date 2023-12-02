@@ -11,8 +11,9 @@ namespace SymfonyCasts\Bundle\VerifyEmail\Tests\FunctionalTests;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Bridge\PhpUnit\ClockMock;
+use Symfony\Component\HttpFoundation\UriSigner;
+use Symfony\Component\HttpKernel\UriSigner as LegacyUriSigner;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use SymfonyCasts\Bundle\VerifyEmail\Factory\UriSignerFactory;
 use SymfonyCasts\Bundle\VerifyEmail\Generator\VerifyEmailTokenGenerator;
 use SymfonyCasts\Bundle\VerifyEmail\Util\VerifyEmailQueryUtility;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelper;
@@ -105,9 +106,15 @@ final class VerifyEmailHelperFunctionalTest extends TestCase
 
     private function getHelper(): VerifyEmailHelperInterface
     {
+        if (class_exists(UriSigner::class)) {
+            $uriSigner = new UriSigner('foo', 'signature');
+        } else {
+            $uriSigner = new LegacyUriSigner('foo', 'signature');
+        }
+
         return new VerifyEmailHelper(
             $this->mockRouter,
-            new UriSignerFactory('foo', 'signature'),
+            $uriSigner,
             new VerifyEmailQueryUtility(),
             new VerifyEmailTokenGenerator('foo'),
             3600
