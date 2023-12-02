@@ -11,7 +11,8 @@ namespace SymfonyCasts\Bundle\VerifyEmail\Tests\UnitTests;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Bridge\PhpUnit\ClockMock;
-use Symfony\Component\HttpKernel\UriSigner;
+use Symfony\Component\HttpFoundation\UriSigner;
+use Symfony\Component\HttpKernel\UriSigner as LegacyUriSigner;
 use Symfony\Component\Routing\RouterInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\ExpiredSignatureException;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\InvalidSignatureException;
@@ -39,7 +40,11 @@ final class VerifyEmailHelperTest extends TestCase
         ClockMock::register(VerifyEmailHelper::class);
 
         $this->mockRouter = $this->createMock(RouterInterface::class);
-        $this->mockSigner = $this->createMock(UriSigner::class);
+        if (class_exists(UriSigner::class)) {
+            $this->mockSigner = $this->createMock(UriSigner::class);
+        } else {
+            $this->mockSigner = $this->createMock(LegacyUriSigner::class);
+        }
         $this->mockQueryUtility = $this->createMock(VerifyEmailQueryUtility::class);
         $this->tokenGenerator = $this->createMock(VerifyEmailTokenGenerator::class);
     }
