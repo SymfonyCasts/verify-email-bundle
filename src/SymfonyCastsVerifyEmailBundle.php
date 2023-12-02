@@ -21,7 +21,7 @@ class SymfonyCastsVerifyEmailBundle extends Bundle
 {
     public function getContainerExtension(): ?ExtensionInterface
     {
-        if (null === $this->extension) {
+        if (!$this->extension) {
             $this->extension = new SymfonyCastsVerifyEmailExtension();
         }
 

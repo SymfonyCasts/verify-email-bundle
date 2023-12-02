@@ -11,9 +11,13 @@
 
         <service id="symfonycasts.verify_email.query_utility" class="SymfonyCasts\Bundle\VerifyEmail\Util\VerifyEmailQueryUtility" public="false" />
 
-        <service id="symfonycasts.verify_email.uri_signer" class="Symfony\Component\HttpKernel\UriSigner">
+        <service id="symfonycasts.verify_email.uri_signer_factory" class="SymfonyCasts\Bundle\VerifyEmail\Factory\UriSignerFactory">
             <argument>%kernel.secret%</argument>
             <argument>signature</argument>
+        </service>
+
+        <service id="symfonycasts.verify_email.uri_signer" class="Symfony\Component\HttpFoundation\UriSigner">
+            <factory service="symfonycasts.verify_email.uri_signer_factory" method="createUriSigner" />
         </service>
 
         <service id="SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface" alias="symfonycasts.verify_email.helper" />
