@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+    <file original="file.ext" source-language="en" target-language="mn" datatype="plaintext">
+        <body>
+            <trans-unit id="1">
+                <source>%count% year|%count% years</source>
+                <target>%count% жил|%count% жил</target>
+            </trans-unit>
+            <trans-unit id="2">
+                <source>%count% month|%count% months</source>
+                <target>%count% сар|%count% сар</target>
+            </trans-unit>
+            <trans-unit id="3">
+                <source>%count% day|%count% days</source>
+                <target>%count% өдөр|%count% өдөр</target>
+            </trans-unit>
+            <trans-unit id="4">
+                <source>%count% hour|%count% hours</source>
+                <target>%count% цаг|%count% цаг</target>
+            </trans-unit>
+            <trans-unit id="5">
+                <source>%count% minute|%count% minutes</source>
+                <target>%count% минут|%count% минут</target>
+            </trans-unit>
+            <trans-unit id="6">
+                <source>The link to verify your email has expired. Please request a new link.</source>
+                <target>Таны мэйлийг баталгаажуулах холбоосны хугацаа дууссан байна. Шинэ холбоосны хүсэлт гаргана уу.</target>
+            </trans-unit>
+            <trans-unit id="7">
+                <source>The link to verify your email is invalid. Please request a new link.</source>
+                <target>Таны мэйлийг баталгаажуулах холбоос буруу байна. Шинэ холбоосны хүсэлт гаргана уу.</target>
+            </trans-unit>
+            <trans-unit id="8">
+                <source>The link to verify your email appears to be for a different account or email. Please request a new link.</source>
+                <target>Таны мэйлийг баталгаажуулах холбоос нь өөр бүртгэл эсвэл мэйлд зориулагдсан байна. Шинэ холбоосны хүсэлт гаргана уу.</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>
