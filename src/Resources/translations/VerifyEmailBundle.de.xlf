@@ -22,6 +22,18 @@
                 <source>%count% minute|%count% minutes</source>
                 <target>%count% Minute|%count% Minuten</target>
             </trans-unit>
+           <trans-unit id="6">
+                <source>The link to verify your email has expired. Please request a new link.</source>
+                <target>Der Link zur Überprüfung Ihrer E-Mail-Adresse ist abgelaufen. Bitte fordern Sie einen neuen Link an.</target>
+            </trans-unit>
+            <trans-unit id="7">
+                <source>The link to verify your email is invalid. Please request a new link.</source>
+                <target>Der Link zur Überprüfung Ihrer E-Mail-Adresse ist ungültig. Bitte fordern Sie einen neuen Link an.</target>
+            </trans-unit>
+            <trans-unit id="8">
+                <source>The link to verify your email appears to be for a different account or email. Please request a new link.</source>
+                <target>Der Link zur Überprüfung Ihrer E-Mail-Adresse scheint für ein anderes Konto oder eine andere E-Mail zu sein. Bitte fordern Sie einen neuen Link an.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
