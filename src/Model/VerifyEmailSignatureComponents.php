@@ -35,7 +35,7 @@ final class VerifyEmailSignatureComponents
      */
     private $transInterval = 0;
 
-    public function __construct(\DateTimeInterface $expiresAt, string $uri, int $generatedAt = null)
+    public function __construct(\DateTimeInterface $expiresAt, string $uri, ?int $generatedAt = null)
     {
         $this->expiresAt = $expiresAt;
         $this->uri = $uri;
