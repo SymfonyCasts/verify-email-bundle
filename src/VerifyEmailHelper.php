@@ -9,6 +9,7 @@
 
 namespace SymfonyCasts\Bundle\VerifyEmail;
 
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\UriSigner;
 use Symfony\Component\HttpKernel\UriSigner as LegacyUriSigner;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -63,9 +64,15 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
         return new VerifyEmailSignatureComponents(\DateTimeImmutable::createFromFormat('U', (string) $expiryTimestamp), $signature, $generatedAt);
     }
 
-    public function validateEmailConfirmation(string $signedUrl, string $userId, string $userEmail): void
+    public function validateEmailConfirmation(string $signedUrl, string $userId, string $userEmail, ?Request $request = null): void
     {
-        if (!$this->uriSigner->check($signedUrl)) {
+        if ($this->uriSigner instanceof UriSigner && null !== $request) {
+            $isValid = $this->uriSigner->checkRequest($request);
+        } else {
+            $isValid = $this->uriSigner->check($signedUrl);
+        }
+
+        if (!$isValid) {
             throw new InvalidSignatureException();
         }
 
