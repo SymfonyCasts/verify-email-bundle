@@ -88,7 +88,7 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
     public function validateEmailConfirmationFromRequest(Request $request, string $userId, string $userEmail): void
     {
         if (!$this->uriSigner instanceof UriSigner) {
-            throw new \RuntimeException('Use the other one instead');
+            throw new \RuntimeException(sprintf('An instance of %s is required, provided by symfony/http-kernel >=6.4, to validate an email confirmation.', UriSigner::class));
         }
 
         if (!$this->uriSigner->checkRequest($request)) {

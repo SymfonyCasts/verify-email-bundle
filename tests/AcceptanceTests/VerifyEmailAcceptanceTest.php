@@ -12,6 +12,7 @@ namespace SymfonyCasts\Bundle\VerifyEmail\Tests\AcceptanceTests;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\UriSigner;
 use Symfony\Component\HttpKernel\KernelInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Tests\VerifyEmailTestKernel;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelper;
@@ -92,6 +93,9 @@ final class VerifyEmailAcceptanceTest extends TestCase
 
     public function testValidateUsingRequestObject(): void
     {
+        if (!class_exists(UriSigner::class)) {
+            $this->markTestSkipped('Requires symfony/http-foundation 6.4+');
+        }
         $container = $this->getBootedKernel()->getContainer();
 
         /** @var VerifyEmailHelper $helper */
