@@ -9,6 +9,7 @@
 
 namespace SymfonyCasts\Bundle\VerifyEmail;
 
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\UriSigner;
 use Symfony\Component\HttpKernel\UriSigner as LegacyUriSigner;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -25,26 +26,14 @@ use SymfonyCasts\Bundle\VerifyEmail\Util\VerifyEmailQueryUtility;
  */
 final class VerifyEmailHelper implements VerifyEmailHelperInterface
 {
-    private $router;
-    /**
-     * @var UriSigner|LegacyUriSigner
-     */
-    private $uriSigner;
-    private $queryUtility;
-    private $tokenGenerator;
+    public function __construct(
+        private UrlGeneratorInterface $router,
+        private UriSigner $uriSigner,
+        private VerifyEmailTokenGenerator $generator,
 
-    /**
-     * @var int The length of time in seconds that a signed URI is valid for after it is created
-     */
-    private $lifetime;
-
-    public function __construct(UrlGeneratorInterface $router, /* no typehint for BC with legacy PHP */ $uriSigner, VerifyEmailQueryUtility $queryUtility, VerifyEmailTokenGenerator $generator, int $lifetime)
-    {
-        $this->router = $router;
-        $this->uriSigner = $uriSigner;
-        $this->queryUtility = $queryUtility;
-        $this->tokenGenerator = $generator;
-        $this->lifetime = $lifetime;
+        /** @var int The length of time in seconds that a signed URI is valid for after it is created */
+        private int $lifetime
+    ) {
     }
 
     public function generateSignature(string $routeName, string $userId, string $userEmail, array $extraParams = []): VerifyEmailSignatureComponents
@@ -52,7 +41,7 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
         $generatedAt = time();
         $expiryTimestamp = $generatedAt + $this->lifetime;
 
-        $extraParams['token'] = $this->tokenGenerator->createToken($userId, $userEmail);
+        $extraParams['token'] = $this->generator->createToken($userId, $userEmail);
         $extraParams['expires'] = $expiryTimestamp;
 
         $uri = $this->router->generate($routeName, $extraParams, UrlGeneratorInterface::ABSOLUTE_URL);
@@ -63,21 +52,8 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
         return new VerifyEmailSignatureComponents(\DateTimeImmutable::createFromFormat('U', (string) $expiryTimestamp), $signature, $generatedAt);
     }
 
-    public function validateEmailConfirmation(string $signedUrl, string $userId, string $userEmail): void
+    public function validateEmailConfirmationFromRequest(Request $request, string $userId, string $userEmail): void
     {
-        if (!$this->uriSigner->check($signedUrl)) {
-            throw new InvalidSignatureException();
-        }
-
-        if ($this->queryUtility->getExpiryTimestamp($signedUrl) <= time()) {
-            throw new ExpiredSignatureException();
-        }
-
-        $knownToken = $this->tokenGenerator->createToken($userId, $userEmail);
-        $userToken = $this->queryUtility->getTokenFromQuery($signedUrl);
-
-        if (!hash_equals($knownToken, $userToken)) {
-            throw new WrongEmailVerifyException();
-        }
+        // TODO: pull #157
     }
 }

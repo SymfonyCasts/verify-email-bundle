@@ -9,6 +9,7 @@
 
 namespace SymfonyCasts\Bundle\VerifyEmail;
 
+use Symfony\Component\HttpFoundation\Request;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Model\VerifyEmailSignatureComponents;
 
@@ -51,13 +52,13 @@ interface VerifyEmailHelperInterface
      * the signature is valid for any of the email addresses. If you find the
      * one that is valid, you could then mark that email as "confirmed".
      *
-     * @param string $signedUrl the signed URL, usually the current URL that the
-     *                          user has just clicked in their email
+     * @TODO!!!!!!
+     * @param Request $request the Request object generated from the user...... @TODO better-description
      * @param string $userId    currently-authenticated user's unique identifier
      * @param string $userEmail currently-authenticated user's email, or, more specifically,
      *                          the email that the current user is attempting to validate
      *
      * @throws VerifyEmailExceptionInterface
      */
-    public function validateEmailConfirmation(string $signedUrl, string $userId, string $userEmail): void;
+    public function validateEmailConfirmationFromRequest(Request $request, string $userId, string $userEmail): void;
 }

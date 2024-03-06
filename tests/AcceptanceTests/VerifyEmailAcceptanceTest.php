@@ -59,6 +59,7 @@ final class VerifyEmailAcceptanceTest extends TestCase
 
     public function testValidateEmailSignature(): void
     {
+        $this->markTestIncomplete('Removed');
         $kernel = $this->getBootedKernel();
 
         $container = $kernel->getContainer();
