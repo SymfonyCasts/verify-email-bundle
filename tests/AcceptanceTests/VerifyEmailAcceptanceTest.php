@@ -11,6 +11,7 @@ namespace SymfonyCasts\Bundle\VerifyEmail\Tests\AcceptanceTests;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\KernelInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Tests\VerifyEmailTestKernel;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelper;
@@ -85,6 +86,35 @@ final class VerifyEmailAcceptanceTest extends TestCase
         $test = sprintf('%s&signature=%s', $uriToTest, urlencode($signature));
 
         $helper->validateEmailConfirmation($test, '1234', 'jr@rushlow.dev');
+        $this->assertTrue(true, 'Test correctly does not throw an exception');
+    }
+
+    public function testValidateUsingRequestObject(): void
+    {
+        $container = ($this->getBootedKernel())->getContainer();
+
+        /** @var VerifyEmailHelper $helper */
+        $helper = $container->get(VerifyEmailAcceptanceFixture::class)->helper;
+        $expires = new \DateTimeImmutable('+1 hour');
+
+        $uriToTest = sprintf(
+            'http://localhost/verify/user?%s',
+            http_build_query([
+                'expires' => $expires->getTimestamp(),
+                'token' => base64_encode(hash_hmac(
+                    'sha256',
+                    json_encode(['1234', 'jr@rushlow.dev']),
+                    'foo',
+                    true
+                )),
+            ])
+        );
+
+        $signature = base64_encode(hash_hmac('sha256', $uriToTest, 'foo', true));
+
+        $test = sprintf('%s&signature=%s', $uriToTest, urlencode($signature));
+
+        $helper->validateEmailConfirmationFromRequest(Request::create(uri: $test), '1234', 'jr@rushlow.dev');
         $this->assertTrue(true, 'Test correctly does not throw an exception');
     }
 

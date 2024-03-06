@@ -66,9 +66,14 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
 
     public function validateEmailConfirmation(string $signedUrl, string $userId, string $userEmail, ?Request $request = null): void
     {
-        if ($this->uriSigner instanceof UriSigner && null !== $request) {
+        if (null === $request) {
+            //@trigger_deprecation('You must pass a Request object....');
+        }
+
+        if ($hasRequestObject = $this->uriSigner instanceof UriSigner && null !== $request) {
             $isValid = $this->uriSigner->checkRequest($request);
         } else {
+            // @trigger_deprecation('Don\'t use a string anymore');
             $isValid = $this->uriSigner->check($signedUrl);
         }
 
@@ -76,14 +81,42 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
             throw new InvalidSignatureException();
         }
 
-        if ($this->queryUtility->getExpiryTimestamp($signedUrl) <= time()) {
+        if ($hasRequestObject) {
+            $expiresAt = $request->query->getInt('expires');
+            $userToken = $request->query->getString('token');
+        } else {
+            $expiresAt = $this->queryUtility->getExpiryTimestamp($signedUrl);
+            $userToken = $this->queryUtility->getTokenFromQuery($signedUrl);
+        }
+
+        if ($expiresAt <= time()) {
             throw new ExpiredSignatureException();
         }
 
         $knownToken = $this->tokenGenerator->createToken($userId, $userEmail);
-        $userToken = $this->queryUtility->getTokenFromQuery($signedUrl);
 
         if (!hash_equals($knownToken, $userToken)) {
+            throw new WrongEmailVerifyException();
+        }
+    }
+
+    public function validateEmailConfirmationFromRequest(Request $request, string $userId, string $userEmail): void
+    {
+        if (!$this->uriSigner instanceof UriSigner) {
+            throw new \RuntimeException('Use the other one instead');
+        }
+
+        if (!$this->uriSigner->checkRequest($request)) {
+            throw new InvalidSignatureException();
+        }
+
+        if ($request->query->getInt('expires') <= time()) {
+            throw new ExpiredSignatureException();
+        }
+
+        $knownToken = $this->tokenGenerator->createToken($userId, $userEmail);
+
+        if (!hash_equals($knownToken, $request->query->getString('token'))) {
             throw new WrongEmailVerifyException();
         }
     }
