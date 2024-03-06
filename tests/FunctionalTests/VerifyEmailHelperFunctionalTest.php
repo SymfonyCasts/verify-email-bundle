@@ -65,6 +65,7 @@ final class VerifyEmailHelperFunctionalTest extends TestCase
         self::assertTrue(hash_equals($knownSignature, $testSignature));
     }
 
+    /** @group legacy */
     public function testValidSignature(): void
     {
         $testSignature = $this->getTestSignedUri();

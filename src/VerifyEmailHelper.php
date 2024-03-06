@@ -64,36 +64,20 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
         return new VerifyEmailSignatureComponents(\DateTimeImmutable::createFromFormat('U', (string) $expiryTimestamp), $signature, $generatedAt);
     }
 
-    public function validateEmailConfirmation(string $signedUrl, string $userId, string $userEmail, ?Request $request = null): void
+    public function validateEmailConfirmation(string $signedUrl, string $userId, string $userEmail): void
     {
-        if (null === $request) {
-            //@trigger_deprecation('You must pass a Request object....');
-        }
+        @trigger_deprecation('symfonycasts/verify-email-bundle', '1.17.0', '%s() is deprecated and will be removed in v2.0, use validateEmailConfirmationFromRequest() instead.', __METHOD__);
 
-        if ($hasRequestObject = $this->uriSigner instanceof UriSigner && null !== $request) {
-            $isValid = $this->uriSigner->checkRequest($request);
-        } else {
-            // @trigger_deprecation('Don\'t use a string anymore');
-            $isValid = $this->uriSigner->check($signedUrl);
-        }
-
-        if (!$isValid) {
+        if (!$this->uriSigner->check($signedUrl)) {
             throw new InvalidSignatureException();
         }
 
-        if ($hasRequestObject) {
-            $expiresAt = $request->query->getInt('expires');
-            $userToken = $request->query->getString('token');
-        } else {
-            $expiresAt = $this->queryUtility->getExpiryTimestamp($signedUrl);
-            $userToken = $this->queryUtility->getTokenFromQuery($signedUrl);
-        }
-
-        if ($expiresAt <= time()) {
+        if ($this->queryUtility->getExpiryTimestamp($signedUrl) <= time()) {
             throw new ExpiredSignatureException();
         }
 
         $knownToken = $this->tokenGenerator->createToken($userId, $userEmail);
+        $userToken = $this->queryUtility->getTokenFromQuery($signedUrl);
 
         if (!hash_equals($knownToken, $userToken)) {
             throw new WrongEmailVerifyException();

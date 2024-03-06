@@ -36,6 +36,8 @@ interface VerifyEmailHelperInterface
     public function generateSignature(string $routeName, string $userId, string $userEmail, array $extraParams = []): VerifyEmailSignatureComponents;
 
     /**
+     * @deprecated since v1.17.0, use validateEmailConfirmationFromRequest instead.
+     *
      * Validate a signed an email confirmation request.
      *
      * If something is wrong with the email confirmation, a

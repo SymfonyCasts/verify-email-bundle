@@ -82,6 +82,7 @@ final class VerifyEmailHelperTest extends TestCase
         self::assertSame($expectedSignedUrl, $components->getSignedUrl());
     }
 
+    /** @group legacy */
     public function testValidationThrowsEarlyOnInvalidSignature(): void
     {
         $signedUrl = '/verify?expires=1&signature=1234%token=xyz';
@@ -115,6 +116,7 @@ final class VerifyEmailHelperTest extends TestCase
         $helper->validateEmailConfirmation($signedUrl, '1234', 'jr@rushlow.dev');
     }
 
+    /** @group legacy */
     public function testExceptionThrownWithExpiredSignature(): void
     {
         $timestamp = (new \DateTimeImmutable('-1 seconds'))->getTimestamp();
@@ -139,6 +141,7 @@ final class VerifyEmailHelperTest extends TestCase
         $helper->validateEmailConfirmation($signedUrl, '1234', 'jr@rushlow.dev');
     }
 
+    /** @group legacy */
     public function testValidationThrowsWithInvalidToken(): void
     {
         $signedUrl = '/verify?token=badToken';

@@ -58,6 +58,7 @@ final class VerifyEmailAcceptanceTest extends TestCase
         );
     }
 
+    /** @group legacy */
     public function testValidateEmailSignature(): void
     {
         $kernel = $this->getBootedKernel();
@@ -91,7 +92,7 @@ final class VerifyEmailAcceptanceTest extends TestCase
 
     public function testValidateUsingRequestObject(): void
     {
-        $container = ($this->getBootedKernel())->getContainer();
+        $container = $this->getBootedKernel()->getContainer();
 
         /** @var VerifyEmailHelper $helper */
         $helper = $container->get(VerifyEmailAcceptanceFixture::class)->helper;
