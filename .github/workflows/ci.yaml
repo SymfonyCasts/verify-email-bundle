@@ -10,6 +10,9 @@ on:
 jobs:
     test:
         uses: SymfonyCasts/.github/.github/workflows/phpunit.yaml@main
+        with:
+            php-version-matrix: '[8.3]'
+            php-version-lowest: 8.3
 
     composer-validate:
         uses: SymfonyCasts/.github/.github/workflows/composer-validate.yaml@main
@@ -19,3 +22,5 @@ jobs:
 
     sca:
         uses: SymfonyCasts/.github/.github/workflows/psalm.yaml@main
+        with:
+            php: 8.3
