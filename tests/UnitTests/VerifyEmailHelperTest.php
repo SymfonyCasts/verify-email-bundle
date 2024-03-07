@@ -183,6 +183,11 @@ final class VerifyEmailHelperTest extends TestCase
 
     public function testValidationWithRequestThrowsEarlyOnInvalidSignature(): void
     {
+        /** @legacy - Remove conditional in 2.0 */
+        if (!class_exists(UriSigner::class)) {
+            $this->markTestSkipped('Requires symfony/http-foundation 6.4+');
+        }
+
         $request = Request::create('/verify?expires=1&signature=1234%token=xyz');
 
         $this->mockSigner
@@ -206,6 +211,11 @@ final class VerifyEmailHelperTest extends TestCase
 
     public function testExceptionThrownWithExpiredSignatureFromRequest(): void
     {
+        /** @legacy - Remove conditional in 2.0 */
+        if (!class_exists(UriSigner::class)) {
+            $this->markTestSkipped('Requires symfony/http-foundation 6.4+');
+        }
+
         $timestamp = (new \DateTimeImmutable('-1 seconds'))->getTimestamp();
         $signedUrl = '/?expires='.$timestamp;
 
@@ -226,6 +236,11 @@ final class VerifyEmailHelperTest extends TestCase
 
     public function testValidationFromRequestThrowsWithInvalidToken(): void
     {
+        /** @legacy - Remove conditional in 2.0 */
+        if (!class_exists(UriSigner::class)) {
+            $this->markTestSkipped('Requires symfony/http-foundation 6.4+');
+        }
+
         $request = Request::create('/verify?expires=99999999999999&token=badToken');
 
         $this->mockSigner
