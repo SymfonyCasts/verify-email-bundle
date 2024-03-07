@@ -53,10 +53,11 @@ interface VerifyEmailHelperInterface
      * one that is valid, you could then mark that email as "confirmed".
      *
      * @TODO!!!!!!
-     * @param Request $request the Request object generated from the user...... @TODO better-description
-     * @param string $userId    currently-authenticated user's unique identifier
-     * @param string $userEmail currently-authenticated user's email, or, more specifically,
-     *                          the email that the current user is attempting to validate
+     *
+     * @param Request $request   the Request object generated from the user...... @TODO better-description
+     * @param string  $userId    currently-authenticated user's unique identifier
+     * @param string  $userEmail currently-authenticated user's email, or, more specifically,
+     *                           the email that the current user is attempting to validate
      *
      * @throws VerifyEmailExceptionInterface
      */

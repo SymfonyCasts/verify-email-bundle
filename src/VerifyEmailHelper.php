@@ -11,11 +11,7 @@ namespace SymfonyCasts\Bundle\VerifyEmail;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\UriSigner;
-use Symfony\Component\HttpKernel\UriSigner as LegacyUriSigner;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use SymfonyCasts\Bundle\VerifyEmail\Exception\ExpiredSignatureException;
-use SymfonyCasts\Bundle\VerifyEmail\Exception\InvalidSignatureException;
-use SymfonyCasts\Bundle\VerifyEmail\Exception\WrongEmailVerifyException;
 use SymfonyCasts\Bundle\VerifyEmail\Generator\VerifyEmailTokenGenerator;
 use SymfonyCasts\Bundle\VerifyEmail\Model\VerifyEmailSignatureComponents;
 
