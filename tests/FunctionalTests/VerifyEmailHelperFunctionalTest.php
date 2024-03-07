@@ -9,6 +9,7 @@
 
 namespace SymfonyCasts\Bundle\VerifyEmail\Tests\FunctionalTests;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bridge\PhpUnit\ClockMock;
 use Symfony\Component\HttpFoundation\UriSigner;
@@ -27,8 +28,8 @@ use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
  */
 final class VerifyEmailHelperFunctionalTest extends TestCase
 {
-    private $mockRouter;
-    private $expiryTimestamp;
+    private UrlGeneratorInterface|MockObject $mockRouter;
+    private int $expiryTimestamp;
 
     protected function setUp(): void
     {
