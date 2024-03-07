@@ -24,7 +24,6 @@ final class VerifyEmailServiceDefinitionTest extends TestCase
     {
         $prefix = 'symfonycasts.verify_email.';
 
-        yield [$prefix.'query_utility'];
         yield [$prefix.'uri_signer_factory'];
         yield [$prefix.'uri_signer'];
         yield [$prefix.'helper'];

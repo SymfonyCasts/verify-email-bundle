@@ -16,7 +16,6 @@ use Symfony\Component\HttpFoundation\UriSigner;
 use Symfony\Component\HttpKernel\UriSigner as LegacyUriSigner;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Generator\VerifyEmailTokenGenerator;
-use SymfonyCasts\Bundle\VerifyEmail\Util\VerifyEmailQueryUtility;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelper;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
 
