@@ -50,6 +50,11 @@ final class VerifyEmailHelperTest extends TestCase
         $this->tokenGenerator = $this->createMock(VerifyEmailTokenGenerator::class);
     }
 
+    /**
+     * @legacy - Remove annotation in 2.0
+     *
+     * @group legacy
+     */
     public function testSignatureIsGenerated(): void
     {
         $expires = time() + 3600;

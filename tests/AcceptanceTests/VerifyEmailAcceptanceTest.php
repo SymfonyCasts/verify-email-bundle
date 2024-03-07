@@ -24,6 +24,11 @@ use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
  */
 final class VerifyEmailAcceptanceTest extends TestCase
 {
+    /**
+     * @legacy - Remove annotation in 2.0
+     *
+     * @group legacy
+     */
     public function testGenerateSignature(): void
     {
         $kernel = $this->getBootedKernel();
