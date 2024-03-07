@@ -11,6 +11,7 @@ namespace SymfonyCasts\Bundle\VerifyEmail\Tests\UnitTests;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Bridge\PhpUnit\ClockMock;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\UriSigner;
 use Symfony\Component\HttpKernel\UriSigner as LegacyUriSigner;
 use Symfony\Component\Routing\RouterInterface;
@@ -178,6 +179,73 @@ final class VerifyEmailHelperTest extends TestCase
 
         $helper = $this->getHelper();
         $helper->validateEmailConfirmation($signedUrl, '1234', 'jr@rushlow.dev');
+    }
+
+    public function testValidationWithRequestThrowsEarlyOnInvalidSignature(): void
+    {
+        $request = Request::create('/verify?expires=1&signature=1234%token=xyz');
+
+        $this->mockSigner
+            ->expects($this->once())
+            ->method('checkRequest')
+            ->with($request)
+            ->willReturn(false)
+        ;
+
+        $this->tokenGenerator
+            ->expects($this->never())
+            ->method('createToken')
+        ;
+
+        $helper = $this->getHelper();
+
+        $this->expectException(InvalidSignatureException::class);
+
+        $helper->validateEmailConfirmationFromRequest($request, '1234', 'jr@rushlow.dev');
+    }
+
+    public function testExceptionThrownWithExpiredSignatureFromRequest(): void
+    {
+        $timestamp = (new \DateTimeImmutable('-1 seconds'))->getTimestamp();
+        $signedUrl = '/?expires='.$timestamp;
+
+        $request = Request::create($signedUrl);
+
+        $this->mockSigner
+            ->expects($this->once())
+            ->method('checkRequest')
+            ->with($request)
+            ->willReturn(true)
+        ;
+
+        $this->expectException(ExpiredSignatureException::class);
+
+        $helper = $this->getHelper();
+        $helper->validateEmailConfirmationFromRequest($request, '1234', 'jr@rushlow.dev');
+    }
+
+    public function testValidationFromRequestThrowsWithInvalidToken(): void
+    {
+        $request = Request::create('/verify?expires=99999999999999&token=badToken');
+
+        $this->mockSigner
+            ->expects($this->once())
+            ->method('checkRequest')
+            ->with($request)
+            ->willReturn(true)
+        ;
+
+        $this->tokenGenerator
+            ->expects($this->once())
+            ->method('createToken')
+            ->with('1234', 'jr@rushlow.dev')
+            ->willReturn(base64_encode(hash_hmac('sha256', 'data', 'foo', true)))
+        ;
+
+        $this->expectException(WrongEmailVerifyException::class);
+
+        $helper = $this->getHelper();
+        $helper->validateEmailConfirmationFromRequest($request, '1234', 'jr@rushlow.dev');
     }
 
     private function getHelper(): VerifyEmailHelperInterface

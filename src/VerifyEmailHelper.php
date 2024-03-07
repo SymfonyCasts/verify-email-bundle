@@ -46,6 +46,11 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
         $this->queryUtility = $queryUtility;
         $this->tokenGenerator = $generator;
         $this->lifetime = $lifetime;
+
+        if (!$uriSigner instanceof UriSigner) {
+            /** @psalm-suppress UndefinedFunction */
+            @trigger_deprecation('symfonycasts/verify-email-bundle', '1.17.0', 'Not providing an instance of %s is deprecated. It will be required in v2.0', UriSigner::class);
+        }
     }
 
     public function generateSignature(string $routeName, string $userId, string $userEmail, array $extraParams = []): VerifyEmailSignatureComponents
@@ -87,6 +92,7 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
 
     public function validateEmailConfirmationFromRequest(Request $request, string $userId, string $userEmail): void
     {
+        /** @legacy - Remove in 2.0 */
         if (!$this->uriSigner instanceof UriSigner) {
             throw new \RuntimeException(sprintf('An instance of %s is required, provided by symfony/http-kernel >=6.4, to validate an email confirmation.', UriSigner::class));
         }
