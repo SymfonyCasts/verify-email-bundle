@@ -98,6 +98,7 @@ final class VerifyEmailHelperFunctionalTest extends TestCase
 
     private function getTestSignedUri(): string
     {
+        $this->markTestSkipped('Method removed in 2.x');
         $token = urlencode($this->getTestToken());
 
         $uri = sprintf('/verify?expires=%s&token=%s', $this->expiryTimestamp, $token);

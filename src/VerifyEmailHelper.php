@@ -69,27 +69,6 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
         return new VerifyEmailSignatureComponents(\DateTimeImmutable::createFromFormat('U', (string) $expiryTimestamp), $signature, $generatedAt);
     }
 
-    public function validateEmailConfirmation(string $signedUrl, string $userId, string $userEmail): void
-    {
-        /** @psalm-suppress UndefinedFunction */
-        @trigger_deprecation('symfonycasts/verify-email-bundle', '1.17.0', '%s() is deprecated and will be removed in v2.0, use validateEmailConfirmationFromRequest() instead.', __METHOD__);
-
-        if (!$this->uriSigner->check($signedUrl)) {
-            throw new InvalidSignatureException();
-        }
-
-        if ($this->queryUtility->getExpiryTimestamp($signedUrl) <= time()) {
-            throw new ExpiredSignatureException();
-        }
-
-        $knownToken = $this->tokenGenerator->createToken($userId, $userEmail);
-        $userToken = $this->queryUtility->getTokenFromQuery($signedUrl);
-
-        if (!hash_equals($knownToken, $userToken)) {
-            throw new WrongEmailVerifyException();
-        }
-    }
-
     public function validateEmailConfirmationFromRequest(Request $request, string $userId, string $userEmail): void
     {
         /** @legacy - Remove in 2.0 */

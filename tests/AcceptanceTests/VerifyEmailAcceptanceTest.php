@@ -64,38 +64,6 @@ final class VerifyEmailAcceptanceTest extends TestCase
         );
     }
 
-    /** @group legacy */
-    public function testValidateEmailSignature(): void
-    {
-        $kernel = $this->getBootedKernel();
-
-        $container = $kernel->getContainer();
-
-        /** @var VerifyEmailHelper $helper */
-        $helper = $container->get(VerifyEmailAcceptanceFixture::class)->helper;
-        $expires = new \DateTimeImmutable('+1 hour');
-
-        $uriToTest = sprintf(
-            '/verify/user?%s',
-            http_build_query([
-                'expires' => $expires->getTimestamp(),
-                'token' => base64_encode(hash_hmac(
-                    'sha256',
-                    json_encode(['1234', 'jr@rushlow.dev']),
-                    'foo',
-                    true
-                )),
-            ])
-        );
-
-        $signature = base64_encode(hash_hmac('sha256', $uriToTest, 'foo', true));
-
-        $test = sprintf('%s&signature=%s', $uriToTest, urlencode($signature));
-
-        $helper->validateEmailConfirmation($test, '1234', 'jr@rushlow.dev');
-        $this->assertTrue(true, 'Test correctly does not throw an exception');
-    }
-
     public function testValidateUsingRequestObject(): void
     {
         if (!class_exists(UriSigner::class)) {

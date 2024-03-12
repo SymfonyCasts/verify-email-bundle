@@ -18,8 +18,6 @@ use SymfonyCasts\Bundle\VerifyEmail\Model\VerifyEmailSignatureComponents;
  *
  * @author Jesse Rushlow <jr@rushlow.dev>
  * @author Ryan Weaver   <ryan@symfonycasts.com>
- *
- * @method void validateEmailConfirmationFromRequest(Request $request, string $userId, string $userEmail)
  */
 interface VerifyEmailHelperInterface
 {
@@ -36,9 +34,7 @@ interface VerifyEmailHelperInterface
     public function generateSignature(string $routeName, string $userId, string $userEmail, array $extraParams = []): VerifyEmailSignatureComponents;
 
     /**
-     * @deprecated since v1.17.0, use validateEmailConfirmationFromRequest instead.
-     *
-     * Validate a signed an email confirmation request.
+     * Validate a signed email confirmation request.
      *
      * If something is wrong with the email confirmation, a
      * VerifyEmailExceptionInterface will be thrown.
@@ -56,13 +52,13 @@ interface VerifyEmailHelperInterface
      * the signature is valid for any of the email addresses. If you find the
      * one that is valid, you could then mark that email as "confirmed".
      *
-     * @param string $signedUrl the signed URL, usually the current URL that the
-     *                          user has just clicked in their email
-     * @param string $userId    currently-authenticated user's unique identifier
-     * @param string $userEmail currently-authenticated user's email, or, more specifically,
-     *                          the email that the current user is attempting to validate
+     * @param Request $request   the Request object containing the signed URL, usually
+     *                           the current URL that the user has just clicked in their email
+     * @param string  $userId    currently-authenticated user's unique identifier
+     * @param string  $userEmail currently-authenticated user's email, or, more specifically,
+     *                           the email that the current user is attempting to validate
      *
      * @throws VerifyEmailExceptionInterface
      */
-    public function validateEmailConfirmation(string $signedUrl, string $userId, string $userEmail): void;
+    public function validateEmailConfirmationFromRequest(Request $request, string $userId, string $userEmail): void;
 }
