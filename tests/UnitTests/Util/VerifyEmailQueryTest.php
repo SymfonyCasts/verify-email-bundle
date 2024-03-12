@@ -15,6 +15,8 @@ use SymfonyCasts\Bundle\VerifyEmail\Util\VerifyEmailQueryUtility;
 /**
  * @author Jesse Rushlow <jr@rushlow.dev>
  * @author Ryan Weaver   <ryan@symfonycasts.com>
+ *
+ * @group legacy
  */
 final class VerifyEmailQueryTest extends TestCase
 {
