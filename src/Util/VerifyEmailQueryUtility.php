@@ -15,8 +15,6 @@ namespace SymfonyCasts\Bundle\VerifyEmail\Util;
  * @author Jesse Rushlow <jr@rushlow.dev>
  * @author Ryan Weaver   <ryan@symfonycasts.com>
  *
- * @deprecated since v1.17.0 - Remove in 2.0
- *
  * @internal
  *
  * @final
