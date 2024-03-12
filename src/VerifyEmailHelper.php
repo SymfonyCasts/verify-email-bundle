@@ -48,7 +48,6 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
         $this->lifetime = $lifetime;
 
         if (!$uriSigner instanceof UriSigner) {
-            /** @psalm-suppress UndefinedFunction */
             @trigger_deprecation('symfonycasts/verify-email-bundle', '1.17.0', 'Not providing an instance of %s is deprecated. It will be required in v2.0', UriSigner::class);
         }
     }
@@ -71,7 +70,6 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
 
     public function validateEmailConfirmation(string $signedUrl, string $userId, string $userEmail): void
     {
-        /** @psalm-suppress UndefinedFunction */
         @trigger_deprecation('symfonycasts/verify-email-bundle', '1.17.0', '%s() is deprecated and will be removed in v2.0, use validateEmailConfirmationFromRequest() instead.', __METHOD__);
 
         if (!$this->uriSigner->check($signedUrl)) {
