@@ -39,6 +39,11 @@ final class VerifyEmailHelperFunctionalTest extends TestCase
         $this->mockRouter = $this->createMock(UrlGeneratorInterface::class);
     }
 
+    /**
+     * @legacy - Remove annotation in 2.0
+     *
+     * @group legacy
+     */
     public function testGenerateSignature(): void
     {
         $token = $this->getTestToken();
@@ -65,6 +70,11 @@ final class VerifyEmailHelperFunctionalTest extends TestCase
         self::assertTrue(hash_equals($knownSignature, $testSignature));
     }
 
+    /**
+     * @legacy - Remove annotation in 2.0
+     *
+     * @group legacy
+     */
     public function testValidSignature(): void
     {
         $testSignature = $this->getTestSignedUri();

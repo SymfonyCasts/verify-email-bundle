@@ -33,6 +33,10 @@ final class VerifyEmailServiceDefinitionTest extends TestCase
 
     /**
      * @dataProvider bundleServiceDefinitionDataProvider
+     *
+     * @legacy - Remove annotation in 2.0
+     *
+     * @group legacy
      */
     public function testBundleServiceDefinitions(string $definition): void
     {
