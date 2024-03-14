@@ -35,15 +35,11 @@ final class VerifyEmailSignatureComponents
      */
     private $transInterval = 0;
 
-    public function __construct(\DateTimeInterface $expiresAt, string $uri, ?int $generatedAt = null)
+    public function __construct(\DateTimeInterface $expiresAt, string $uri, int $generatedAt)
     {
         $this->expiresAt = $expiresAt;
         $this->uri = $uri;
         $this->generatedAt = $generatedAt;
-
-        if (null === $generatedAt) {
-            $this->triggerDeprecation();
-        }
     }
 
     /**
@@ -128,18 +124,5 @@ final class VerifyEmailSignatureComponents
         $createdAtTime = \DateTimeImmutable::createFromFormat('U', (string) $this->generatedAt);
 
         return $this->expiresAt->diff($createdAtTime);
-    }
-
-    /**
-     * @psalm-suppress UndefinedFunction
-     */
-    private function triggerDeprecation(): void
-    {
-        trigger_deprecation(
-            'symfonycasts/verify-email-bundle',
-            '1.2',
-            'Initializing the %s without setting the "$generatedAt" constructor argument is deprecated. The default "null" will be removed in the future.',
-            self::class
-        );
     }
 }
