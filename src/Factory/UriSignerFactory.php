@@ -19,10 +19,8 @@ use Symfony\Component\HttpKernel\UriSigner as LegacyUriSigner;
  * Will become final && internal and ultimately removed in v2.0.
  *
  * @internal
- *
- * @final
  */
-class UriSignerFactory
+final class UriSignerFactory
 {
     public function __construct(
         #[\SensitiveParameter]
