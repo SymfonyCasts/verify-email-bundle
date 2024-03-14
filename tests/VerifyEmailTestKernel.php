@@ -26,20 +26,15 @@ use SymfonyCasts\Bundle\VerifyEmail\SymfonyCastsVerifyEmailBundle;
  */
 class VerifyEmailTestKernel extends Kernel
 {
-    private $builder;
-    private $routes;
-    private $extraBundles;
-
     /**
-     * @param array             $routes  Routes to be added to the container e.g. ['name' => 'path']
-     * @param BundleInterface[] $bundles Additional bundles to be registered e.g. [new Bundle()]
+     * @param array             $routes       Routes to be added to the container e.g. ['name' => 'path']
+     * @param BundleInterface[] $extraBundles Additional bundles to be registered e.g. [new Bundle()]
      */
-    public function __construct(?ContainerBuilder $builder = null, array $routes = [], array $bundles = [])
-    {
-        $this->builder = $builder;
-        $this->routes = $routes;
-        $this->extraBundles = $bundles;
-
+    public function __construct(
+        private ?ContainerBuilder $builder = null,
+        private array $routes = [],
+        private array $extraBundles = []
+    ) {
         parent::__construct('test', true);
     }
 

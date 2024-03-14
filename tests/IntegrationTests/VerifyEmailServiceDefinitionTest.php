@@ -51,7 +51,7 @@ final class VerifyEmailServiceDefinitionTest extends TestCase
 
 final class DefinitionPublicCompilerPass implements CompilerPassInterface
 {
-    public $definition;
+    public string $definition;
 
     public function process(ContainerBuilder $container): void
     {
@@ -63,7 +63,7 @@ final class DefinitionPublicCompilerPass implements CompilerPassInterface
 
 final class VerifyEmailDefinitionTestKernel extends VerifyEmailTestKernel
 {
-    public $compilerPass;
+    public CompilerPassInterface $compilerPass;
 
     protected function build(ContainerBuilder $container): void
     {

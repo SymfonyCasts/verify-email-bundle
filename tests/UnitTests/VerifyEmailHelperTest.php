@@ -9,6 +9,7 @@
 
 namespace SymfonyCasts\Bundle\VerifyEmail\Tests\UnitTests;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bridge\PhpUnit\ClockMock;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,10 +31,10 @@ use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
  */
 final class VerifyEmailHelperTest extends TestCase
 {
-    private $mockRouter;
-    private $mockSigner;
-    private $mockQueryUtility;
-    private $tokenGenerator;
+    private RouterInterface|MockObject $mockRouter;
+    private UriSigner|MockObject $mockSigner;
+    private VerifyEmailQueryUtility|MockObject $mockQueryUtility;
+    private VerifyEmailTokenGenerator|MockObject $tokenGenerator;
 
     protected function setUp(): void
     {

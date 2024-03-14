@@ -107,10 +107,8 @@ final class VerifyEmailAcceptanceTest extends TestCase
 
 final class VerifyEmailAcceptanceFixture
 {
-    public $helper;
-
-    public function __construct(VerifyEmailHelperInterface $helper)
-    {
-        $this->helper = $helper;
+    public function __construct(
+        public VerifyEmailHelperInterface $helper
+    ) {
     }
 }
