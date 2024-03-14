@@ -20,11 +20,6 @@ use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
  */
 final class VerifyEmailBundleAutowireTest extends TestCase
 {
-    /**
-     * @legacy - Remove annotation in 2.0
-     *
-     * @group legacy
-     */
     public function testVerifyEmailBundleInterfaceIsAutowiredByContainer(): void
     {
         $builder = new ContainerBuilder();
