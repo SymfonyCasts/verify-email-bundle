@@ -9,11 +9,11 @@
 
 namespace SymfonyCasts\Bundle\VerifyEmail\Tests\UnitTests;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bridge\PhpUnit\ClockMock;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\UriSigner;
-use Symfony\Component\HttpKernel\UriSigner as LegacyUriSigner;
 use Symfony\Component\Routing\RouterInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\ExpiredSignatureException;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\InvalidSignatureException;
@@ -31,30 +31,21 @@ use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
  */
 final class VerifyEmailHelperTest extends TestCase
 {
-    private $mockRouter;
-    private $mockSigner;
-    private $mockQueryUtility;
-    private $tokenGenerator;
+    private RouterInterface|MockObject $mockRouter;
+    private UriSigner|MockObject $mockSigner;
+    private VerifyEmailQueryUtility|MockObject $mockQueryUtility;
+    private VerifyEmailTokenGenerator|MockObject $tokenGenerator;
 
     protected function setUp(): void
     {
         ClockMock::register(VerifyEmailHelper::class);
 
         $this->mockRouter = $this->createMock(RouterInterface::class);
-        if (class_exists(UriSigner::class)) {
-            $this->mockSigner = $this->createMock(UriSigner::class);
-        } else {
-            $this->mockSigner = $this->createMock(LegacyUriSigner::class);
-        }
+        $this->mockSigner = $this->createMock(UriSigner::class);
         $this->mockQueryUtility = $this->createMock(VerifyEmailQueryUtility::class);
         $this->tokenGenerator = $this->createMock(VerifyEmailTokenGenerator::class);
     }
 
-    /**
-     * @legacy - Remove annotation in 2.0
-     *
-     * @group legacy
-     */
     public function testSignatureIsGenerated(): void
     {
         $expires = time() + 3600;
@@ -88,114 +79,8 @@ final class VerifyEmailHelperTest extends TestCase
         self::assertSame($expectedSignedUrl, $components->getSignedUrl());
     }
 
-    /** @group legacy */
-    public function testValidationThrowsEarlyOnInvalidSignature(): void
-    {
-        $this->markTestIncomplete('Refactor to use new method');
-        $signedUrl = '/verify?expires=1&signature=1234%token=xyz';
-
-        $this->mockSigner
-            ->expects($this->once())
-            ->method('check')
-            ->with($signedUrl)
-            ->willReturn(false)
-        ;
-
-        $this->mockQueryUtility
-            ->expects($this->never())
-            ->method('getExpiryTimestamp')
-        ;
-
-        $this->mockQueryUtility
-            ->expects($this->never())
-            ->method('getTokenFromQuery')
-        ;
-
-        $this->tokenGenerator
-            ->expects($this->never())
-            ->method('createToken')
-        ;
-
-        $helper = $this->getHelper();
-
-        $this->expectException(InvalidSignatureException::class);
-
-        $helper->validateEmailConfirmation($signedUrl, '1234', 'jr@rushlow.dev');
-    }
-
-    /** @group legacy */
-    public function testExceptionThrownWithExpiredSignature(): void
-    {
-        $this->markTestIncomplete('refactor to use new method');
-        $timestamp = (new \DateTimeImmutable('-1 seconds'))->getTimestamp();
-        $signedUrl = '/?expires='.$timestamp;
-
-        $this->mockSigner
-            ->expects($this->once())
-            ->method('check')
-            ->willReturn(true)
-        ;
-
-        $this->mockQueryUtility
-            ->expects($this->once())
-            ->method('getExpiryTimestamp')
-            ->with($signedUrl)
-            ->willReturn($timestamp)
-        ;
-
-        $this->expectException(ExpiredSignatureException::class);
-
-        $helper = $this->getHelper();
-        $helper->validateEmailConfirmation($signedUrl, '1234', 'jr@rushlow.dev');
-    }
-
-    /** @group legacy */
-    public function testValidationThrowsWithInvalidToken(): void
-    {
-        $this->markTestIncomplete('Refactor to use new method');
-        $signedUrl = '/verify?token=badToken';
-
-        $this->mockSigner
-            ->expects($this->once())
-            ->method('check')
-            ->with($signedUrl)
-            ->willReturn(true)
-        ;
-
-        $this->mockQueryUtility
-            ->expects($this->once())
-            ->method('getExpiryTimestamp')
-            ->with($signedUrl)
-            ->willReturn(9999999999999999)
-        ;
-
-        $this->tokenGenerator
-            ->expects($this->once())
-            ->method('createToken')
-            ->with('1234', 'jr@rushlow.dev')
-            ->willReturn(base64_encode(hash_hmac('sha256', 'data', 'foo', true)))
-        ;
-
-        $this->mockQueryUtility
-            ->expects($this->once())
-            ->method('getTokenFromQuery')
-            ->with($signedUrl)
-            ->willReturn('badToken')
-        ;
-
-        $this->expectException(WrongEmailVerifyException::class);
-
-        $helper = $this->getHelper();
-        $helper->validateEmailConfirmation($signedUrl, '1234', 'jr@rushlow.dev');
-    }
-
     public function testValidationWithRequestThrowsEarlyOnInvalidSignature(): void
     {
-        /** @legacy - Remove conditional in 2.0 */
-        if (!class_exists(UriSigner::class)) {
-            $this->markTestSkipped('Requires symfony/http-foundation 6.4+');
-        }
-
         $request = Request::create('/verify?expires=1&signature=1234%token=xyz');
 
         $this->mockSigner
@@ -219,15 +104,9 @@ final class VerifyEmailHelperTest extends TestCase
 
     public function testExceptionThrownWithExpiredSignatureFromRequest(): void
     {
-        /** @legacy - Remove conditional in 2.0 */
-        if (!class_exists(UriSigner::class)) {
-            $this->markTestSkipped('Requires symfony/http-foundation 6.4+');
-        }
-
         $timestamp = (new \DateTimeImmutable('-1 seconds'))->getTimestamp();
-        $signedUrl = '/?expires='.$timestamp;
 
-        $request = Request::create($signedUrl);
+        $request = Request::create(sprintf('/?expires=%s', $timestamp));
 
         $this->mockSigner
             ->expects($this->once())
@@ -244,11 +123,6 @@ final class VerifyEmailHelperTest extends TestCase
 
     public function testValidationFromRequestThrowsWithInvalidToken(): void
     {
-        /** @legacy - Remove conditional in 2.0 */
-        if (!class_exists(UriSigner::class)) {
-            $this->markTestSkipped('Requires symfony/http-foundation 6.4+');
-        }
-
         $request = Request::create('/verify?expires=99999999999999&token=badToken');
 
         $this->mockSigner
