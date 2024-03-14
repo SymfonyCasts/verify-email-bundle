@@ -26,7 +26,7 @@ final class VerifyEmailSignatureComponents
     private $uri;
 
     /**
-     * @var int|null timestamp when the signature was created
+     * @var int timestamp when the signature was created
      */
     private $generatedAt;
 
@@ -67,8 +67,6 @@ final class VerifyEmailSignatureComponents
      * <p>{{ components.expirationMessageKey|trans(components.expirationMessageData) }}</p>
      *
      * symfony/translation is required to translate into a non-English locale.
-     *
-     * @throws \LogicException
      */
     public function getExpirationMessageKey(): string
     {
@@ -98,9 +96,6 @@ final class VerifyEmailSignatureComponents
         }
     }
 
-    /**
-     * @throws \LogicException
-     */
     public function getExpirationMessageData(): array
     {
         $this->getExpirationMessageKey();
@@ -111,16 +106,10 @@ final class VerifyEmailSignatureComponents
     /**
      * Get the interval that the signature is valid for.
      *
-     * @throws \LogicException
-     *
      * @psalm-suppress PossiblyFalseArgument
      */
     public function getExpiresAtIntervalInstance(): \DateInterval
     {
-        if (null === $this->generatedAt) {
-            throw new \LogicException(sprintf('%s initialized without setting the $generatedAt timestamp.', self::class));
-        }
-
         $createdAtTime = \DateTimeImmutable::createFromFormat('U', (string) $this->generatedAt);
 
         return $this->expiresAt->diff($createdAtTime);

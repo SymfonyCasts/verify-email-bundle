@@ -14,3 +14,6 @@ when instantiating a new `VerifyEmailSignatureComponents` instance.
 - public function __construct(\DateTimeInterface $expiresAt, string $uri, ?int $generatedAt = null)
 + public function __construct(\DateTimeInterface $expiresAt, string $uri, int $generatedAt)
 ```
+
+- Method's `getExpirationMessageKey`, `getExpirationMessageData`, & `getExpiresAtIntervalInstance`
+no longer potentially throw a `LogicException`.
