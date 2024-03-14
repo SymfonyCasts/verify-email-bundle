@@ -25,23 +25,16 @@ use SymfonyCasts\Bundle\VerifyEmail\Util\VerifyEmailQueryUtility;
  */
 final class VerifyEmailHelper implements VerifyEmailHelperInterface
 {
-    private $router;
-    private UriSigner $uriSigner;
-    private $queryUtility;
-    private $tokenGenerator;
-
     /**
-     * @var int The length of time in seconds that a signed URI is valid for after it is created
+     * @param int $lifetime The length of time in seconds that a signed URI is valid for after it is created
      */
-    private $lifetime;
-
-    public function __construct(UrlGeneratorInterface $router, UriSigner $uriSigner, VerifyEmailQueryUtility $queryUtility, VerifyEmailTokenGenerator $generator, int $lifetime)
-    {
-        $this->router = $router;
-        $this->uriSigner = $uriSigner;
-        $this->queryUtility = $queryUtility;
-        $this->tokenGenerator = $generator;
-        $this->lifetime = $lifetime;
+    public function __construct(
+        private UrlGeneratorInterface $router,
+        private UriSigner $uriSigner,
+        private VerifyEmailQueryUtility $queryUtility,
+        private VerifyEmailTokenGenerator $tokenGenerator,
+        private int $lifetime
+    ) {
     }
 
     public function generateSignature(string $routeName, string $userId, string $userEmail, array $extraParams = []): VerifyEmailSignatureComponents

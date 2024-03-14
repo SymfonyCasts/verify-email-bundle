@@ -20,13 +20,12 @@ namespace SymfonyCasts\Bundle\VerifyEmail\Generator;
 class VerifyEmailTokenGenerator
 {
     /**
-     * @var string Unique, random, cryptographically secure string
+     * @param string $signingKey Unique, random, cryptographically secure string
      */
-    private $signingKey;
-
-    public function __construct(string $key)
-    {
-        $this->signingKey = $key;
+    public function __construct(
+        #[\SensitiveParameter]
+        private string $signingKey
+    ) {
     }
 
     /**
