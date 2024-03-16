@@ -3,6 +3,15 @@
 *We intend to follow [Semantic Versioning 2.0.0](https://semver.org/), if you 
 find a change that break's semver, please create an issue.*
 
+## [v1.17.0](https://github.com/symfonycasts/verify-email-bundle/releases/tag/v1.17.0)
+
+*March 16th, 2024*
+
+### Feature
+
+* [#165](https://github.com/symfonycasts/verify-email-bundle/pull/165) - UriSignerFactory to become internal in 2.x - *@jrushlow*
+* [#157](https://github.com/symfonycasts/verify-email-bundle/pull/157) - use `UriSigner::checkRequest()` to validate signatures using a `Request` object - *@jrushlow*
+
 ## [v1.14.0](https://github.com/symfonycasts/verify-email-bundle/releases/tag/v1.14.0)
 
 *September 22nd, 2023*
