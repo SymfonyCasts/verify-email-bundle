@@ -16,30 +16,18 @@ namespace SymfonyCasts\Bundle\VerifyEmail\Model;
 final class VerifyEmailSignatureComponents
 {
     /**
-     * @var \DateTimeInterface
-     */
-    private $expiresAt;
-
-    /**
-     * @var string
-     */
-    private $uri;
-
-    /**
-     * @var int timestamp when the signature was created
-     */
-    private $generatedAt;
-
-    /**
      * @var int expiresAt translator interval
      */
-    private $transInterval = 0;
+    private int $transInterval = 0;
 
-    public function __construct(\DateTimeInterface $expiresAt, string $uri, int $generatedAt)
-    {
-        $this->expiresAt = $expiresAt;
-        $this->uri = $uri;
-        $this->generatedAt = $generatedAt;
+    /**
+     * @param int $generatedAt timestamp when the signature was created
+     */
+    public function __construct(
+        private \DateTimeInterface $expiresAt,
+        private string $uri,
+        private int $generatedAt
+    ) {
     }
 
     /**

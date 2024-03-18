@@ -81,9 +81,6 @@ class VerifyEmailTestKernel extends Kernel
         });
     }
 
-    /**
-     * @internal
-     */
     public function loadRoutes(LoaderInterface $loader): RouteCollection
     {
         $routes = new RouteCollection();
