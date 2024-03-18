@@ -33,7 +33,7 @@ final class SymfonyCastsVerifyEmailExtension extends Extension
         $config = $this->processConfiguration($configuration, $configs);
 
         $helperDefinition = $container->getDefinition('symfonycasts.verify_email.helper');
-        $helperDefinition->replaceArgument(4, $config['lifetime']);
+        $helperDefinition->replaceArgument(3, $config['lifetime']);
     }
 
     public function getAlias(): string
