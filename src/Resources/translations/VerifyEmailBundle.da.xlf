@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+    <file original="file.ext" source-language="en" target-language="da" datatype="plaintext">
+        <body>
+            <trans-unit id="1">
+                <source>%count% year|%count% years</source>
+                <target>%count% år|%count% år</target>
+            </trans-unit>
+            <trans-unit id="2">
+                <source>%count% month|%count% months</source>
+                <target>%count% måned|%count% måneder</target>
+            </trans-unit>
+            <trans-unit id="3">
+                <source>%count% day|%count% days</source>
+                <target>%count% dag|%count% dage</target>
+            </trans-unit>
+            <trans-unit id="4">
+                <source>%count% hour|%count% hours</source>
+                <target>%count% time|%count% timer</target>
+            </trans-unit>
+            <trans-unit id="5">
+                <source>%count% minute|%count% minutes</source>
+                <target>%count% minut|%count% minutter</target>
+            </trans-unit>
+            <trans-unit id="6">
+                <source>The link to verify your email has expired. Please request a new link.</source>
+                <target>Linket til at bekræfte din e-mail er udløbet. Venligst anmod om et nyt link.</target>
+            </trans-unit>
+            <trans-unit id="7">
+                <source>The link to verify your email is invalid. Please request a new link.</source>
+                <target>Linket til at bekræfte din e-mail er ugyldigt. Venligst anmod om et nyt link.</target>
+            </trans-unit>
+            <trans-unit id="8">
+                <source>The link to verify your email appears to be for a different account or email. Please request a new link.</source>
+                <target>Linket til at bekræfte din e-mail ser ud til at være til en anden konto eller e-mail. Venligst anmod om et nyt link.</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>
