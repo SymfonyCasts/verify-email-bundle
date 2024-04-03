@@ -37,3 +37,10 @@ when instantiating a new `VerifyEmailSignatureComponents` instance.
 
 - Method's `getExpirationMessageKey`, `getExpirationMessageData`, & `getExpiresAtIntervalInstance`
 no longer potentially throw a `LogicException`.
+
+- Added array shape typehint for the return value of `getExpirationMessageData()`
+
+```diff
+- @return array
++ @return array<string, int>
+```

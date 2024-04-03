@@ -84,6 +84,9 @@ final class VerifyEmailSignatureComponents
         }
     }
 
+    /**
+     * @return array<string, int>
+     */
     public function getExpirationMessageData(): array
     {
         $this->getExpirationMessageKey();
