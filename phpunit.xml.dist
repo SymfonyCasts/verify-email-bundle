@@ -25,16 +25,16 @@
             <directory>./tests</directory>
         </testsuite>
         <testsuite name="unit">
-            <directory>./tests/UnitTests</directory>
+            <directory>./tests/Unit</directory>
         </testsuite>
         <testsuite name="functional">
-            <directory>./tests/FunctionalTests</directory>
+            <directory>./tests/Functional</directory>
         </testsuite>
         <testsuite name="integration">
-            <directory>./tests/IntegrationTests</directory>
+            <directory>./tests/Integration</directory>
         </testsuite>
         <testsuite name="acceptance">
-            <directory>./tests/AcceptanceTests</directory>
+            <directory>./tests/Acceptance</directory>
         </testsuite>
     </testsuites>
 

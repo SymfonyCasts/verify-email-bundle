@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-namespace SymfonyCasts\Bundle\VerifyEmail\Tests\UnitTests\Generator;
+namespace SymfonyCasts\Bundle\VerifyEmail\Tests\Unit\Generator;
 
 use PHPUnit\Framework\TestCase;
 use SymfonyCasts\Bundle\VerifyEmail\Generator\VerifyEmailTokenGenerator;
