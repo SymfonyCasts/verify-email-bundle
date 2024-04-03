@@ -25,6 +25,15 @@ class EmailVerifier
 }
 ```
 
+- `VerifyEmailHelperInterface::generateSignature(extraParams: [])` added the array
+shape expected for the `extraParams` argument.
+
+```diff
+- @param array $extraParams
++ @param array<string, int|string> $extraParams
+```
+
+
 ## VerifyEmailSignatureComponents
 
 - Providing an `int` to the constructor parameter `$generatedAt` is now required
