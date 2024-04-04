@@ -26,7 +26,7 @@ use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
  */
 final class VerifyEmailHelperFunctionalTest extends TestCase
 {
-    private UrlGeneratorInterface|MockObject $mockRouter;
+    private UrlGeneratorInterface&MockObject $mockRouter;
     private int $expiryTimestamp;
 
     protected function setUp(): void
@@ -64,22 +64,14 @@ final class VerifyEmailHelperFunctionalTest extends TestCase
         self::assertTrue(hash_equals($knownSignature, $testSignature));
     }
 
-    /**
-     * @legacy - Remove annotation in 2.0
-     *
-     * @group legacy
-     */
-    public function testValidSignature(): void
-    {
-        $testSignature = $this->getTestSignedUri();
-
-        $this->getHelper()->validateEmailConfirmation($testSignature, '1234', 'jr@rushlow.dev');
-        $this->assertTrue(true, 'Test correctly does not throw an exception');
-    }
-
     private function getTestToken(): string
     {
-        return base64_encode(hash_hmac('sha256', json_encode(['1234', 'jr@rushlow.dev']), 'foo', true));
+        return base64_encode(hash_hmac(
+            'sha256',
+            json_encode(['1234', 'jr@rushlow.dev'], \JSON_THROW_ON_ERROR),
+            'foo',
+            true
+        ));
     }
 
     private function getTestSignature(): string
@@ -88,25 +80,6 @@ final class VerifyEmailHelperFunctionalTest extends TestCase
         $uri = sprintf('/verify?%s', $query);
 
         return base64_encode(hash_hmac('sha256', $uri, 'foo', true));
-    }
-
-    private function getTestSignedUri(): string
-    {
-        $this->markTestSkipped('Method removed in 2.x');
-        $token = urlencode($this->getTestToken());
-
-        $uri = sprintf('/verify?expires=%s&token=%s', $this->expiryTimestamp, $token);
-        $signature = base64_encode(hash_hmac('sha256', $uri, 'foo', true));
-
-        $uriComponents = parse_url($uri);
-        parse_str($uriComponents['query'], $params);
-        $params['signature'] = $signature;
-
-        ksort($params);
-
-        $sortedParams = http_build_query($params);
-
-        return sprintf('/verify?%s', $sortedParams);
     }
 
     private function getHelper(): VerifyEmailHelperInterface
