@@ -9,6 +9,7 @@
 
 namespace SymfonyCasts\Bundle\VerifyEmail\DependencyInjection;
 
+use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -21,9 +22,10 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('symfonycasts_verify_email');
+        /** @var ArrayNodeDefinition $rootNode */
         $rootNode = $treeBuilder->getRootNode();
 
-        $rootNode
+        $rootNode /** @phpstan-ignore-line method.notFound (The last end() call) */
             ->children()
                 ->integerNode('lifetime')
                     ->defaultValue(3600)
