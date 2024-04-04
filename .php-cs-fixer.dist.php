@@ -1,15 +1,22 @@
 <?php
 
+/*
+ * This file is part of the SymfonyCasts VerifyEmailBundle package.
+ * Copyright (c) SymfonyCasts <https://symfonycasts.com/>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 if (!file_exists(__DIR__.'/src') || !file_exists(__DIR__.'/tests')) {
     exit(0);
 }
 
-$finder = (new \PhpCsFixer\Finder())
+$finder = (new PhpCsFixer\Finder())
     ->in([__DIR__.'/src', __DIR__.'/tests'])
 ;
 
-return (new \PhpCsFixer\Config())
-    ->setRules(array(
+return (new PhpCsFixer\Config())
+    ->setRules([
         '@Symfony' => true,
         '@Symfony:risky' => true,
         'phpdoc_to_comment' => false,
@@ -20,8 +27,8 @@ Copyright (c) SymfonyCasts <https://symfonycasts.com/>
 For the full copyright and license information, please view the LICENSE
 file that was distributed with this source code.
 EOF
-        ]
-    ))
+        ],
+    ])
     ->setRiskyAllowed(true)
     ->setFinder($finder)
 ;
