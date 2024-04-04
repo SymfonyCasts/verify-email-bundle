@@ -7,6 +7,8 @@ used.
 
 ## VerifyEmailHelper
 
+- `__construct()` no longer has a `VerifyEmailQueryUtility $queryUtility` argument
+
 - `VerifyEmailHelperInterface::validateEmailConfirmation()` is deprecated since
 `v1.17.0` and will be removed in `v2.0.0`. Use `validateEmailConfirmationFromRequest()`
 instead.
