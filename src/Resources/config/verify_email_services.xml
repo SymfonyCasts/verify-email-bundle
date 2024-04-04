@@ -9,8 +9,6 @@
             <argument>%kernel.secret%</argument>
         </service>
 
-        <service id="symfonycasts.verify_email.query_utility" class="SymfonyCasts\Bundle\VerifyEmail\Util\VerifyEmailQueryUtility" public="false" />
-
         <service id="symfonycasts.verify_email.uri_signer" class="Symfony\Component\HttpFoundation\UriSigner">
             <argument>%kernel.secret%</argument>
             <argument>signature</argument>
@@ -21,7 +19,6 @@
         <service id="symfonycasts.verify_email.helper" class="SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelper">
             <argument type="service" id="router" />
             <argument type="service" id="symfonycasts.verify_email.uri_signer" />
-            <argument type="service" id="symfonycasts.verify_email.query_utility" />
             <argument type="service" id="symfonycasts.verify_email.token_generator" />
             <argument /> <!-- verify user signature lifetime -->
         </service>

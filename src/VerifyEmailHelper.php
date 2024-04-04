@@ -17,7 +17,6 @@ use SymfonyCasts\Bundle\VerifyEmail\Exception\InvalidSignatureException;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\WrongEmailVerifyException;
 use SymfonyCasts\Bundle\VerifyEmail\Generator\VerifyEmailTokenGenerator;
 use SymfonyCasts\Bundle\VerifyEmail\Model\VerifyEmailSignatureComponents;
-use SymfonyCasts\Bundle\VerifyEmail\Util\VerifyEmailQueryUtility;
 
 /**
  * @author Jesse Rushlow <jr@rushlow.dev>
@@ -31,7 +30,6 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
     public function __construct(
         private UrlGeneratorInterface $router,
         private UriSigner $uriSigner,
-        private VerifyEmailQueryUtility $queryUtility,
         private VerifyEmailTokenGenerator $tokenGenerator,
         private int $lifetime
     ) {
