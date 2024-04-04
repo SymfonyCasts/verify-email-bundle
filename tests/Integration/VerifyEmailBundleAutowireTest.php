@@ -39,7 +39,7 @@ final class VerifyEmailBundleAutowireTest extends TestCase
 
 class VerifyEmailHelperAutowireTest
 {
-    public function __construct(VerifyEmailHelperInterface $helper)
+    public function __construct(VerifyEmailHelperInterface $helper) /** @phpstan-ignore-line constructor.unusedParameter */
     {
     }
 }
