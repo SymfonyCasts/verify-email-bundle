@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-namespace SymfonyCasts\Bundle\VerifyEmail\Tests\IntegrationTests;
+namespace SymfonyCasts\Bundle\VerifyEmail\Tests\Integration;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;

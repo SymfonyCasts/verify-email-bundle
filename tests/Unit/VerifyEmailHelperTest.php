@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-namespace SymfonyCasts\Bundle\VerifyEmail\Tests\UnitTests;
+namespace SymfonyCasts\Bundle\VerifyEmail\Tests\Unit;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;

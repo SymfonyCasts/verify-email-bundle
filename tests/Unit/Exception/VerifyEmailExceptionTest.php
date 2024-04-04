@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-namespace SymfonyCasts\Bundle\VerifyEmail\Tests\UnitTests\Exception;
+namespace SymfonyCasts\Bundle\VerifyEmail\Tests\Unit\Exception;
 
 use PHPUnit\Framework\TestCase;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\ExpiredSignatureException;

@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-namespace SymfonyCasts\Bundle\VerifyEmail\Tests\UnitTests\Util;
+namespace SymfonyCasts\Bundle\VerifyEmail\Tests\Unit\Util;
 
 use PHPUnit\Framework\TestCase;
 use SymfonyCasts\Bundle\VerifyEmail\Util\VerifyEmailQueryUtility;
