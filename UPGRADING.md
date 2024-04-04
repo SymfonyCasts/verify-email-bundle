@@ -9,6 +9,17 @@ used.
 
 - `__construct()` no longer has a `VerifyEmailQueryUtility $queryUtility` argument
 
+```diff
+ public function __construct(
+     private UrlGeneratorInterface $router,
+     private UriSigner $uriSigner,
+-    private VerifyEmailQueryUtility $queryUtility,
+     private VerifyEmailTokenGenerator $tokenGenerator,
+     private int $lifetime
+ ) {
+ }
+```
+
 - `VerifyEmailHelperInterface::validateEmailConfirmation()` is deprecated since
 `v1.17.0` and will be removed in `v2.0.0`. Use `validateEmailConfirmationFromRequest()`
 instead.
