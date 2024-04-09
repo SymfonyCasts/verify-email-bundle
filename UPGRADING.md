@@ -46,7 +46,7 @@ shape expected for the `extraParams` argument.
 + @param array<string, int|string> $extraParams
 ```
 
-- `generateSignatur()` now throws a `VerifyEmailRuntimeException` if unable to create a `DateTimeInterface`
+- `generateSignature()` now throws a `VerifyEmailRuntimeException` if unable to create a `DateTimeInterface`
 instance from the sum of a timestamp and the `$lifetime` value passed to the class constructor
 
 
