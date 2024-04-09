@@ -32,6 +32,7 @@ final class VerifyEmailExceptionTest extends TestCase
      */
     public function testIsReason(string $exception, string $message): void
     {
+        /** @var VerifyEmailExceptionInterface $result */
         $result = new $exception();
         self::assertSame($message, $result->getReason());
     }
@@ -41,7 +42,7 @@ final class VerifyEmailExceptionTest extends TestCase
      */
     public function testImplementsVerifyEmailExceptionInterface(string $exception): void
     {
-        $interfaces = class_implements($exception);
+        self::assertIsArray($interfaces = class_implements($exception));
         self::assertArrayHasKey(VerifyEmailExceptionInterface::class, $interfaces);
     }
 }

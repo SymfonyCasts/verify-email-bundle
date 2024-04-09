@@ -52,13 +52,14 @@ final class VerifyEmailHelperFunctionalTest extends TestCase
         $result = $this->getHelper()->generateSignature('app_verify_route', '1234', 'jr@rushlow.dev');
 
         $parsedUri = parse_url($result->getSignedUrl());
-        parse_str($parsedUri['query'], $queryParams);
-
+        parse_str($parsedUri['query'], $queryParams); /** @phpstan-ignore-line offsetAccess.nonOffsetAccessible offset query always exists */
         $knownToken = $token;
         $testToken = $queryParams['token'];
+        self::assertIsString($testToken);
 
         $knownSignature = $this->getTestSignature();
         $testSignature = $queryParams['signature'];
+        self::assertIsString($testSignature);
 
         self::assertTrue(hash_equals($knownToken, $testToken));
         self::assertTrue(hash_equals($knownSignature, $testSignature));

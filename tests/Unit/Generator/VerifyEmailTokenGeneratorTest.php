@@ -26,7 +26,7 @@ final class VerifyEmailTokenGeneratorTest extends TestCase
 
         $knownHash = base64_encode(hash_hmac(
             'sha256',
-            json_encode(['1234', 'jr@rushlow.dev']),
+            json_encode(['1234', 'jr@rushlow.dev']),  /** @phpstan-ignore-line argument.type result is never false */
             'foo',
             true
         ));

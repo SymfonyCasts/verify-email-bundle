@@ -22,6 +22,7 @@ class VerifyEmailSignatureComponentsTest extends TestCase
         $created = time();
 
         $expire = \DateTimeImmutable::createFromFormat('U', (string) ($created + 3600));
+        self::assertNotFalse($expire);
 
         $components = new VerifyEmailSignatureComponents($expire, 'some-uri', $created);
 
@@ -36,6 +37,7 @@ class VerifyEmailSignatureComponentsTest extends TestCase
         $created = time();
 
         $expire = \DateTimeImmutable::createFromFormat('U', (string) ($created + $lifetime));
+        self::assertNotFalse($expire);
 
         $components = new VerifyEmailSignatureComponents($expire, 'some-uri', $created);
 

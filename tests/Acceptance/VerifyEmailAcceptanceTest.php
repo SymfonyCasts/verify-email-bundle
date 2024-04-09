@@ -30,14 +30,14 @@ final class VerifyEmailAcceptanceTest extends TestCase
         $container = $kernel->getContainer();
 
         /** @var VerifyEmailHelper $helper */
-        $helper = $container->get(VerifyEmailAcceptanceFixture::class)->helper;
-
+        $helper = $container->get(VerifyEmailAcceptanceFixture::class)->helper; /** @phpstan-ignore-line property.notFound */
         $components = $helper->generateSignature('verify-test', '1234', 'jr@rushlow.dev');
 
         $signature = $components->getSignedUrl();
         $expiresAt = $components->getExpiresAt()->getTimestamp();
 
         $expectedUserData = json_encode(['1234', 'jr@rushlow.dev']);
+        self::assertNotFalse($expectedUserData);
 
         $expectedToken = base64_encode(hash_hmac('sha256', $expectedUserData, 'foo', true));
 
@@ -49,9 +49,8 @@ final class VerifyEmailAcceptanceTest extends TestCase
         ));
 
         $parsed = parse_url($signature);
-        parse_str($parsed['query'], $result);
-
-        self::assertTrue(hash_equals($expectedSignature, $result['signature']));
+        parse_str($parsed['query'], $result); /** @phpstan-ignore-line offsetAccess.nonOffsetAccessible offset query always exists */
+        self::assertTrue(hash_equals($expectedSignature, $result['signature'])); /** @phpstan-ignore-line argument.type */
         self::assertSame(
             sprintf('http://localhost/verify/user?expires=%s&signature=%s&token=%s', $expiresAt, urlencode($expectedSignature), urlencode($expectedToken)),
             $signature
@@ -63,7 +62,7 @@ final class VerifyEmailAcceptanceTest extends TestCase
         $container = $this->getBootedKernel()->getContainer();
 
         /** @var VerifyEmailHelper $helper */
-        $helper = $container->get(VerifyEmailAcceptanceFixture::class)->helper;
+        $helper = $container->get(VerifyEmailAcceptanceFixture::class)->helper; /** @phpstan-ignore-line property.notFound */
         $expires = new \DateTimeImmutable('+1 hour');
 
         $uriToTest = sprintf(
@@ -72,7 +71,7 @@ final class VerifyEmailAcceptanceTest extends TestCase
                 'expires' => $expires->getTimestamp(),
                 'token' => base64_encode(hash_hmac(
                     'sha256',
-                    json_encode(['1234', 'jr@rushlow.dev']),
+                    json_encode(['1234', 'jr@rushlow.dev']), /** @phpstan-ignore-line argument.type */
                     'foo',
                     true
                 )),
