@@ -17,7 +17,8 @@
         "doctrine/orm": "^2.7",
         "doctrine/persistence": "^2.0",
         "symfony/framework-bundle": "^6.4.5 | ^7.0",
-        "symfony/phpunit-bridge": "^6.4.5 | ^7.0.5"
+        "symfony/phpunit-bridge": "^6.4.5 | ^7.0.5",
+        "phpstan/phpstan": "^1.11.x-dev"
     },
     "autoload": {
         "psr-4": {
@@ -28,5 +29,8 @@
         "psr-4": {
             "SymfonyCasts\\Bundle\\VerifyEmail\\Tests\\": "tests/"
         }
+    },
+    "scripts": {
+        "phpstan": "vendor/bin/phpstan"
     }
 }

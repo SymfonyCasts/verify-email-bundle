@@ -30,9 +30,9 @@ use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
  */
 final class VerifyEmailHelperTest extends TestCase
 {
-    private RouterInterface|MockObject $mockRouter;
-    private UriSigner|MockObject $mockSigner;
-    private VerifyEmailTokenGenerator|MockObject $tokenGenerator;
+    private RouterInterface&MockObject $mockRouter;
+    private UriSigner&MockObject $mockSigner;
+    private VerifyEmailTokenGenerator&MockObject $tokenGenerator;
 
     protected function setUp(): void
     {

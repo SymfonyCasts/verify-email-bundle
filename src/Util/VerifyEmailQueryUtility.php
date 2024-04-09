@@ -45,13 +45,13 @@ class VerifyEmailQueryUtility
         return (int) $params['expires'];
     }
 
-    private function getQueryParams(string $uri): array
+    private function getQueryParams(string $uri): array /** @phpstan-ignore-line missingType.iterableValue */
     {
         $params = [];
         $urlComponents = parse_url($uri);
 
-        if (\array_key_exists('query', $urlComponents)) {
-            parse_str($urlComponents['query'] ?? '', $params);
+        if (false !== $urlComponents && \array_key_exists('query', $urlComponents)) {
+            parse_str(empty($urlComponents['query']) ? '' : $urlComponents['query'], $params);
         }
 
         return $params;
