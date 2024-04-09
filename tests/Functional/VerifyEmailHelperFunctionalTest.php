@@ -67,10 +67,10 @@ final class VerifyEmailHelperFunctionalTest extends TestCase
     private function getTestToken(): string
     {
         return base64_encode(hash_hmac(
-            'sha256',
-            json_encode(['1234', 'jr@rushlow.dev'], \JSON_THROW_ON_ERROR),
-            'foo',
-            true
+            algo: 'sha256',
+            data: json_encode(['1234', 'jr@rushlow.dev'], \JSON_THROW_ON_ERROR),
+            key: 'foo',
+            binary: true
         ));
     }
 
@@ -85,10 +85,10 @@ final class VerifyEmailHelperFunctionalTest extends TestCase
     private function getHelper(): VerifyEmailHelperInterface
     {
         return new VerifyEmailHelper(
-            $this->mockRouter,
-            new UriSigner('foo', 'signature'),
-            new VerifyEmailTokenGenerator('foo'),
-            3600
+            router: $this->mockRouter,
+            uriSigner: new UriSigner('foo', 'signature'),
+            tokenGenerator: new VerifyEmailTokenGenerator('foo'),
+            lifetime: 3600
         );
     }
 }
