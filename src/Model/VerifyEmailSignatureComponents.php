@@ -106,7 +106,7 @@ final class VerifyEmailSignatureComponents
         $createdAtTime = \DateTimeImmutable::createFromFormat('U', (string) $this->generatedAt);
 
         if (false === $createdAtTime) {
-            throw new VerifyEmailRuntimeException(sprintf('Unable to create DateTimeInterface from: %s', $this->generatedAt));
+            throw new VerifyEmailRuntimeException(sprintf('Unable to create DateTimeInterface instance from "generatedAt": %s', $this->generatedAt));
         }
 
         return $this->expiresAt->diff($createdAtTime);

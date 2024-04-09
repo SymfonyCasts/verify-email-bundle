@@ -36,6 +36,9 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
     ) {
     }
 
+    /**
+     * @throws VerifyEmailRuntimeException
+     */
     public function generateSignature(string $routeName, string $userId, string $userEmail, array $extraParams = []): VerifyEmailSignatureComponents
     {
         $generatedAt = time();
