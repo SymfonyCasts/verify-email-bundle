@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\UriSigner;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\ExpiredSignatureException;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\InvalidSignatureException;
+use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailRuntimeException;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\WrongEmailVerifyException;
 use SymfonyCasts\Bundle\VerifyEmail\Generator\VerifyEmailTokenGenerator;
 use SymfonyCasts\Bundle\VerifyEmail\Model\VerifyEmailSignatureComponents;
@@ -35,6 +36,9 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
     ) {
     }
 
+    /**
+     * @throws VerifyEmailRuntimeException
+     */
     public function generateSignature(string $routeName, string $userId, string $userEmail, array $extraParams = []): VerifyEmailSignatureComponents
     {
         $generatedAt = time();
@@ -47,8 +51,11 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
 
         $signature = $this->uriSigner->sign($uri);
 
-        /** @psalm-suppress PossiblyFalseArgument */
-        return new VerifyEmailSignatureComponents(\DateTimeImmutable::createFromFormat('U', (string) $expiryTimestamp), $signature, $generatedAt);
+        if (!$expiresAt = \DateTimeImmutable::createFromFormat('U', (string) $expiryTimestamp)) {
+            throw new VerifyEmailRuntimeException(sprintf('Unable to create DateTimeImmutable from timestamp: %s', $expiryTimestamp));
+        }
+
+        return new VerifyEmailSignatureComponents($expiresAt, $signature, $generatedAt);
     }
 
     public function validateEmailConfirmationFromRequest(Request $request, string $userId, string $userEmail): void

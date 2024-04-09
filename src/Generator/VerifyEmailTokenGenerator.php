@@ -9,6 +9,8 @@
 
 namespace SymfonyCasts\Bundle\VerifyEmail\Generator;
 
+use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailRuntimeException;
+
 /**
  * @author Jesse Rushlow <jr@rushlow.dev>
  * @author Ryan Weaver   <ryan@symfonycasts.com>
@@ -30,10 +32,16 @@ class VerifyEmailTokenGenerator
 
     /**
      * Get a cryptographically secure token.
+     *
+     * @throws VerifyEmailRuntimeException
      */
     public function createToken(string $userId, string $email): string
     {
-        $encodedData = json_encode([$userId, $email]);
+        try {
+            $encodedData = json_encode([$userId, $email], \JSON_THROW_ON_ERROR);
+        } catch (\JsonException $exception) {
+            throw new VerifyEmailRuntimeException(message: 'Unable to create token. Invalid JSON.', previous: $exception);
+        }
 
         return base64_encode(hash_hmac('sha256', $encodedData, $this->signingKey, true));
     }

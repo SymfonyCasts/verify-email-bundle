@@ -46,6 +46,9 @@ shape expected for the `extraParams` argument.
 + @param array<string, int|string> $extraParams
 ```
 
+- `generateSignature()` now throws a `VerifyEmailRuntimeException` if unable to create a `DateTimeInterface`
+instance from the sum of a timestamp and the `$lifetime` value passed to the class constructor
+
 
 ## VerifyEmailSignatureComponents
 
@@ -58,7 +61,8 @@ when instantiating a new `VerifyEmailSignatureComponents` instance.
 ```
 
 - Method's `getExpirationMessageKey`, `getExpirationMessageData`, & `getExpiresAtIntervalInstance`
-no longer potentially throw a `LogicException`.
+no longer potentially throw a `LogicException`. They now throw a `VerifyEmailRuntimeException`
+if an invalid `$generatedAt` timestamp is provided to the class constructor.
 
 - Added array shape typehint for the return value of `getExpirationMessageData()`
 
@@ -66,3 +70,8 @@ no longer potentially throw a `LogicException`.
 - @return array
 + @return array<string, int>
 ```
+
+## VerifyEmailTokenGenerator
+
+- Method `createToken()` now throws a `VerifyEmailRuntimeException` if unable to `json_encode()` the
+  `$userId` & `$email` arguments.
