@@ -28,7 +28,7 @@ class SymfonyCastsVerifyEmailBundle extends AbstractBundle
             ->children()
                 ->integerNode('lifetime')
                     ->defaultValue(3600)
-            ->info('The length of time in seconds that a signed URI is valid for after it is created.')
+                    ->info('The length of time in seconds that a signed URI is valid for after it is created.')
             ->end()
         ;
     }
