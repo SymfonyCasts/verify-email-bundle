@@ -24,7 +24,7 @@ class SymfonyCastsVerifyEmailBundle extends AbstractBundle
 
     public function configure(DefinitionConfigurator $definition): void
     {
-        $definition->rootNode()
+        $definition->rootNode() /** @phpstan-ignore method.notFound */
             ->children()
                 ->integerNode('lifetime')
                     ->defaultValue(3600)
@@ -33,6 +33,7 @@ class SymfonyCastsVerifyEmailBundle extends AbstractBundle
         ;
     }
 
+    /** @param array<mixed> $config */
     public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
     {
         $container->import('../config/verify_email_services.xml');
