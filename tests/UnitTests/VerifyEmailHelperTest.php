@@ -59,7 +59,7 @@ final class VerifyEmailHelperTest extends TestCase
     {
         $expires = time() + 3600;
 
-        $expectedSignedUrl = sprintf('/verify?expires=%s&signature=1234&token=hashedToken', $expires);
+        $expectedSignedUrl = \sprintf('/verify?expires=%s&signature=1234&token=hashedToken', $expires);
 
         $this->tokenGenerator
             ->expects($this->once())
@@ -72,13 +72,13 @@ final class VerifyEmailHelperTest extends TestCase
             ->expects($this->once())
             ->method('generate')
             ->with('app_verify_route', ['token' => 'hashedToken', 'expires' => $expires])
-            ->willReturn(sprintf('/verify?expires=%s&token=hashedToken', $expires))
+            ->willReturn(\sprintf('/verify?expires=%s&token=hashedToken', $expires))
         ;
 
         $this->mockSigner
             ->expects($this->once())
             ->method('sign')
-            ->with(sprintf('/verify?expires=%s&token=hashedToken', $expires))
+            ->with(\sprintf('/verify?expires=%s&token=hashedToken', $expires))
             ->willReturn($expectedSignedUrl)
         ;
 
