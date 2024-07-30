@@ -42,7 +42,7 @@ class VerifyEmailSignatureComponentsTest extends TestCase
         $components = new VerifyEmailSignatureComponents($expire, 'some-uri', $created);
 
         self::assertSame(
-            sprintf('%%count%% %s|%%count%% %ss', $unitOfMeasure, $unitOfMeasure),
+            \sprintf('%%count%% %s|%%count%% %ss', $unitOfMeasure, $unitOfMeasure),
             $components->getExpirationMessageKey()
         );
 

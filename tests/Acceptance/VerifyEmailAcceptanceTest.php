@@ -43,7 +43,7 @@ final class VerifyEmailAcceptanceTest extends TestCase
 
         $expectedSignature = base64_encode(hash_hmac(
             'sha256',
-            sprintf('http://localhost/verify/user?expires=%s&token=%s', $expiresAt, urlencode($expectedToken)),
+            \sprintf('http://localhost/verify/user?expires=%s&token=%s', $expiresAt, urlencode($expectedToken)),
             'foo',
             true
         ));
@@ -52,7 +52,7 @@ final class VerifyEmailAcceptanceTest extends TestCase
         parse_str($parsed['query'], $result); /** @phpstan-ignore-line offsetAccess.nonOffsetAccessible offset query always exists */
         self::assertTrue(hash_equals($expectedSignature, $result['signature'])); /** @phpstan-ignore-line argument.type */
         self::assertSame(
-            sprintf('http://localhost/verify/user?expires=%s&signature=%s&token=%s', $expiresAt, urlencode($expectedSignature), urlencode($expectedToken)),
+            \sprintf('http://localhost/verify/user?expires=%s&signature=%s&token=%s', $expiresAt, urlencode($expectedSignature), urlencode($expectedToken)),
             $signature
         );
     }
@@ -65,7 +65,7 @@ final class VerifyEmailAcceptanceTest extends TestCase
         $helper = $container->get(VerifyEmailAcceptanceFixture::class)->helper; /** @phpstan-ignore-line property.notFound */
         $expires = new \DateTimeImmutable('+1 hour');
 
-        $uriToTest = sprintf(
+        $uriToTest = \sprintf(
             'http://localhost/verify/user?%s',
             http_build_query([
                 'expires' => $expires->getTimestamp(),
@@ -80,7 +80,7 @@ final class VerifyEmailAcceptanceTest extends TestCase
 
         $signature = base64_encode(hash_hmac('sha256', $uriToTest, 'foo', true));
 
-        $test = sprintf('%s&signature=%s', $uriToTest, urlencode($signature));
+        $test = \sprintf('%s&signature=%s', $uriToTest, urlencode($signature));
 
         $helper->validateEmailConfirmationFromRequest(Request::create(uri: $test), '1234', 'jr@rushlow.dev');
         $this->assertTrue(true, 'Test correctly does not throw an exception');
