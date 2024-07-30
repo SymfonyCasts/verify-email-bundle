@@ -49,7 +49,7 @@ final class VerifyEmailAcceptanceTest extends TestCase
 
         $expectedSignature = base64_encode(hash_hmac(
             'sha256',
-            sprintf('http://localhost/verify/user?expires=%s&token=%s', $expiresAt, urlencode($expectedToken)),
+            \sprintf('http://localhost/verify/user?expires=%s&token=%s', $expiresAt, urlencode($expectedToken)),
             'foo',
             true
         ));
@@ -59,7 +59,7 @@ final class VerifyEmailAcceptanceTest extends TestCase
 
         self::assertTrue(hash_equals($expectedSignature, $result['signature']));
         self::assertSame(
-            sprintf('http://localhost/verify/user?expires=%s&signature=%s&token=%s', $expiresAt, urlencode($expectedSignature), urlencode($expectedToken)),
+            \sprintf('http://localhost/verify/user?expires=%s&signature=%s&token=%s', $expiresAt, urlencode($expectedSignature), urlencode($expectedToken)),
             $signature
         );
     }
@@ -75,7 +75,7 @@ final class VerifyEmailAcceptanceTest extends TestCase
         $helper = $container->get(VerifyEmailAcceptanceFixture::class)->helper;
         $expires = new \DateTimeImmutable('+1 hour');
 
-        $uriToTest = sprintf(
+        $uriToTest = \sprintf(
             '/verify/user?%s',
             http_build_query([
                 'expires' => $expires->getTimestamp(),
@@ -90,7 +90,7 @@ final class VerifyEmailAcceptanceTest extends TestCase
 
         $signature = base64_encode(hash_hmac('sha256', $uriToTest, 'foo', true));
 
-        $test = sprintf('%s&signature=%s', $uriToTest, urlencode($signature));
+        $test = \sprintf('%s&signature=%s', $uriToTest, urlencode($signature));
 
         $helper->validateEmailConfirmation($test, '1234', 'jr@rushlow.dev');
         $this->assertTrue(true, 'Test correctly does not throw an exception');
@@ -107,7 +107,7 @@ final class VerifyEmailAcceptanceTest extends TestCase
         $helper = $container->get(VerifyEmailAcceptanceFixture::class)->helper;
         $expires = new \DateTimeImmutable('+1 hour');
 
-        $uriToTest = sprintf(
+        $uriToTest = \sprintf(
             'http://localhost/verify/user?%s',
             http_build_query([
                 'expires' => $expires->getTimestamp(),
@@ -122,7 +122,7 @@ final class VerifyEmailAcceptanceTest extends TestCase
 
         $signature = base64_encode(hash_hmac('sha256', $uriToTest, 'foo', true));
 
-        $test = sprintf('%s&signature=%s', $uriToTest, urlencode($signature));
+        $test = \sprintf('%s&signature=%s', $uriToTest, urlencode($signature));
 
         $helper->validateEmailConfirmationFromRequest(Request::create(uri: $test), '1234', 'jr@rushlow.dev');
         $this->assertTrue(true, 'Test correctly does not throw an exception');

@@ -52,7 +52,7 @@ final class VerifyEmailHelperFunctionalTest extends TestCase
             ->expects($this->once())
             ->method('generate')
             ->with('app_verify_route', ['expires' => $this->expiryTimestamp, 'token' => $token])
-            ->willReturn(sprintf('/verify?expires=%s&token=%s', $this->expiryTimestamp, urlencode($token)))
+            ->willReturn(\sprintf('/verify?expires=%s&token=%s', $this->expiryTimestamp, urlencode($token)))
         ;
 
         $result = $this->getHelper()->generateSignature('app_verify_route', '1234', 'jr@rushlow.dev');
@@ -91,7 +91,7 @@ final class VerifyEmailHelperFunctionalTest extends TestCase
     private function getTestSignature(): string
     {
         $query = http_build_query(['expires' => $this->expiryTimestamp, 'token' => $this->getTestToken()], '', '&');
-        $uri = sprintf('/verify?%s', $query);
+        $uri = \sprintf('/verify?%s', $query);
 
         return base64_encode(hash_hmac('sha256', $uri, 'foo', true));
     }
@@ -100,7 +100,7 @@ final class VerifyEmailHelperFunctionalTest extends TestCase
     {
         $token = urlencode($this->getTestToken());
 
-        $uri = sprintf('/verify?expires=%s&token=%s', $this->expiryTimestamp, $token);
+        $uri = \sprintf('/verify?expires=%s&token=%s', $this->expiryTimestamp, $token);
         $signature = base64_encode(hash_hmac('sha256', $uri, 'foo', true));
 
         $uriComponents = parse_url($uri);
@@ -111,7 +111,7 @@ final class VerifyEmailHelperFunctionalTest extends TestCase
 
         $sortedParams = http_build_query($params);
 
-        return sprintf('/verify?%s', $sortedParams);
+        return \sprintf('/verify?%s', $sortedParams);
     }
 
     private function getHelper(): VerifyEmailHelperInterface
