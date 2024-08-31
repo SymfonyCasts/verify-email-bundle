@@ -24,7 +24,7 @@ final class UriSignerFactory
     public function __construct(
         #[\SensitiveParameter]
         private string $secret,
-        private string $parameter = '_hash'
+        private string $parameter = '_hash',
     ) {
     }
 
