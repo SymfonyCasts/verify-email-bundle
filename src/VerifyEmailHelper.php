@@ -32,7 +32,7 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
         private UrlGeneratorInterface $router,
         private UriSigner $uriSigner,
         private VerifyEmailTokenGenerator $tokenGenerator,
-        private int $lifetime
+        private int $lifetime,
     ) {
     }
 
@@ -52,7 +52,7 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
         $signature = $this->uriSigner->sign($uri);
 
         if (!$expiresAt = \DateTimeImmutable::createFromFormat('U', (string) $expiryTimestamp)) {
-            throw new VerifyEmailRuntimeException(sprintf('Unable to create DateTimeImmutable from timestamp: %s', $expiryTimestamp));
+            throw new VerifyEmailRuntimeException(\sprintf('Unable to create DateTimeImmutable from timestamp: %s', $expiryTimestamp));
         }
 
         return new VerifyEmailSignatureComponents($expiresAt, $signature, $generatedAt);
