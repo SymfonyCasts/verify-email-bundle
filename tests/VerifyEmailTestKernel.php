@@ -33,7 +33,7 @@ class VerifyEmailTestKernel extends Kernel
     public function __construct(
         private ?ContainerBuilder $builder = null,
         private array $routes = [],
-        private array $extraBundles = []
+        private array $extraBundles = [],
     ) {
         parent::__construct('test', true);
     }

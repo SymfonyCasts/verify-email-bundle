@@ -103,7 +103,7 @@ final class VerifyEmailHelperTest extends TestCase
     {
         $timestamp = (new \DateTimeImmutable('-1 seconds'))->getTimestamp();
 
-        $request = Request::create(sprintf('/?expires=%s', $timestamp));
+        $request = Request::create(\sprintf('/?expires=%s', $timestamp));
 
         $this->mockSigner
             ->expects($this->once())

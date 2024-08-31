@@ -26,7 +26,7 @@ class VerifyEmailTokenGenerator
      */
     public function __construct(
         #[\SensitiveParameter]
-        private string $signingKey
+        private string $signingKey,
     ) {
     }
 
