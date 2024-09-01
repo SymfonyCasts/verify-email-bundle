@@ -3,6 +3,26 @@
 *We intend to follow [Semantic Versioning 2.0.0](https://semver.org/), if you 
 find a change that break's semver, please create an issue.*
 
+## [v2.0.0](https://github.com/symfonycasts/verify-email-bundle/releases/tag/v2.0.0)
+
+*MONTH 1st, 2099*
+
+### Feature
+
+* [#168](https://github.com/symfonycasts/verify-email-bundle/pull/168) - [2.x] remove potential LogicException from translation methods - *@jrushlow*
+* [#166](https://github.com/symfonycasts/verify-email-bundle/pull/166) - [2.x] generatedAt is now required - *@jrushlow*
+* [#164](https://github.com/symfonycasts/verify-email-bundle/pull/164) - [2.x] inject UriSigner directly in the VerifyEmailHelper - *@jrushlow*
+* [#163](https://github.com/symfonycasts/verify-email-bundle/pull/163) - [2.x] refactor to use php 8.3 features - *@jrushlow*
+* [#160](https://github.com/symfonycasts/verify-email-bundle/pull/160) - [2.x] bump minimum versions - *@jrushlow*
+* [450a0ec](https://github.com/SymfonyCasts/verify-email-bundle/commit/450a0ecbb6f834be43fce04d1aee9a07a93e1918) - remove deprecated helper method - *@jrushlow*
+
+### Bug
+
+### Security
+
+
+---
+
 ## [v1.17.0](https://github.com/symfonycasts/verify-email-bundle/releases/tag/v1.17.0)
 
 *March 16th, 2024*
