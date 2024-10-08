@@ -1,5 +1,7 @@
 # VerifyEmailBundle: Love Confirming Emails
 
+[![CI](https://github.com/SymfonyCasts/verify-email-bundle/actions/workflows/ci.yaml/badge.svg)](https://github.com/SymfonyCasts/verify-email-bundle/actions/workflows/ci.yaml)
+
 Don't know if your users have a valid email address? The VerifyEmailBundle can
 help! 
 
