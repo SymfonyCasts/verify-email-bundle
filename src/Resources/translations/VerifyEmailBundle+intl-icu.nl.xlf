@@ -24,7 +24,7 @@
             </trans-unit>
             <trans-unit id="6">
                 <source>The link to verify your email has expired. Please request a new link.</source>
-                <target>De link om je e-mailadres the verifiëren is verlopen. Vraag een nieuwe link aan.</target>
+                <target>De link om je e-mailadres te verifiëren is verlopen. Vraag een nieuwe link aan.</target>
             </trans-unit>
             <trans-unit id="7">
                 <source>The link to verify your email is invalid. Please request a new link.</source>
