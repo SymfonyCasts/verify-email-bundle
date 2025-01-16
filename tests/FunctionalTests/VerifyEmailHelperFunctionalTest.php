@@ -28,6 +28,7 @@ use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
 final class VerifyEmailHelperFunctionalTest extends TestCase
 {
     private $mockRouter;
+    private UriSigner|LegacyUriSigner $uriSigner;
     private $expiryTimestamp;
 
     protected function setUp(): void
@@ -55,19 +56,10 @@ final class VerifyEmailHelperFunctionalTest extends TestCase
             ->willReturn(\sprintf('/verify?expires=%s&token=%s', $this->expiryTimestamp, urlencode($token)))
         ;
 
-        $result = $this->getHelper()->generateSignature('app_verify_route', '1234', 'jr@rushlow.dev');
+        $actual = $this->getHelper()->generateSignature('app_verify_route', '1234', 'jr@rushlow.dev')->getSignedUrl();
+        $expected = $this->uriSigner->sign(\sprintf('/verify?expires=%s&token=%s', $this->expiryTimestamp, urlencode($token)));
 
-        $parsedUri = parse_url($result->getSignedUrl());
-        parse_str($parsedUri['query'], $queryParams);
-
-        $knownToken = $token;
-        $testToken = $queryParams['token'];
-
-        $knownSignature = $this->getTestSignature();
-        $testSignature = $queryParams['signature'];
-
-        self::assertTrue(hash_equals($knownToken, $testToken));
-        self::assertTrue(hash_equals($knownSignature, $testSignature));
+        self::assertSame($expected, $actual);
     }
 
     /**
@@ -117,14 +109,14 @@ final class VerifyEmailHelperFunctionalTest extends TestCase
     private function getHelper(): VerifyEmailHelperInterface
     {
         if (class_exists(UriSigner::class)) {
-            $uriSigner = new UriSigner('foo', 'signature');
+            $this->uriSigner = new UriSigner('foo', 'signature');
         } else {
-            $uriSigner = new LegacyUriSigner('foo', 'signature');
+            $this->uriSigner = new LegacyUriSigner('foo', 'signature');
         }
 
         return new VerifyEmailHelper(
             $this->mockRouter,
-            $uriSigner,
+            $this->uriSigner,
             new VerifyEmailQueryUtility(),
             new VerifyEmailTokenGenerator('foo'),
             3600

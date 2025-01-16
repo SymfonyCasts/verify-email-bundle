@@ -11,9 +11,12 @@ namespace SymfonyCasts\Bundle\VerifyEmail\Tests\AcceptanceTests;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\UriSigner;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\HttpKernel\UriSigner as LegacyUriSigner;
+use SymfonyCasts\Bundle\VerifyEmail\Generator\VerifyEmailTokenGenerator;
 use SymfonyCasts\Bundle\VerifyEmail\Tests\VerifyEmailTestKernel;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelper;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
@@ -32,36 +35,22 @@ final class VerifyEmailAcceptanceTest extends TestCase
     public function testGenerateSignature(): void
     {
         $kernel = $this->getBootedKernel();
-
         $container = $kernel->getContainer();
 
-        /** @var VerifyEmailHelper $helper */
-        $helper = $container->get(VerifyEmailAcceptanceFixture::class)->helper;
+        /** @var VerifyEmailAcceptanceFixture $testHelper */
+        $testHelper = $container->get(VerifyEmailAcceptanceFixture::class);
+        $helper = $testHelper->helper;
 
         $components = $helper->generateSignature('verify-test', '1234', 'jr@rushlow.dev');
-
-        $signature = $components->getSignedUrl();
         $expiresAt = $components->getExpiresAt()->getTimestamp();
-
-        $expectedUserData = json_encode(['1234', 'jr@rushlow.dev']);
-
-        $expectedToken = base64_encode(hash_hmac('sha256', $expectedUserData, 'foo', true));
-
-        $expectedSignature = base64_encode(hash_hmac(
-            'sha256',
-            \sprintf('http://localhost/verify/user?expires=%s&token=%s', $expiresAt, urlencode($expectedToken)),
-            'foo',
-            true
+        $actual = $components->getSignedUrl();
+        $expected = $testHelper->uriSigner->sign(\sprintf(
+            'http://localhost/verify/user?expires=%s&token=%s',
+            $expiresAt,
+            $testHelper->generator->createToken('1234', 'jr@rushlow.dev')
         ));
 
-        $parsed = parse_url($signature);
-        parse_str($parsed['query'], $result);
-
-        self::assertTrue(hash_equals($expectedSignature, $result['signature']));
-        self::assertSame(
-            \sprintf('http://localhost/verify/user?expires=%s&signature=%s&token=%s', $expiresAt, urlencode($expectedSignature), urlencode($expectedToken)),
-            $signature
-        );
+        self::assertSame($expected, $actual);
     }
 
     /** @group legacy */
@@ -133,6 +122,8 @@ final class VerifyEmailAcceptanceTest extends TestCase
         $builder = new ContainerBuilder();
         $builder->autowire(VerifyEmailAcceptanceFixture::class)
             ->setPublic(true)
+            ->setArgument(1, new Reference('symfonycasts.verify_email.uri_signer'))
+            ->setArgument(2, new Reference('symfonycasts.verify_email.token_generator'))
         ;
 
         $kernel = new VerifyEmailTestKernel(
@@ -148,10 +139,10 @@ final class VerifyEmailAcceptanceTest extends TestCase
 
 final class VerifyEmailAcceptanceFixture
 {
-    public $helper;
-
-    public function __construct(VerifyEmailHelperInterface $helper)
-    {
-        $this->helper = $helper;
+    public function __construct(
+        public VerifyEmailHelperInterface $helper,
+        public LegacyUriSigner|UriSigner $uriSigner,
+        public VerifyEmailTokenGenerator $generator,
+    ) {
     }
 }
