@@ -1,12 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the SymfonyCasts VerifyEmailBundle package.
  * Copyright (c) SymfonyCasts <https://symfonycasts.com/>
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace SymfonyCasts\Bundle\VerifyEmail\Tests\Integration;
 
 use PHPUnit\Framework\TestCase;
@@ -39,7 +40,4 @@ final class VerifyEmailBundleAutowireTest extends TestCase
 
 class VerifyEmailHelperAutowireTest
 {
-    public function __construct(VerifyEmailHelperInterface $helper) /** @phpstan-ignore-line constructor.unusedParameter */
-    {
-    }
 }

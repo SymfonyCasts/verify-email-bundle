@@ -1,14 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the SymfonyCasts VerifyEmailBundle package.
  * Copyright (c) SymfonyCasts <https://symfonycasts.com/>
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace SymfonyCasts\Bundle\VerifyEmail\Model;
 
+use DateTimeInterface;
+use DateInterval;
+use DateTimeImmutable;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailRuntimeException;
 
 /**
@@ -26,9 +30,9 @@ final class VerifyEmailSignatureComponents
      * @param int $generatedAt timestamp when the signature was created
      */
     public function __construct(
-        private \DateTimeInterface $expiresAt,
-        private string $uri,
-        private int $generatedAt,
+        private readonly DateTimeInterface $expiresAt,
+        private readonly string $uri,
+        private readonly int $generatedAt,
     ) {
     }
 
@@ -43,7 +47,7 @@ final class VerifyEmailSignatureComponents
     /**
      * Get the length of time in seconds that a signature is valid for.
      */
-    public function getExpiresAt(): \DateTimeInterface
+    public function getExpiresAt(): DateTimeInterface
     {
         return $this->expiresAt;
     }
@@ -101,9 +105,9 @@ final class VerifyEmailSignatureComponents
      *
      * @throws VerifyEmailRuntimeException
      */
-    public function getExpiresAtIntervalInstance(): \DateInterval
+    public function getExpiresAtIntervalInstance(): DateInterval
     {
-        $createdAtTime = \DateTimeImmutable::createFromFormat('U', (string) $this->generatedAt);
+        $createdAtTime = DateTimeImmutable::createFromFormat('U', (string) $this->generatedAt);
 
         if (false === $createdAtTime) {
             throw new VerifyEmailRuntimeException(\sprintf('Unable to create DateTimeInterface instance from "generatedAt": %s', $this->generatedAt));

@@ -1,14 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the SymfonyCasts VerifyEmailBundle package.
  * Copyright (c) SymfonyCasts <https://symfonycasts.com/>
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace SymfonyCasts\Bundle\VerifyEmail;
 
+use DateTimeImmutable;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\UriSigner;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -23,7 +25,7 @@ use SymfonyCasts\Bundle\VerifyEmail\Model\VerifyEmailSignatureComponents;
  * @author Jesse Rushlow <jr@rushlow.dev>
  * @author Ryan Weaver   <ryan@symfonycasts.com>
  */
-final class VerifyEmailHelper implements VerifyEmailHelperInterface
+final readonly class VerifyEmailHelper implements VerifyEmailHelperInterface
 {
     /**
      * @param int $lifetime The length of time in seconds that a signed URI is valid for after it is created
@@ -51,7 +53,7 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
 
         $signature = $this->uriSigner->sign($uri);
 
-        if (!$expiresAt = \DateTimeImmutable::createFromFormat('U', (string) $expiryTimestamp)) {
+        if (!$expiresAt = DateTimeImmutable::createFromFormat('U', (string) $expiryTimestamp)) {
             throw new VerifyEmailRuntimeException(\sprintf('Unable to create DateTimeImmutable from timestamp: %s', $expiryTimestamp));
         }
 

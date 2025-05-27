@@ -1,14 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the SymfonyCasts VerifyEmailBundle package.
  * Copyright (c) SymfonyCasts <https://symfonycasts.com/>
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace SymfonyCasts\Bundle\VerifyEmail\Tests\Integration;
 
+use Generator;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -20,7 +22,7 @@ use SymfonyCasts\Bundle\VerifyEmail\Tests\VerifyEmailTestKernel;
  */
 final class VerifyEmailServiceDefinitionTest extends TestCase
 {
-    public function bundleServiceDefinitionDataProvider(): \Generator
+    public function bundleServiceDefinitionDataProvider(): Generator
     {
         $prefix = 'symfonycasts.verify_email.';
 
