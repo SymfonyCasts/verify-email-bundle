@@ -1,12 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the SymfonyCasts VerifyEmailBundle package.
  * Copyright (c) SymfonyCasts <https://symfonycasts.com/>
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace SymfonyCasts\Bundle\VerifyEmail;
 
 use Symfony\Component\HttpFoundation\Request;
@@ -23,7 +24,7 @@ use SymfonyCasts\Bundle\VerifyEmail\Model\VerifyEmailSignatureComponents;
  * @author Jesse Rushlow <jr@rushlow.dev>
  * @author Ryan Weaver   <ryan@symfonycasts.com>
  */
-final class VerifyEmailHelper implements VerifyEmailHelperInterface
+final readonly class VerifyEmailHelper implements VerifyEmailHelperInterface
 {
     /**
      * @param int $lifetime The length of time in seconds that a signed URI is valid for after it is created
