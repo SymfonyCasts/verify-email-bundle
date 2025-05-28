@@ -1,12 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the SymfonyCasts VerifyEmailBundle package.
  * Copyright (c) SymfonyCasts <https://symfonycasts.com/>
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace SymfonyCasts\Bundle\VerifyEmail\Tests;
 
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
@@ -32,8 +33,8 @@ class VerifyEmailTestKernel extends Kernel
      */
     public function __construct(
         private ?ContainerBuilder $builder = null,
-        private array $routes = [],
-        private array $extraBundles = [],
+        private readonly array $routes = [],
+        private readonly array $extraBundles = [],
     ) {
         parent::__construct('test', true);
     }
@@ -51,13 +52,13 @@ class VerifyEmailTestKernel extends Kernel
 
     public function registerContainerConfiguration(LoaderInterface $loader): void
     {
-        if (null === $this->builder) {
+        if (!$this->builder instanceof \Symfony\Component\DependencyInjection\ContainerBuilder) {
             $this->builder = new ContainerBuilder();
         }
 
         $builder = $this->builder;
 
-        $loader->load(function (ContainerBuilder $container) use ($builder) {
+        $loader->load(function (ContainerBuilder $container) use ($builder): void {
             $container->merge($builder);
             $container->loadFromExtension(
                 'framework',
@@ -92,11 +93,13 @@ class VerifyEmailTestKernel extends Kernel
         return $routes;
     }
 
+    #[\Override]
     public function getCacheDir(): string
     {
         return sys_get_temp_dir().'/cache'.spl_object_hash($this);
     }
 
+    #[\Override]
     public function getLogDir(): string
     {
         return sys_get_temp_dir().'/logs'.spl_object_hash($this);
