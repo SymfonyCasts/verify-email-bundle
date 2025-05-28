@@ -52,7 +52,7 @@ class VerifyEmailTestKernel extends Kernel
 
     public function registerContainerConfiguration(LoaderInterface $loader): void
     {
-        if (!$this->builder instanceof \Symfony\Component\DependencyInjection\ContainerBuilder) {
+        if (!$this->builder instanceof ContainerBuilder) {
             $this->builder = new ContainerBuilder();
         }
 
