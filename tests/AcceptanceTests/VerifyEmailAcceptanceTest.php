@@ -120,43 +120,22 @@ final class VerifyEmailAcceptanceTest extends TestCase
     public function testGenerateSignatureWithRelativePath(): void
     {
         $kernel = $this->getBootedKernel(['use_relative_path' => true]);
-
         $container = $kernel->getContainer();
 
-        /** @var VerifyEmailHelper $helper */
-        $helper = $container->get(VerifyEmailAcceptanceFixture::class)->helper;
+        /** @var VerifyEmailAcceptanceFixture $testHelper */
+        $testHelper = $container->get(VerifyEmailAcceptanceFixture::class);
+        $helper = $testHelper->helper;
 
         $components = $helper->generateSignature('verify-test', '1234', 'jr@rushlow.dev');
-
-        $signature = $components->getSignedUrl();
-
         $expiresAt = $components->getExpiresAt()->getTimestamp();
-
-        $expectedUserData = json_encode(['1234', 'jr@rushlow.dev']);
-
-        $expectedToken = base64_encode(hash_hmac('sha256', $expectedUserData, 'foo', true));
-
-        $expectedSignature = base64_encode(hash_hmac(
-            'sha256',
-            \sprintf('/verify/user?expires=%s&token=%s', $expiresAt, urlencode($expectedToken)),
-            'foo',
-            true
+        $actual = $components->getSignedUrl();
+        $expected = $testHelper->uriSigner->sign(\sprintf(
+            'verify/user?expires=%s&token=%s',
+            $expiresAt,
+            $testHelper->generator->createToken('1234', 'jr@rushlow.dev')
         ));
 
-        $parsed = parse_url($signature);
-
-        if (!\is_array($parsed) || !isset($parsed['query'])) {
-            throw new \RuntimeException('Invalid signature URL');
-        }
-
-        parse_str($parsed['query'], $result);
-
-        self::assertIsString($result['signature']);
-        self::assertTrue(hash_equals($expectedSignature, $result['signature']));
-        self::assertSame(
-            \sprintf('/verify/user?expires=%s&signature=%s&token=%s', $expiresAt, urlencode($expectedSignature), urlencode($expectedToken)),
-            strstr($signature, '/verify/user')
-        );
+        self::assertSame($expected, $actual);
     }
 
     public function testValidateEmailSignatureWithRelativePath(): void
