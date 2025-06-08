@@ -63,10 +63,11 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
         $extraParams['token'] = $this->tokenGenerator->createToken($userId, $userEmail);
         $extraParams['expires'] = $expiryTimestamp;
 
-        $uri = $this->router->generate($routeName, $extraParams, UrlGeneratorInterface::ABSOLUTE_URL);
+        $uri = $this->router->generate($routeName, $extraParams, $this->useRelativePath ? UrlGeneratorInterface::RELATIVE_PATH : UrlGeneratorInterface::ABSOLUTE_URL);
+        $signature = $this->uriSigner->sign($uri);
 
         /** @psalm-suppress PossiblyFalseArgument */
-        return new VerifyEmailSignatureComponents(\DateTimeImmutable::createFromFormat('U', (string) $expiryTimestamp), $this->getSignedUrl($uri), $generatedAt);
+        return new VerifyEmailSignatureComponents(\DateTimeImmutable::createFromFormat('U', (string) $expiryTimestamp), $signature, $generatedAt);
     }
 
     public function validateEmailConfirmation(string $signedUrl, string $userId, string $userEmail): void
@@ -112,56 +113,4 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
         }
     }
 
-    private function generateAbsolutePath(string $absoluteUri): string
-    {
-        $parsedUri = parse_url($absoluteUri);
-        \assert(\is_array($parsedUri), 'Could not parse the provided URI.');
-
-        $path = $parsedUri['path'] ?? '';
-        $query = $this->getQueryStringFromParsedUrl($parsedUri);
-        $fragment = isset($parsedUri['fragment']) ? '#'.$parsedUri['fragment'] : '';
-
-        return $path.$query.$fragment;
-    }
-
-    public function generateSigningString(string $uri): string
-    {
-        if (!$this->useRelativePath) {
-            return $uri;
-        }
-
-        return $this->generateAbsolutePath($uri);
-    }
-
-    private function generateBaseUrl(string $absoluteUri): string
-    {
-        $parsedUri = parse_url($absoluteUri);
-        $scheme = isset($parsedUri['scheme']) ? $parsedUri['scheme'].'://' : '';
-        $host = $parsedUri['host'] ?? '';
-
-        return $scheme.$host;
-    }
-
-    private function getSignedUrl(string $uri): string
-    {
-        $signature = $this->uriSigner->sign($this->generateSigningString($uri));
-
-        if (false === $this->useRelativePath) {
-            return $signature;
-        }
-
-        return $this->generateBaseUrl($uri).$signature;
-    }
-
-    /**
-     * @param array{scheme?: string, host?: string, port?: int, user?: string, pass?: string, query?: string, path?: string, fragment?: string} $parsedUrl
-     */
-    private function getQueryStringFromParsedUrl(array $parsedUrl): string
-    {
-        if (!\array_key_exists('query', $parsedUrl)) {
-            return '';
-        }
-
-        return $parsedUrl['query'] ? ('?'.$parsedUrl['query']) : '';
-    }
 }
