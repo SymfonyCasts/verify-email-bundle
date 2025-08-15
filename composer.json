@@ -6,7 +6,6 @@
     "minimum-stability": "dev",
     "require": {
         "php": ">=8.1",
-        "ext-json": "*",
         "symfony/config": "^5.4 | ^6.0 | ^7.0",
         "symfony/dependency-injection": "^5.4 | ^6.0 | ^7.0",
         "symfony/http-kernel": "^5.4 | ^6.0 | ^7.0",
