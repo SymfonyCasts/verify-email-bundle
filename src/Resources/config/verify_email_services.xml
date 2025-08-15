@@ -28,6 +28,7 @@
             <argument type="service" id="symfonycasts.verify_email.query_utility" />
             <argument type="service" id="symfonycasts.verify_email.token_generator" />
             <argument /> <!-- verify user signature lifetime -->
+            <argument /> <!-- verify user signature path generation method -->
         </service>
     </services>
 </container>

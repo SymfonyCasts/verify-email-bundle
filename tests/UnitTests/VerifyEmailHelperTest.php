@@ -88,6 +88,38 @@ final class VerifyEmailHelperTest extends TestCase
         self::assertSame($expectedSignedUrl, $components->getSignedUrl());
     }
 
+    public function testSignatureIsGeneratedWithRelativePath(): void
+    {
+        $expires = time() + 3600;
+
+        $expectedSignedUrl = \sprintf('/verify?expires=%s&signature=1234&token=hashedToken', $expires);
+
+        $this->tokenGenerator
+            ->expects($this->once())
+            ->method('createToken')
+            ->with('1234', 'jr@rushlow.dev')
+            ->willReturn('hashedToken')
+        ;
+
+        $this->mockRouter
+            ->expects($this->once())
+            ->method('generate')
+            ->with('app_verify_route', ['token' => 'hashedToken', 'expires' => $expires])
+            ->willReturn(\sprintf('/verify?expires=%s&token=hashedToken', $expires))
+        ;
+
+        $this->mockSigner
+            ->expects($this->once())
+            ->method('sign')
+            ->with(\sprintf('/verify?expires=%s&token=hashedToken', $expires))
+            ->willReturn($expectedSignedUrl)
+        ;
+
+        $helper = $this->getHelper(true);
+        $components = $helper->generateSignature('app_verify_route', '1234', 'jr@rushlow.dev');
+        self::assertSame($expectedSignedUrl, $components->getSignedUrl());
+    }
+
     /** @group legacy */
     public function testValidationThrowsEarlyOnInvalidSignature(): void
     {
@@ -116,6 +148,39 @@ final class VerifyEmailHelperTest extends TestCase
         ;
 
         $helper = $this->getHelper();
+
+        $this->expectException(InvalidSignatureException::class);
+
+        $helper->validateEmailConfirmation($signedUrl, '1234', 'jr@rushlow.dev');
+    }
+
+    public function testValidationThrowsEarlyOnInvalidSignatureWithRelativePath(): void
+    {
+        $signedUrl = '/verify?expires=1&signature=1234%token=xyz';
+
+        $this->mockSigner
+            ->expects($this->once())
+            ->method('check')
+            ->with($signedUrl)
+            ->willReturn(false)
+        ;
+
+        $this->mockQueryUtility
+            ->expects($this->never())
+            ->method('getExpiryTimestamp')
+        ;
+
+        $this->mockQueryUtility
+            ->expects($this->never())
+            ->method('getTokenFromQuery')
+        ;
+
+        $this->tokenGenerator
+            ->expects($this->never())
+            ->method('createToken')
+        ;
+
+        $helper = $this->getHelper(true);
 
         $this->expectException(InvalidSignatureException::class);
 
@@ -268,8 +333,8 @@ final class VerifyEmailHelperTest extends TestCase
         $helper->validateEmailConfirmationFromRequest($request, '1234', 'jr@rushlow.dev');
     }
 
-    private function getHelper(): VerifyEmailHelperInterface
+    private function getHelper(bool $useRelativePath = false): VerifyEmailHelperInterface
     {
-        return new VerifyEmailHelper($this->mockRouter, $this->mockSigner, $this->mockQueryUtility, $this->tokenGenerator, 3600);
+        return new VerifyEmailHelper($this->mockRouter, $this->mockSigner, $this->mockQueryUtility, $this->tokenGenerator, 3600, $useRelativePath);
     }
 }
