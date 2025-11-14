@@ -6,16 +6,6 @@ parameters:
 			path: src/DependencyInjection/Configuration.php
 
 		-
-			message: "#^Instantiated class Symfony\\\\Component\\\\HttpKernel\\\\UriSigner not found\\.$#"
-			count: 1
-			path: src/Factory/UriSignerFactory.php
-
-		-
-			message: "#^Method SymfonyCasts\\\\Bundle\\\\VerifyEmail\\\\Factory\\\\UriSignerFactory\\:\\:createUriSigner\\(\\) has invalid return type Symfony\\\\Component\\\\HttpKernel\\\\UriSigner\\.$#"
-			count: 1
-			path: src/Factory/UriSignerFactory.php
-
-		-
 			message: "#^Parameter \\#2 \\$data of function hash_hmac expects string, string\\|false given\\.$#"
 			count: 1
 			path: src/Generator/VerifyEmailTokenGenerator.php
@@ -44,16 +34,6 @@ parameters:
 			message: "#^Parameter \\#2 \\$array of function array_key_exists expects array, array\\<string, int\\|string\\>\\|false given\\.$#"
 			count: 1
 			path: src/Util/VerifyEmailQueryUtility.php
-
-		-
-			message: "#^Call to method check\\(\\) on an unknown class Symfony\\\\Component\\\\HttpKernel\\\\UriSigner\\.$#"
-			count: 1
-			path: src/VerifyEmailHelper.php
-
-		-
-			message: "#^Call to method sign\\(\\) on an unknown class Symfony\\\\Component\\\\HttpKernel\\\\UriSigner\\.$#"
-			count: 1
-			path: src/VerifyEmailHelper.php
 
 		-
 			message: "#^Method SymfonyCasts\\\\Bundle\\\\VerifyEmail\\\\VerifyEmailHelper\\:\\:__construct\\(\\) has parameter \\$uriSigner with no type specified\\.$#"
@@ -86,7 +66,12 @@ parameters:
 			path: src/VerifyEmailHelper.php
 
 		-
-			message: "#^Property SymfonyCasts\\\\Bundle\\\\VerifyEmail\\\\VerifyEmailHelper\\:\\:\\$uriSigner has unknown class Symfony\\\\Component\\\\HttpKernel\\\\UriSigner as its type\\.$#"
+			message: "#^Property SymfonyCasts\\\\Bundle\\\\VerifyEmail\\\\VerifyEmailHelper\\:\\:\\$useRelativePath has no type specified\\.$#"
+			count: 1
+			path: src/VerifyEmailHelper.php
+
+		-
+			message: "#^Instanceof between Symfony\\\\Component\\\\HttpFoundation\\\\UriSigner and Symfony\\\\Component\\\\HttpFoundation\\\\UriSigner will always evaluate to true\\.$#"
 			count: 1
 			path: src/VerifyEmailHelper.php
 
@@ -97,41 +82,26 @@ parameters:
 
 		-
 			message: "#^Access to an undefined property object\\:\\:\\$helper\\.$#"
-			count: 2
-			path: tests/AcceptanceTests/VerifyEmailAcceptanceTest.php
-
-		-
-			message: "#^Call to method sign\\(\\) on an unknown class Symfony\\\\Component\\\\HttpKernel\\\\UriSigner\\.$#"
-			count: 1
+			count: 4
 			path: tests/AcceptanceTests/VerifyEmailAcceptanceTest.php
 
 		-
 			message: "#^Parameter \\#2 \\$data of function hash_hmac expects string, string\\|false given\\.$#"
-			count: 2
+			count: 4
 			path: tests/AcceptanceTests/VerifyEmailAcceptanceTest.php
 
 		-
-			message: "#^Parameter \\$uriSigner of method SymfonyCasts\\\\Bundle\\\\VerifyEmail\\\\Tests\\\\AcceptanceTests\\\\VerifyEmailAcceptanceFixture\\:\\:__construct\\(\\) has invalid type Symfony\\\\Component\\\\HttpKernel\\\\UriSigner\\.$#"
-			count: 1
+			message: "#^Call to method PHPUnit\\\\Framework\\\\Assert::assertTrue\\(\\) with true and 'Test correctly does.*' will always evaluate to true\\.$#"
+			count: 3
 			path: tests/AcceptanceTests/VerifyEmailAcceptanceTest.php
 
 		-
-			message: "#^Property SymfonyCasts\\\\Bundle\\\\VerifyEmail\\\\Tests\\\\AcceptanceTests\\\\VerifyEmailAcceptanceFixture\\:\\:\\$uriSigner has unknown class Symfony\\\\Component\\\\HttpKernel\\\\UriSigner as its type\\.$#"
+			message: "#^Method SymfonyCasts\\\\Bundle\\\\VerifyEmail\\\\Tests\\\\AcceptanceTests\\\\VerifyEmailAcceptanceTest\\:\\:getBootedKernel\\(\\) has parameter \\$customConfig with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: tests/AcceptanceTests/VerifyEmailAcceptanceTest.php
-
-		-
-			message: "#^Call to method sign\\(\\) on an unknown class Symfony\\\\Component\\\\HttpKernel\\\\UriSigner\\.$#"
-			count: 1
-			path: tests/FunctionalTests/VerifyEmailHelperFunctionalTest.php
 
 		-
 			message: "#^Cannot access offset 'query' on array\\{scheme\\?\\: string, host\\?\\: string, port\\?\\: int\\<0, 65535\\>, user\\?\\: string, pass\\?\\: string, path\\?\\: string, query\\?\\: string, fragment\\?\\: string\\}\\|false\\.$#"
-			count: 1
-			path: tests/FunctionalTests/VerifyEmailHelperFunctionalTest.php
-
-		-
-			message: "#^Instantiated class Symfony\\\\Component\\\\HttpKernel\\\\UriSigner not found\\.$#"
 			count: 1
 			path: tests/FunctionalTests/VerifyEmailHelperFunctionalTest.php
 
@@ -156,7 +126,7 @@ parameters:
 			path: tests/FunctionalTests/VerifyEmailHelperFunctionalTest.php
 
 		-
-			message: "#^Property SymfonyCasts\\\\Bundle\\\\VerifyEmail\\\\Tests\\\\FunctionalTests\\\\VerifyEmailHelperFunctionalTest\\:\\:\\$uriSigner has unknown class Symfony\\\\Component\\\\HttpKernel\\\\UriSigner as its type\\.$#"
+			message: "#^Call to method PHPUnit\\\\Framework\\\\Assert::assertTrue\\(\\) with true and 'Test correctly does.*' will always evaluate to true\\.$#"
 			count: 1
 			path: tests/FunctionalTests/VerifyEmailHelperFunctionalTest.php
 
@@ -196,11 +166,6 @@ parameters:
 			path: tests/UnitTests/Model/VerifyEmailSignatureComponentsTest.php
 
 		-
-			message: "#^Class Symfony\\\\Component\\\\HttpKernel\\\\UriSigner not found\\.$#"
-			count: 1
-			path: tests/UnitTests/VerifyEmailHelperTest.php
-
-		-
 			message: "#^Property SymfonyCasts\\\\Bundle\\\\VerifyEmail\\\\Tests\\\\UnitTests\\\\VerifyEmailHelperTest\\:\\:\\$mockQueryUtility has no type specified\\.$#"
 			count: 1
 			path: tests/UnitTests/VerifyEmailHelperTest.php
@@ -226,6 +191,11 @@ parameters:
 			path: tests/VerifyEmailTestKernel.php
 
 		-
+			message: "#^Method SymfonyCasts\\\\Bundle\\\\VerifyEmail\\\\Tests\\\\VerifyEmailTestKernel\\:\\:__construct\\(\\) has parameter \\$customConfig with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: tests/VerifyEmailTestKernel.php
+
+		-
 			message: "#^Property SymfonyCasts\\\\Bundle\\\\VerifyEmail\\\\Tests\\\\VerifyEmailTestKernel\\:\\:\\$builder has no type specified\\.$#"
 			count: 1
 			path: tests/VerifyEmailTestKernel.php
@@ -237,5 +207,10 @@ parameters:
 
 		-
 			message: "#^Property SymfonyCasts\\\\Bundle\\\\VerifyEmail\\\\Tests\\\\VerifyEmailTestKernel\\:\\:\\$routes has no type specified\\.$#"
+			count: 1
+			path: tests/VerifyEmailTestKernel.php
+
+		-
+			message: "#^Property SymfonyCasts\\\\Bundle\\\\VerifyEmail\\\\Tests\\\\VerifyEmailTestKernel\\:\\:\\$customConfig type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: tests/VerifyEmailTestKernel.php

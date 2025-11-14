@@ -117,9 +117,62 @@ final class VerifyEmailAcceptanceTest extends TestCase
         $this->assertTrue(true, 'Test correctly does not throw an exception');
     }
 
-    private function getBootedKernel(): KernelInterface
+    public function testGenerateSignatureWithRelativePath(): void
+    {
+        $kernel = $this->getBootedKernel(['use_relative_path' => true]);
+        $container = $kernel->getContainer();
+
+        /** @var VerifyEmailAcceptanceFixture $testHelper */
+        $testHelper = $container->get(VerifyEmailAcceptanceFixture::class);
+        $helper = $testHelper->helper;
+
+        $components = $helper->generateSignature('verify-test', '1234', 'jr@rushlow.dev');
+        $expiresAt = $components->getExpiresAt()->getTimestamp();
+        $actual = $components->getSignedUrl();
+        $expected = $testHelper->uriSigner->sign(\sprintf(
+            'verify/user?expires=%s&token=%s',
+            $expiresAt,
+            $testHelper->generator->createToken('1234', 'jr@rushlow.dev')
+        ));
+
+        self::assertSame($expected, $actual);
+    }
+
+    public function testValidateEmailSignatureWithRelativePath(): void
+    {
+        $kernel = $this->getBootedKernel(['use_relative_path' => true]);
+
+        $container = $kernel->getContainer();
+
+        /** @var VerifyEmailHelper $helper */
+        $helper = $container->get(VerifyEmailAcceptanceFixture::class)->helper;
+        $expires = new \DateTimeImmutable('+1 hour');
+
+        $uriToTest = \sprintf(
+            '/verify/user?%s',
+            http_build_query([
+                'expires' => $expires->getTimestamp(),
+                'token' => base64_encode(hash_hmac(
+                    'sha256',
+                    json_encode(['1234', 'jr@rushlow.dev']),
+                    'foo',
+                    true
+                )),
+            ])
+        );
+
+        $signature = base64_encode(hash_hmac('sha256', $uriToTest, 'foo', true));
+
+        $test = \sprintf('%s&signature=%s', $uriToTest, urlencode($signature));
+
+        $helper->validateEmailConfirmation($test, '1234', 'jr@rushlow.dev');
+        $this->assertTrue(true, 'Test correctly does not throw an exception');
+    }
+
+    private function getBootedKernel(array $customConfig = []): KernelInterface
     {
         $builder = new ContainerBuilder();
+
         $builder->autowire(VerifyEmailAcceptanceFixture::class)
             ->setPublic(true)
             ->setArgument(1, new Reference('symfonycasts.verify_email.uri_signer'))
@@ -128,7 +181,9 @@ final class VerifyEmailAcceptanceTest extends TestCase
 
         $kernel = new VerifyEmailTestKernel(
             $builder,
-            ['verify-test' => '/verify/user']
+            ['verify-test' => '/verify/user'],
+            [],
+            $customConfig
         );
 
         $kernel->boot();
