@@ -1,11 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition\\:\\:children\\(\\)\\.$#"
-			count: 1
-			path: src/DependencyInjection/Configuration.php
-
-		-
 			message: "#^Instantiated class Symfony\\\\Component\\\\HttpKernel\\\\UriSigner not found\\.$#"
 			count: 1
 			path: src/Factory/UriSignerFactory.php
