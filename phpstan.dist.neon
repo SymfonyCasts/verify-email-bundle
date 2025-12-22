@@ -8,4 +8,3 @@ parameters:
         - src
         - tests
     ignoreErrors:
-        - '#Method .+::getConfigTreeBuilder\(\) return type with generic class Symfony\\Component\\Config\\Definition\\Builder\\TreeBuilder does not specify its types: T#'
