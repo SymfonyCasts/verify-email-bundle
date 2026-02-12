@@ -62,7 +62,7 @@ class VerifyEmailTestKernel extends Kernel
 
         $builder = $this->builder;
 
-        $loader->load(function (ContainerBuilder $container) use ($builder) {
+        $loader->load(static function (ContainerBuilder $container) use ($builder) {
             $container->merge($builder);
             $container->loadFromExtension(
                 'framework',
