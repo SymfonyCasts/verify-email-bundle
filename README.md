@@ -17,7 +17,7 @@ entities with minor modifications. This bundle provides:
 
 ## Installation
 
-Using Composer of course!
+Using Composer, of course!
 
 ```bash
 composer require symfonycasts/verify-email-bundle
@@ -27,7 +27,7 @@ composer require symfonycasts/verify-email-bundle
 
 We strongly suggest using Symfony MakerBundle's `make:registration-form` command
 to get a feel for how the bundle should be used. It's super simple! Answer a couple
-questions, and you'll have a fully functional secure registration system with
+of questions, and you'll have a fully functional, secure registration system with
 email verification.
 
 ```bash
@@ -88,7 +88,7 @@ class RegistrationController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
-            // generate a signed url and email it to the user
+            // generate a signed URL and email it to the user
             $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
                 (new TemplatedEmail())
                     ->from(new Address('mailer@example.com', 'AcmeMailBot'))
@@ -96,7 +96,7 @@ class RegistrationController extends AbstractController
                     ->subject('Please Confirm your Email')
                     ->htmlTemplate('registration/confirmation_email.html.twig')
             );
-            // do anything else you need here, like send an email
+            // do anything else you need here
 
             return $this->redirectToRoute('app_main');
         }
@@ -111,7 +111,7 @@ class RegistrationController extends AbstractController
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
-        // validate email confirmation link, sets User::isVerified=true and persists
+        // validate email confirmation link, set User::$isVerified=true, and persist
         try {
             $this->emailVerifier->handleEmailConfirmation($request, $this->getUser());
         } catch (VerifyEmailExceptionInterface $exception) {
@@ -128,7 +128,7 @@ class RegistrationController extends AbstractController
 }
 ```
 
-This uses an `EmailVerifier` class that you should also add to your app::
+This uses an `EmailVerifier` class that you should also add to your app:
 
 ```php
 // src/Security/EmailVerifier.php
@@ -192,7 +192,7 @@ but clicks the verification link on their phone. Normally, the user would be
 required to log in before their email was verified. 
 
 We can overcome this by passing a user identifier as a query parameter in the
-signed url. The diff below demonstrate how this is done based off of the previous
+signed URL. The diff below demonstrates how this is done based on the previous
 examples:
 
 ```diff
@@ -234,9 +234,9 @@ class RegistrationController extends AbstractController
 -       $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 -       $user = $this->getUser();
 
-+       $id = $request->query->get('id'); // retrieve the user id from the url
++       $id = $request->query->get('id'); // retrieve the user id from the URL
 +
-+       // Verify the user id exists and is not null
++       // Verify the user ID exists and is not null
 +       if (null === $id) {
 +           return $this->redirectToRoute('app_home');
 +       }
@@ -271,7 +271,7 @@ symfonycasts_verify_email:
 _Optional_ - Defaults to `3600` seconds
 
 This is the length of time a signed URL is valid for in seconds after it has
-been created. 
+been created.
 
 ## Reserved Query Parameters
 
@@ -290,7 +290,7 @@ Issues pertaining to Symfony's MakerBundle, specifically `make:registration-form
 should be addressed in the [Symfony Maker repository](https://github.com/symfony/maker-bundle).
 
 ## Security Issues
-For **security related vulnerabilities**, we ask that you email
+For **security-related vulnerabilities**, we ask that you email
 `ryan@symfonycasts.com` instead of creating an issue.
 
 This will give us the opportunity to address the issue without exposing the
