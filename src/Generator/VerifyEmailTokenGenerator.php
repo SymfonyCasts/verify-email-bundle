@@ -40,7 +40,8 @@ class VerifyEmailTokenGenerator
     }
 
     /**
-     * Same as createToken but removes/replaces chars that could be problematic in urls
+     * Same as createToken but removes/replaces chars that could be problematic in urls.
+     *
      * @see self::createToken
      */
     public function createUrlEncodedToken(string $userId, string $email): string
