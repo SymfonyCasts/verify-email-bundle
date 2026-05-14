@@ -38,4 +38,14 @@ class VerifyEmailTokenGenerator
 
         return base64_encode(hash_hmac('sha256', $encodedData, $this->signingKey, true));
     }
+
+    /**
+     * Same as createToken but removes/replaces chars that could be problematic in urls.
+     *
+     * @see self::createToken
+     */
+    public function createUrlEncodedToken(string $userId, string $email): string
+    {
+        return strtr(rtrim($this->createToken($userId, $email), '='), ['/' => '_', '+' => '-']);
+    }
 }
