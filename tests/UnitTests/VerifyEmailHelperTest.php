@@ -63,7 +63,7 @@ final class VerifyEmailHelperTest extends TestCase
 
         $this->tokenGenerator
             ->expects($this->once())
-            ->method('createToken')
+            ->method('createUrlEncodedToken')
             ->with('1234', 'jr@rushlow.dev')
             ->willReturn('hashedToken')
         ;
@@ -167,7 +167,7 @@ final class VerifyEmailHelperTest extends TestCase
         ;
 
         $this->tokenGenerator
-            ->expects($this->once())
+            ->expects($this->any())
             ->method('createToken')
             ->with('1234', 'jr@rushlow.dev')
             ->willReturn(base64_encode(hash_hmac('sha256', 'data', 'foo', true)))
