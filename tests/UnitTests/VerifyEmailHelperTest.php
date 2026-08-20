@@ -88,7 +88,7 @@ final class VerifyEmailHelperTest extends TestCase
         self::assertSame($expectedSignedUrl, $components->getSignedUrl());
     }
 
-    public function testSignatureIsGeneratedWithRelativePath(): void
+    public function testSignatureIsGeneratedWithoutHost(): void
     {
         $expires = time() + 3600;
 
@@ -154,25 +154,53 @@ final class VerifyEmailHelperTest extends TestCase
         $helper->validateEmailConfirmation($signedUrl, '1234', 'jr@rushlow.dev');
     }
 
-    public function testValidationThrowsEarlyOnInvalidSignatureWithRelativePath(): void
+    public function testValidationFromRequestKeepsTheBaseUrlWhenSignedWithoutHost(): void
     {
-        $signedUrl = '/verify?expires=1&signature=1234%token=xyz';
+        /** @legacy - Remove conditional in 2.0 */
+        if (!class_exists(UriSigner::class)) {
+            $this->markTestSkipped('Requires symfony/http-foundation 6.4+');
+        }
 
+        $request = Request::create('/index.php/verify?expires=1&signature=1234&token=xyz', 'GET', [], [], [], [
+            'SCRIPT_FILENAME' => '/var/www/public/index.php',
+            'SCRIPT_NAME' => '/index.php',
+        ]);
+
+        // ABSOLUTE_PATH puts the base url into the signed string, so the check has to keep it.
         $this->mockSigner
             ->expects($this->once())
             ->method('check')
-            ->with($signedUrl)
+            ->with('/index.php/verify?expires=1&signature=1234&token=xyz')
             ->willReturn(false)
         ;
 
-        $this->mockQueryUtility
-            ->expects($this->never())
-            ->method('getExpiryTimestamp')
+        $helper = $this->getHelper(true);
+
+        $this->expectException(InvalidSignatureException::class);
+
+        $helper->validateEmailConfirmationFromRequest($request, '1234', 'jr@rushlow.dev');
+    }
+
+    public function testValidationFromRequestChecksThePathWhenSignedWithoutHost(): void
+    {
+        /** @legacy - Remove conditional in 2.0 */
+        if (!class_exists(UriSigner::class)) {
+            $this->markTestSkipped('Requires symfony/http-foundation 6.4+');
+        }
+
+        $path = '/verify?expires=1&signature=1234&token=xyz';
+
+        // Not checkRequest(): that would rebuild the absolute URI the signature was never made over.
+        $this->mockSigner
+            ->expects($this->once())
+            ->method('check')
+            ->with($path)
+            ->willReturn(false)
         ;
 
-        $this->mockQueryUtility
+        $this->mockSigner
             ->expects($this->never())
-            ->method('getTokenFromQuery')
+            ->method('checkRequest')
         ;
 
         $this->tokenGenerator
@@ -184,7 +212,7 @@ final class VerifyEmailHelperTest extends TestCase
 
         $this->expectException(InvalidSignatureException::class);
 
-        $helper->validateEmailConfirmation($signedUrl, '1234', 'jr@rushlow.dev');
+        $helper->validateEmailConfirmationFromRequest(Request::create($path), '1234', 'jr@rushlow.dev');
     }
 
     /** @group legacy */
@@ -333,8 +361,8 @@ final class VerifyEmailHelperTest extends TestCase
         $helper->validateEmailConfirmationFromRequest($request, '1234', 'jr@rushlow.dev');
     }
 
-    private function getHelper(bool $useRelativePath = false): VerifyEmailHelperInterface
+    private function getHelper(bool $signWithoutHost = false): VerifyEmailHelperInterface
     {
-        return new VerifyEmailHelper($this->mockRouter, $this->mockSigner, $this->mockQueryUtility, $this->tokenGenerator, 3600, $useRelativePath);
+        return new VerifyEmailHelper($this->mockRouter, $this->mockSigner, $this->mockQueryUtility, $this->tokenGenerator, 3600, $signWithoutHost);
     }
 }

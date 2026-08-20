@@ -273,12 +273,20 @@ _Optional_ - Defaults to `3600` seconds
 This is the length of time a signed URL is valid for in seconds after it has
 been created.
 
-#### `use_relative_path`
+#### `sign_without_host`
 
-_Optional_ – Defaults to `false`
+_Optional_ - Defaults to `false`
 
-If set to `true`, the generated verification URL will use a relative path instead of an absolute URL.
-This is useful if your app is accessible under multiple domains or customer-specific subdomains, as the host will be determined dynamically by the user's current request.
+If set to `true`, `generateSignature()` signs the path only. The returned URL has no scheme and no
+host — `/verify?expires=…&signature=…&token=…` — so prepend the host yourself when you build the link.
+
+Use this when one application answers under several domains: the signature does not cover the host,
+so a link built for one of them validates on any of them. That also means host, port and scheme stop
+being a trust boundary — where two tenants share the application secret, a link mailed to a user of
+one can be redeemed on the other.
+
+The signed path includes the base URL, so generating outside an HTTP request — a console command, a
+queue worker — needs `router.request_context.base_url` to match the one visitors use.
 
 ## Reserved Query Parameters
 

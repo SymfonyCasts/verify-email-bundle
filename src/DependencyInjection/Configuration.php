@@ -29,9 +29,9 @@ class Configuration implements ConfigurationInterface
                     ->defaultValue(3600)
                     ->info('The length of time in seconds that a signed URI is valid for after it is created.')
                 ->end()
-                ->booleanNode('use_relative_path')
+                ->booleanNode('sign_without_host')
                     ->defaultValue(false)
-                    ->info('Decides whether to use an absolute url or a relative path for signing.')
+                    ->info('Sign the path only, leaving scheme and host out of the generated URL and its signature.')
                 ->end()
             ->end();
 
