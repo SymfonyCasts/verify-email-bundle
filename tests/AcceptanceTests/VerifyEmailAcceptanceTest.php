@@ -117,9 +117,69 @@ final class VerifyEmailAcceptanceTest extends TestCase
         $this->assertTrue(true, 'Test correctly does not throw an exception');
     }
 
-    private function getBootedKernel(): KernelInterface
+    public function testGenerateSignatureWithoutHost(): void
+    {
+        $kernel = $this->getBootedKernel(['sign_without_host' => true]);
+        $container = $kernel->getContainer();
+
+        /** @var VerifyEmailAcceptanceFixture $testHelper */
+        $testHelper = $container->get(VerifyEmailAcceptanceFixture::class);
+        $helper = $testHelper->helper;
+
+        $components = $helper->generateSignature('verify-test', '1234', 'jr@rushlow.dev');
+        $expiresAt = $components->getExpiresAt()->getTimestamp();
+        $actual = $components->getSignedUrl();
+        $expected = $testHelper->uriSigner->sign(\sprintf(
+            '/verify/user?expires=%s&token=%s',
+            $expiresAt,
+            $testHelper->generator->createToken('1234', 'jr@rushlow.dev')
+        ));
+
+        self::assertSame($expected, $actual);
+    }
+
+    /**
+     * @group legacy
+     */
+    public function testValidateEmailSignatureFromAbsoluteUrlWithoutHost(): void
+    {
+        $kernel = $this->getBootedKernel(['sign_without_host' => true]);
+
+        /** @var VerifyEmailAcceptanceFixture $testHelper */
+        $testHelper = $kernel->getContainer()->get(VerifyEmailAcceptanceFixture::class);
+        $signedUrl = $testHelper->helper->generateSignature('verify-test', '1234', 'jr@rushlow.dev')->getSignedUrl();
+
+        // The deprecated method is documented to take the URL the user clicked, which carries a host.
+        $testHelper->helper->validateEmailConfirmation('https://example.com'.$signedUrl, '1234', 'jr@rushlow.dev');
+
+        $this->expectNotToPerformAssertions();
+    }
+
+    public function testValidateEmailSignatureFromRequestWithoutHost(): void
+    {
+        /** @legacy - Remove conditional in 2.0 */
+        if (!class_exists(UriSigner::class)) {
+            $this->markTestSkipped('Requires symfony/http-foundation 6.4+');
+        }
+
+        $kernel = $this->getBootedKernel(['sign_without_host' => true]);
+
+        /** @var VerifyEmailAcceptanceFixture $testHelper */
+        $testHelper = $kernel->getContainer()->get(VerifyEmailAcceptanceFixture::class);
+        $helper = $testHelper->helper;
+
+        $signedUrl = $helper->generateSignature('verify-test', '1234', 'jr@rushlow.dev')->getSignedUrl();
+
+        $helper->validateEmailConfirmationFromRequest(Request::create($signedUrl), '1234', 'jr@rushlow.dev');
+
+        $this->expectNotToPerformAssertions();
+    }
+
+    /** @param array<string, mixed> $customConfig */
+    private function getBootedKernel(array $customConfig = []): KernelInterface
     {
         $builder = new ContainerBuilder();
+
         $builder->autowire(VerifyEmailAcceptanceFixture::class)
             ->setPublic(true)
             ->setArgument(1, new Reference('symfonycasts.verify_email.uri_signer'))
@@ -128,7 +188,9 @@ final class VerifyEmailAcceptanceTest extends TestCase
 
         $kernel = new VerifyEmailTestKernel(
             $builder,
-            ['verify-test' => '/verify/user']
+            ['verify-test' => '/verify/user'],
+            [],
+            $customConfig
         );
 
         $kernel->boot();

@@ -47,5 +47,6 @@ return static function (ContainerConfigurator $container): void {
             service('symfonycasts.verify_email.query_utility'),
             service('symfonycasts.verify_email.token_generator'),
             null, // verify user signature lifetime
+            null, // verify user signature path generation method
         ]);
 };

@@ -29,6 +29,10 @@ class Configuration implements ConfigurationInterface
                     ->defaultValue(3600)
                     ->info('The length of time in seconds that a signed URI is valid for after it is created.')
                 ->end()
+                ->booleanNode('sign_without_host')
+                    ->defaultValue(false)
+                    ->info('Sign the path only, leaving scheme and host out of the generated URL and its signature.')
+                ->end()
             ->end();
 
         return $treeBuilder;
