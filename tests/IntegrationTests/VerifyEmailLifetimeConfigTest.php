@@ -12,6 +12,7 @@ namespace SymfonyCasts\Bundle\VerifyEmail\Tests\IntegrationTests;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\Filesystem\Filesystem;
 use SymfonyCasts\Bundle\VerifyEmail\Tests\VerifyEmailTestKernel;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
 
@@ -22,6 +23,24 @@ final class VerifyEmailLifetimeConfigTest extends TestCase
 {
     private const DEFAULT_LIFETIME = 3600;
 
+    private ?VerifyEmailTestKernel $kernel = null;
+
+    protected function tearDown(): void
+    {
+        if (null === $this->kernel) {
+            return;
+        }
+
+        $this->kernel->shutdown();
+        (new Filesystem())->remove([$this->kernel->getCacheDir(), $this->kernel->getLogDir()]);
+        $this->kernel = null;
+    }
+
+    /**
+     * @legacy - Remove annotation in 2.0
+     *
+     * @group legacy
+     */
     public function testDefaultLifetimeIsUsedByTheHelper(): void
     {
         $helper = $this->bootKernelAndGetHelper(new VerifyEmailTestKernel($this->createBuilder(), $this->routes()));
@@ -29,6 +48,11 @@ final class VerifyEmailLifetimeConfigTest extends TestCase
         $this->assertSignatureExpiresIn($helper, self::DEFAULT_LIFETIME);
     }
 
+    /**
+     * @legacy - Remove annotation in 2.0
+     *
+     * @group legacy
+     */
     public function testLifetimeConfiguredInUserlandIsUsedByTheHelper(): void
     {
         $helper = $this->bootKernelAndGetHelper(new VerifyEmailLifetimeTestKernel($this->createBuilder(), $this->routes()));
@@ -52,6 +76,9 @@ final class VerifyEmailLifetimeConfigTest extends TestCase
         self::assertLessThanOrEqual($after + $lifetime, $expiresAt);
     }
 
+    /**
+     * @return array<string, string>
+     */
     private function routes(): array
     {
         return ['verify_email' => '/verify'];
@@ -69,9 +96,13 @@ final class VerifyEmailLifetimeConfigTest extends TestCase
 
     private function bootKernelAndGetHelper(VerifyEmailTestKernel $kernel): VerifyEmailHelperInterface
     {
+        $this->kernel = $kernel;
         $kernel->boot();
 
-        return $kernel->getContainer()->get(VerifyEmailHelperHolder::class)->helper;
+        $holder = $kernel->getContainer()->get(VerifyEmailHelperHolder::class);
+        self::assertInstanceOf(VerifyEmailHelperHolder::class, $holder);
+
+        return $holder->helper;
     }
 }
 
