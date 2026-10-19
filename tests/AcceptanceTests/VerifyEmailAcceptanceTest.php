@@ -47,7 +47,7 @@ final class VerifyEmailAcceptanceTest extends TestCase
         $expected = $testHelper->uriSigner->sign(\sprintf(
             'http://localhost/verify/user?expires=%s&token=%s',
             $expiresAt,
-            $testHelper->generator->createToken('1234', 'jr@rushlow.dev')
+            $testHelper->generator->createUrlEncodedToken('1234', 'jr@rushlow.dev')
         ));
 
         self::assertSame($expected, $actual);

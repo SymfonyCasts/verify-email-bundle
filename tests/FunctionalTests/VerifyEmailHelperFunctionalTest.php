@@ -77,7 +77,12 @@ final class VerifyEmailHelperFunctionalTest extends TestCase
 
     private function getTestToken(): string
     {
-        return base64_encode(hash_hmac('sha256', json_encode(['1234', 'jr@rushlow.dev']), 'foo', true));
+        return strtr(rtrim(base64_encode(hash_hmac(
+            'sha256',
+            json_encode(['1234', 'jr@rushlow.dev']),
+            'foo',
+            true
+        )), '='), ['/' => '_', '+' => '-']);
     }
 
     private function getTestSignature(): string
