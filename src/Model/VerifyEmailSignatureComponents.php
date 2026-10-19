@@ -47,7 +47,8 @@ final class VerifyEmailSignatureComponents
     }
 
     /**
-     * Returns the full signed URL that should be sent to the user.
+     * Returns the signed URL that should be sent to the user. With sign_without_host enabled it is
+     * a path, and the host has to be prepended before the link is usable.
      */
     public function getSignedUrl(): string
     {

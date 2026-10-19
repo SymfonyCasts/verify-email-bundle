@@ -273,6 +273,21 @@ _Optional_ - Defaults to `3600` seconds
 This is the length of time a signed URL is valid for in seconds after it has
 been created.
 
+#### `sign_without_host`
+
+_Optional_ - Defaults to `false`
+
+If set to `true`, `generateSignature()` signs the path only. The returned URL has no scheme and no
+host — `/verify?expires=…&signature=…&token=…` — so prepend the host yourself when you build the link.
+
+Use this when one application answers under several domains: the signature does not cover the host,
+so a link built for one of them validates on any of them. That also means host, port and scheme stop
+being a trust boundary — where two tenants share the application secret, a link mailed to a user of
+one can be redeemed on the other.
+
+The signed path includes the base URL, so generating outside an HTTP request — a console command, a
+queue worker — needs `router.request_context.base_url` to match the one visitors use.
+
 ## Reserved Query Parameters
 
 If you add any extra query parameters in the 5th argument of `verifyEmailHelper::generateSignature()`,
