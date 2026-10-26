@@ -221,11 +221,6 @@ parameters:
 			path: tests/UnitTests/VerifyEmailHelperTest.php
 
 		-
-			message: "#^Method SymfonyCasts\\\\Bundle\\\\VerifyEmail\\\\Tests\\\\VerifyEmailTestKernel\\:\\:__construct\\(\\) has parameter \\$routes with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: tests/VerifyEmailTestKernel.php
-
-		-
 			message: "#^Property SymfonyCasts\\\\Bundle\\\\VerifyEmail\\\\Tests\\\\VerifyEmailTestKernel\\:\\:\\$builder has no type specified\\.$#"
 			count: 1
 			path: tests/VerifyEmailTestKernel.php

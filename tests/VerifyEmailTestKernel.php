@@ -33,9 +33,10 @@ class VerifyEmailTestKernel extends Kernel
     private $customConfig;
 
     /**
-     * @param array                $routes       Routes to be added to the container e.g. ['name' => 'path']
-     * @param BundleInterface[]    $bundles      Additional bundles to be registered e.g. [new Bundle()]
-     * @param array<string, mixed> $customConfig Custom configuration to be loaded into the container
+     * @param array<string, string|Route> $routes       Routes to be added to the container e.g. ['name' => 'path'].
+     *                                                  Pass a Route to configure it further e.g. with schemes or a host
+     * @param BundleInterface[]           $bundles      Additional bundles to be registered e.g. [new Bundle()]
+     * @param array<string, mixed>        $customConfig Custom configuration to be loaded into the container
      */
     public function __construct(?ContainerBuilder $builder = null, array $routes = [], array $bundles = [], array $customConfig = [])
     {
@@ -102,8 +103,8 @@ class VerifyEmailTestKernel extends Kernel
     {
         $routes = new RouteCollection();
 
-        foreach ($this->routes as $name => $path) {
-            $routes->add($name, new Route($path));
+        foreach ($this->routes as $name => $route) {
+            $routes->add($name, $route instanceof Route ? $route : new Route($route));
         }
 
         return $routes;
