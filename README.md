@@ -277,16 +277,19 @@ been created.
 
 _Optional_ - Defaults to `false`
 
-If set to `true`, `generateSignature()` signs the path only. The returned URL has no scheme and no
-host — `/verify?expires=…&signature=…&token=…` — so prepend the host yourself when you build the link.
+If set to `true`, `generateSignature()` signs the path only. A link built for one domain then
+validates on any domain the application answers on.
 
-Use this when one application answers under several domains: the signature does not cover the host,
-so a link built for one of them validates on any of them. That also means host, port and scheme stop
-being a trust boundary — where two tenants share the application secret, a link mailed to a user of
-one can be redeemed on the other.
+Use this when your application answers under several domains. But be careful with different
+tenants, because host, port and scheme stop being a trust boundary.
 
-The signed path includes the base URL, so generating outside an HTTP request — a console command, a
-queue worker — needs `router.request_context.base_url` to match the one visitors use.
+In a console command or a queue worker, the router context has no request to take its values from.
+Set `framework.router.default_uri`, or the generated links point at `localhost`.
+
+Switching the option in either direction invalidates links that have already been sent.
+
+A route that declares `schemes` or `host` cannot be signed this way. The `UrlGenerator` returns more
+than a path for those, and `generateSignature()` throws a `LogicException`.
 
 ## Reserved Query Parameters
 
