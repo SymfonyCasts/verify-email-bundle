@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\UriSigner;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\HttpKernel\UriSigner as LegacyUriSigner;
 use Symfony\Component\Routing\Route;
+use SymfonyCasts\Bundle\VerifyEmail\Exception\InvalidSignatureException;
 use SymfonyCasts\Bundle\VerifyEmail\Generator\VerifyEmailTokenGenerator;
 use SymfonyCasts\Bundle\VerifyEmail\Tests\VerifyEmailTestKernel;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelper;
@@ -300,6 +301,75 @@ final class VerifyEmailAcceptanceTest extends TestCase
         $signedUrl = $testHelper->helper->generateSignature('verify-test', '1234', 'jr@rushlow.dev')->getSignedUrl();
 
         self::assertStringStartsWith('http://localhost/verify/user?', $signedUrl);
+    }
+
+    public function tamperedConfirmationUrlProvider(): \Generator
+    {
+        yield 'another host' => ['http://localhost', 'https://other.example'];
+        yield 'another path' => ['/verify/user', '/verify/admin'];
+        yield 'an extra query parameter' => ['&token=', '&role=admin&token='];
+    }
+
+    /**
+     * @dataProvider tamperedConfirmationUrlProvider
+     */
+    public function testValidateEmailSignatureFromRequestWithHostRejectsATamperedUrl(string $search, string $replace): void
+    {
+        /** @legacy - Remove conditional in 2.0 */
+        if (!class_exists(UriSigner::class)) {
+            $this->markTestSkipped('Requires symfony/http-foundation 6.4+');
+        }
+
+        /** @var VerifyEmailAcceptanceFixture $testHelper */
+        $testHelper = $this->getBootedKernel()->getContainer()->get(VerifyEmailAcceptanceFixture::class);
+        $helper = $testHelper->helper;
+
+        $signedUrl = $helper->generateSignature('verify-test', '1234', 'jr@rushlow.dev')->getSignedUrl();
+        self::assertStringContainsString($search, $signedUrl);
+
+        $tamperedUrl = str_replace($search, $replace, $signedUrl);
+
+        $this->expectException(InvalidSignatureException::class);
+
+        $helper->validateEmailConfirmationFromRequest(Request::create($tamperedUrl), '1234', 'jr@rushlow.dev');
+    }
+
+    public function testEnablingSignWithoutHostOptionInvalidatesExistingConfirmationLinks(): void
+    {
+        /** @legacy - Remove conditional in 2.0 */
+        if (!class_exists(UriSigner::class)) {
+            $this->markTestSkipped('Requires symfony/http-foundation 6.4+');
+        }
+
+        /** @var VerifyEmailAcceptanceFixture $testHelperBeforeTheSwitch */
+        $testHelperBeforeTheSwitch = $this->getBootedKernel()->getContainer()->get(VerifyEmailAcceptanceFixture::class);
+        $signedUrl = $testHelperBeforeTheSwitch->helper->generateSignature('verify-test', '1234', 'jr@rushlow.dev')->getSignedUrl();
+
+        /** @var VerifyEmailAcceptanceFixture $testHelperAfterTheSwitch */
+        $testHelperAfterTheSwitch = $this->getBootedKernel(['sign_without_host' => true])->getContainer()->get(VerifyEmailAcceptanceFixture::class);
+
+        $this->expectException(InvalidSignatureException::class);
+
+        $testHelperAfterTheSwitch->helper->validateEmailConfirmationFromRequest(Request::create($signedUrl), '1234', 'jr@rushlow.dev');
+    }
+
+    public function testDisablingSignWithoutHostOptionInvalidatesExistingConfirmationLinks(): void
+    {
+        /** @legacy - Remove conditional in 2.0 */
+        if (!class_exists(UriSigner::class)) {
+            $this->markTestSkipped('Requires symfony/http-foundation 6.4+');
+        }
+
+        /** @var VerifyEmailAcceptanceFixture $testHelperBeforeTheSwitch */
+        $testHelperBeforeTheSwitch = $this->getBootedKernel(['sign_without_host' => true])->getContainer()->get(VerifyEmailAcceptanceFixture::class);
+        $signedUrl = $testHelperBeforeTheSwitch->helper->generateSignature('verify-test', '1234', 'jr@rushlow.dev')->getSignedUrl();
+
+        /** @var VerifyEmailAcceptanceFixture $testHelperAfterTheSwitch */
+        $testHelperAfterTheSwitch = $this->getBootedKernel()->getContainer()->get(VerifyEmailAcceptanceFixture::class);
+
+        $this->expectException(InvalidSignatureException::class);
+
+        $testHelperAfterTheSwitch->helper->validateEmailConfirmationFromRequest(Request::create($signedUrl), '1234', 'jr@rushlow.dev');
     }
 
     /**
