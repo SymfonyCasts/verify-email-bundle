@@ -41,21 +41,6 @@ parameters:
 			path: src/Util/VerifyEmailQueryUtility.php
 
 		-
-			message: "#^Call to method checkRequest\\(\\) on an unknown class Symfony\\\\Component\\\\HttpKernel\\\\UriSigner\\.$#"
-			count: 1
-			path: src/VerifyEmailHelper.php
-
-		-
-			message: "#^Call to method check\\(\\) on an unknown class Symfony\\\\Component\\\\HttpKernel\\\\UriSigner\\.$#"
-			count: 2
-			path: src/VerifyEmailHelper.php
-
-		-
-			message: "#^Call to method sign\\(\\) on an unknown class Symfony\\\\Component\\\\HttpKernel\\\\UriSigner\\.$#"
-			count: 1
-			path: src/VerifyEmailHelper.php
-
-		-
 			message: "#^Method SymfonyCasts\\\\Bundle\\\\VerifyEmail\\\\VerifyEmailHelper\\:\\:__construct\\(\\) has parameter \\$uriSigner with no type specified\\.$#"
 			count: 1
 			path: src/VerifyEmailHelper.php
@@ -82,11 +67,6 @@ parameters:
 
 		-
 			message: "#^Property SymfonyCasts\\\\Bundle\\\\VerifyEmail\\\\VerifyEmailHelper\\:\\:\\$tokenGenerator has no type specified\\.$#"
-			count: 1
-			path: src/VerifyEmailHelper.php
-
-		-
-			message: "#^Property SymfonyCasts\\\\Bundle\\\\VerifyEmail\\\\VerifyEmailHelper\\:\\:\\$uriSigner has unknown class Symfony\\\\Component\\\\HttpKernel\\\\UriSigner as its type\\.$#"
 			count: 1
 			path: src/VerifyEmailHelper.php
 

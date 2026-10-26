@@ -11,7 +11,6 @@ namespace SymfonyCasts\Bundle\VerifyEmail;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\UriSigner;
-use Symfony\Component\HttpKernel\UriSigner as LegacyUriSigner;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\ExpiredSignatureException;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\InvalidSignatureException;
@@ -28,7 +27,9 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
 {
     private $router;
     /**
-     * @var UriSigner|LegacyUriSigner
+     * @var UriSigner
+     *
+     * @legacy - Until 2.0 this can also be a Symfony\Component\HttpKernel\UriSigner, which has the same API
      */
     private $uriSigner;
     private $queryUtility;
