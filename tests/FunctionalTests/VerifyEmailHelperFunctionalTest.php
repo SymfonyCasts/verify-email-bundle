@@ -14,6 +14,7 @@ use Symfony\Bridge\PhpUnit\ClockMock;
 use Symfony\Component\HttpFoundation\UriSigner;
 use Symfony\Component\HttpKernel\UriSigner as LegacyUriSigner;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RequestContext;
 use SymfonyCasts\Bundle\VerifyEmail\Generator\VerifyEmailTokenGenerator;
 use SymfonyCasts\Bundle\VerifyEmail\Util\VerifyEmailQueryUtility;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelper;
@@ -58,6 +59,34 @@ final class VerifyEmailHelperFunctionalTest extends TestCase
 
         $actual = $this->getHelper()->generateSignature('app_verify_route', '1234', 'jr@rushlow.dev')->getSignedUrl();
         $expected = $this->uriSigner->sign(\sprintf('/verify?expires=%s&token=%s', $this->expiryTimestamp, urlencode($token)));
+
+        self::assertSame($expected, $actual);
+    }
+
+    /**
+     * @legacy - Remove annotation in 2.0
+     *
+     * @group legacy
+     */
+    public function testGenerateSignatureWithoutHostSignsThePathAndPrependsTheContextHost(): void
+    {
+        $token = $this->getTestToken();
+        $path = \sprintf('/verify?expires=%s&token=%s', $this->expiryTimestamp, urlencode($token));
+
+        $this->mockRouter
+            ->expects($this->once())
+            ->method('generate')
+            ->with('app_verify_route', ['expires' => $this->expiryTimestamp, 'token' => $token])
+            ->willReturn($path)
+        ;
+
+        $this->mockRouter
+            ->method('getContext')
+            ->willReturn(new RequestContext('', 'GET', 'example.com', 'https'))
+        ;
+
+        $actual = $this->getHelper(true)->generateSignature('app_verify_route', '1234', 'jr@rushlow.dev')->getSignedUrl();
+        $expected = 'https://example.com'.$this->uriSigner->sign($path);
 
         self::assertSame($expected, $actual);
     }

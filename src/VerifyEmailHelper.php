@@ -10,7 +10,9 @@
 namespace SymfonyCasts\Bundle\VerifyEmail;
 
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\UriSigner;
+use Symfony\Component\HttpFoundation\UrlHelper;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\ExpiredSignatureException;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\InvalidSignatureException;
@@ -65,38 +67,12 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
         $extraParams['token'] = $this->tokenGenerator->createToken($userId, $userEmail);
         $extraParams['expires'] = $expiryTimestamp;
 
-        $uri = $this->router->generate($routeName, $extraParams, $this->signWithoutHost ? UrlGeneratorInterface::ABSOLUTE_PATH : UrlGeneratorInterface::ABSOLUTE_URL);
-        $signature = $this->uriSigner->sign($uri);
+        $signature = $this->signWithoutHost
+            ? $this->signWithoutHost($routeName, $extraParams)
+            : $this->signWithHost($routeName, $extraParams);
 
         /** @psalm-suppress PossiblyFalseArgument */
         return new VerifyEmailSignatureComponents(\DateTimeImmutable::createFromFormat('U', (string) $expiryTimestamp), $signature, $generatedAt);
-    }
-
-    /**
-     * Reduces a URL to what was signed. Callers hand in the URL they received, which is usually
-     * absolute, while the signature was made over the path.
-     */
-    private static function pathAndQuery(string $uri): string
-    {
-        $path = (string) (parse_url($uri, \PHP_URL_PATH) ?: '');
-        $query = parse_url($uri, \PHP_URL_QUERY);
-
-        return \is_string($query) ? $path.'?'.$query : $path;
-    }
-
-    /**
-     * A signature created without the host has to be checked without it too: UriSigner::checkRequest()
-     * always rebuilds the absolute URI from the request.
-     */
-    private function checkRequestSignature(Request $request): bool
-    {
-        if (!$this->signWithoutHost) {
-            return $this->uriSigner->checkRequest($request);
-        }
-
-        $queryString = null !== ($query = $request->getQueryString()) ? '?'.$query : '';
-
-        return $this->uriSigner->check($request->getBaseUrl().$request->getPathInfo().$queryString);
     }
 
     public function validateEmailConfirmation(string $signedUrl, string $userId, string $userEmail): void
@@ -140,5 +116,68 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
         if (!hash_equals($knownToken, $request->query->getString('token'))) {
             throw new WrongEmailVerifyException();
         }
+    }
+
+    /**
+     * @param array<string, mixed> $extraParams
+     */
+    private function signWithoutHost(string $routeName, array $extraParams): string
+    {
+        $uri = $this->router->generate($routeName, $extraParams);
+
+        self::assertUriDoesNotContainAHost($routeName, $uri);
+
+        return $this->toAbsoluteUrl($this->uriSigner->sign($uri));
+    }
+
+    /**
+     * @param array<string, mixed> $extraParams
+     */
+    private function signWithHost(string $routeName, array $extraParams): string
+    {
+        return $this->uriSigner->sign($this->router->generate($routeName, $extraParams, UrlGeneratorInterface::ABSOLUTE_URL));
+    }
+
+    private static function assertUriDoesNotContainAHost(string $routeName, string $uri): void
+    {
+        $host = parse_url($uri, \PHP_URL_HOST);
+
+        if (\is_string($host)) {
+            throw new \LogicException(\sprintf('The route "%s" generates a URL with the host "%s" instead of a path, so it cannot be signed while the "sign_without_host" option is enabled. Remove the host or scheme from the route, or set "framework.router.default_uri" to match it.', $routeName, $host));
+        }
+    }
+
+    private function toAbsoluteUrl(string $pathAndQuery): string
+    {
+        // creating a new RequestStack is fine here, because it keeps UrlHelper on the router context,
+        // the same source generate() uses
+        return (new UrlHelper(new RequestStack(), $this->router))->getAbsoluteUrl($pathAndQuery);
+    }
+
+    /**
+     * Reduces a URL to what was signed. Callers hand in the URL they received, which is usually
+     * absolute, while the signature was made over the path.
+     */
+    private static function pathAndQuery(string $uri): string
+    {
+        $path = (string) (parse_url($uri, \PHP_URL_PATH) ?: '');
+        $query = parse_url($uri, \PHP_URL_QUERY);
+
+        return \is_string($query) ? $path.'?'.$query : $path;
+    }
+
+    /**
+     * A signature created without the host has to be checked without it too: UriSigner::checkRequest()
+     * always rebuilds the absolute URI from the request.
+     */
+    private function checkRequestSignature(Request $request): bool
+    {
+        if (!$this->signWithoutHost) {
+            return $this->uriSigner->checkRequest($request);
+        }
+
+        $queryString = null !== ($query = $request->getQueryString()) ? '?'.$query : '';
+
+        return $this->uriSigner->check($request->getBaseUrl().$request->getPathInfo().$queryString);
     }
 }

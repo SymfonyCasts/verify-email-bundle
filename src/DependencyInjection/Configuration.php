@@ -31,7 +31,7 @@ class Configuration implements ConfigurationInterface
                 ->end()
                 ->booleanNode('sign_without_host')
                     ->defaultFalse()
-                    ->info('Sign the path only, leaving scheme and host out of the generated URL and its signature.')
+                    ->info('Sign the path only, so that the signature does not cover the scheme and host.')
                 ->end()
             ->end();
 

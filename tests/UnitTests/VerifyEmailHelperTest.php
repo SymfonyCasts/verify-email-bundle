@@ -14,6 +14,7 @@ use Symfony\Bridge\PhpUnit\ClockMock;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\UriSigner;
 use Symfony\Component\HttpKernel\UriSigner as LegacyUriSigner;
+use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\RouterInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\ExpiredSignatureException;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\InvalidSignatureException;
@@ -88,11 +89,33 @@ final class VerifyEmailHelperTest extends TestCase
         self::assertSame($expectedSignedUrl, $components->getSignedUrl());
     }
 
-    public function testSignatureIsGeneratedWithoutHost(): void
+    public function routerContextProvider(): \Generator
+    {
+        yield 'default http port' => [new RequestContext('', 'GET', 'example.com', 'http'), 'http://example.com'];
+        yield 'custom http port' => [new RequestContext('', 'GET', 'example.com', 'http', 8000), 'http://example.com:8000'];
+        yield 'default https port' => [new RequestContext('', 'GET', 'example.com', 'https'), 'https://example.com'];
+        yield 'custom https port' => [new RequestContext('', 'GET', 'example.com', 'https', 80, 8443), 'https://example.com:8443'];
+        yield 'context without a host' => [new RequestContext('', 'GET', ''), ''];
+    }
+
+    /**
+     * @legacy - Remove annotation in 2.0
+     *
+     * @dataProvider routerContextProvider
+     *
+     * @group legacy
+     */
+    public function testSignatureWithoutHostIsGeneratedFromThePathAndTheContextHost(RequestContext $context, string $expectedPrefix): void
     {
         $expires = time() + 3600;
 
-        $expectedSignedUrl = \sprintf('/verify?expires=%s&signature=1234&token=hashedToken', $expires);
+        $signedPath = \sprintf('/verify?expires=%s&signature=1234&token=hashedToken', $expires);
+        $expectedSignedUrl = $expectedPrefix.$signedPath;
+
+        $this->mockRouter
+            ->method('getContext')
+            ->willReturn($context)
+        ;
 
         $this->tokenGenerator
             ->expects($this->once())
@@ -112,10 +135,10 @@ final class VerifyEmailHelperTest extends TestCase
             ->expects($this->once())
             ->method('sign')
             ->with(\sprintf('/verify?expires=%s&token=hashedToken', $expires))
-            ->willReturn($expectedSignedUrl)
+            ->willReturn($signedPath)
         ;
 
-        $helper = $this->getHelper(true);
+        $helper = $this->getHelper(signWithoutHost: true);
         $components = $helper->generateSignature('app_verify_route', '1234', 'jr@rushlow.dev');
         self::assertSame($expectedSignedUrl, $components->getSignedUrl());
     }
@@ -166,7 +189,7 @@ final class VerifyEmailHelperTest extends TestCase
             'SCRIPT_NAME' => '/index.php',
         ]);
 
-        // ABSOLUTE_PATH puts the base url into the signed string, so the check has to keep it.
+        // the generated path includes the base url, so the check has to keep it.
         $this->mockSigner
             ->expects($this->once())
             ->method('check')
@@ -174,7 +197,7 @@ final class VerifyEmailHelperTest extends TestCase
             ->willReturn(false)
         ;
 
-        $helper = $this->getHelper(true);
+        $helper = $this->getHelper(signWithoutHost: true);
 
         $this->expectException(InvalidSignatureException::class);
 
@@ -208,7 +231,7 @@ final class VerifyEmailHelperTest extends TestCase
             ->method('createToken')
         ;
 
-        $helper = $this->getHelper(true);
+        $helper = $this->getHelper(signWithoutHost: true);
 
         $this->expectException(InvalidSignatureException::class);
 
