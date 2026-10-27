@@ -149,8 +149,9 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
 
     private function toAbsoluteUrl(string $pathAndQuery): string
     {
-        // creating a new RequestStack is fine here, because it keeps UrlHelper on the router context,
-        // the same source generate() uses
+        // An injected UrlHelper would take the host from the current request when there is one, while
+        // generate() above only ever uses the router context. Building it here keeps both on the same
+        // source, and avoids a BC break on the constructor.
         return (new UrlHelper(new RequestStack(), $this->router))->getAbsoluteUrl($pathAndQuery);
     }
 
