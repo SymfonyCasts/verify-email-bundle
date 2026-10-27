@@ -178,9 +178,7 @@ final class VerifyEmailAcceptanceTest extends TestCase
 
         $signedUrl = $testHelper->helper->generateSignature('verify-test', '1234', 'jr@rushlow.dev')->getSignedUrl();
 
-        $testHelper->helper->validateEmailConfirmationFromRequest(Request::create($signedUrl), '1234', 'jr@rushlow.dev');
-
-        $this->expectNotToPerformAssertions();
+        self::assertTrue($this->canBeValidatedBy($testHelper->helper, Request::create($signedUrl)));
     }
 
     public function testValidateEmailSignatureFromRequestWithoutHostOnAnotherHost(): void
@@ -202,7 +200,7 @@ final class VerifyEmailAcceptanceTest extends TestCase
 
         $onAnotherHost = str_replace($signedHost, 'https://other.example', $signedUrl);
 
-        $testHelper->helper->validateEmailConfirmationFromRequest(Request::create($onAnotherHost), '1234', 'jr@rushlow.dev');
+        self::assertTrue($this->canBeValidatedBy($testHelper->helper, Request::create($onAnotherHost)));
     }
 
     /**
@@ -397,6 +395,38 @@ final class VerifyEmailAcceptanceTest extends TestCase
         $this->expectException(InvalidSignatureException::class);
 
         $testHelperAfterTheSwitch->helper->validateEmailConfirmationFromRequest(Request::create($signedUrl), '1234', 'jr@rushlow.dev');
+    }
+
+    public function testSwitchingTheSignWithoutHostOptionBackMakesExistingConfirmationLinksValidAgain(): void
+    {
+        /** @legacy - Remove conditional in 2.0 */
+        if (!class_exists(UriSigner::class)) {
+            $this->markTestSkipped('Requires symfony/http-foundation 6.4+');
+        }
+
+        /** @var VerifyEmailAcceptanceFixture $testHelperBeforeTheSwitch */
+        $testHelperBeforeTheSwitch = $this->getBootedKernel()->getContainer()->get(VerifyEmailAcceptanceFixture::class);
+        $request = Request::create($testHelperBeforeTheSwitch->helper->generateSignature('verify-test', '1234', 'jr@rushlow.dev')->getSignedUrl());
+
+        /** @var VerifyEmailAcceptanceFixture $testHelperAfterTheSwitch */
+        $testHelperAfterTheSwitch = $this->getBootedKernel(['sign_without_host' => true])->getContainer()->get(VerifyEmailAcceptanceFixture::class);
+
+        /** @var VerifyEmailAcceptanceFixture $testHelperAfterSwitchingBack */
+        $testHelperAfterSwitchingBack = $this->getBootedKernel()->getContainer()->get(VerifyEmailAcceptanceFixture::class);
+
+        self::assertFalse($this->canBeValidatedBy($testHelperAfterTheSwitch->helper, $request));
+        self::assertTrue($this->canBeValidatedBy($testHelperAfterSwitchingBack->helper, $request));
+    }
+
+    private function canBeValidatedBy(VerifyEmailHelperInterface $helper, Request $request): bool
+    {
+        try {
+            $helper->validateEmailConfirmationFromRequest($request, '1234', 'jr@rushlow.dev');
+
+            return true;
+        } catch (InvalidSignatureException $e) {
+            return false;
+        }
     }
 
     /**
