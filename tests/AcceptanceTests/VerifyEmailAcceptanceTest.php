@@ -131,9 +131,8 @@ final class VerifyEmailAcceptanceTest extends TestCase
 
         /** @var VerifyEmailAcceptanceFixture $testHelper */
         $testHelper = $container->get(VerifyEmailAcceptanceFixture::class);
-        $helper = $testHelper->helper;
 
-        $components = $helper->generateSignature('verify-test', '1234', 'jr@rushlow.dev');
+        $components = $testHelper->helper->generateSignature('verify-test', '1234', 'jr@rushlow.dev');
         $expiresAt = $components->getExpiresAt()->getTimestamp();
         $actual = $components->getSignedUrl();
         $expected = 'http://localhost'.$testHelper->uriSigner->sign(\sprintf(
@@ -176,11 +175,10 @@ final class VerifyEmailAcceptanceTest extends TestCase
 
         /** @var VerifyEmailAcceptanceFixture $testHelper */
         $testHelper = $kernel->getContainer()->get(VerifyEmailAcceptanceFixture::class);
-        $helper = $testHelper->helper;
 
-        $signedUrl = $helper->generateSignature('verify-test', '1234', 'jr@rushlow.dev')->getSignedUrl();
+        $signedUrl = $testHelper->helper->generateSignature('verify-test', '1234', 'jr@rushlow.dev')->getSignedUrl();
 
-        $helper->validateEmailConfirmationFromRequest(Request::create($signedUrl), '1234', 'jr@rushlow.dev');
+        $testHelper->helper->validateEmailConfirmationFromRequest(Request::create($signedUrl), '1234', 'jr@rushlow.dev');
 
         $this->expectNotToPerformAssertions();
     }
@@ -196,16 +194,15 @@ final class VerifyEmailAcceptanceTest extends TestCase
 
         /** @var VerifyEmailAcceptanceFixture $testHelper */
         $testHelper = $kernel->getContainer()->get(VerifyEmailAcceptanceFixture::class);
-        $helper = $testHelper->helper;
 
-        $signedUrl = $helper->generateSignature('verify-test', '1234', 'jr@rushlow.dev')->getSignedUrl();
+        $signedUrl = $testHelper->helper->generateSignature('verify-test', '1234', 'jr@rushlow.dev')->getSignedUrl();
         $signedHost = 'http://localhost';
 
         self::assertStringContainsString($signedHost, $signedUrl);
 
         $onAnotherHost = str_replace($signedHost, 'https://other.example', $signedUrl);
 
-        $helper->validateEmailConfirmationFromRequest(Request::create($onAnotherHost), '1234', 'jr@rushlow.dev');
+        $testHelper->helper->validateEmailConfirmationFromRequest(Request::create($onAnotherHost), '1234', 'jr@rushlow.dev');
     }
 
     /**
