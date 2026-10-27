@@ -31,6 +31,8 @@ class VerifyEmailTestKernel extends Kernel
     private $extraBundles;
     /** @var array<string, mixed> */
     private $customConfig;
+    /** @var string */
+    private $uniqueId;
 
     /**
      * @param array<string, string|Route> $routes       Routes to be added to the container e.g. ['name' => 'path'].
@@ -44,6 +46,7 @@ class VerifyEmailTestKernel extends Kernel
         $this->routes = $routes;
         $this->extraBundles = $bundles;
         $this->customConfig = $customConfig;
+        $this->uniqueId = uniqid('', true);
 
         parent::__construct('test', true);
     }
@@ -112,11 +115,11 @@ class VerifyEmailTestKernel extends Kernel
 
     public function getCacheDir(): string
     {
-        return sys_get_temp_dir().'/cache'.spl_object_hash($this);
+        return sys_get_temp_dir().'/cache/'.$this->uniqueId;
     }
 
     public function getLogDir(): string
     {
-        return sys_get_temp_dir().'/logs'.spl_object_hash($this);
+        return sys_get_temp_dir().'/logs/'.$this->uniqueId;
     }
 }
