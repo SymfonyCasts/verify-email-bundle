@@ -128,7 +128,7 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
     {
         $uri = $this->router->generate($routeName, $extraParams);
 
-        self::assertUriDoesNotContainAHost($routeName, $uri);
+        $this->assertUriDoesNotContainAHost($routeName, $uri);
 
         return $this->toAbsoluteUrl($this->uriSigner->sign($uri));
     }
@@ -141,12 +141,14 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
         return $this->uriSigner->sign($this->router->generate($routeName, $extraParams, UrlGeneratorInterface::ABSOLUTE_URL));
     }
 
-    private static function assertUriDoesNotContainAHost(string $routeName, string $uri): void
+    private function assertUriDoesNotContainAHost(string $routeName, string $uri): void
     {
         $host = parse_url($uri, \PHP_URL_HOST);
 
         if (\is_string($host)) {
-            throw new \LogicException(\sprintf('The route "%s" generates a URL with the host "%s" instead of a path, so it cannot be signed while the "sign_without_host" option is enabled. Remove the host or scheme from the route, or set "framework.router.default_uri" to match it.', $routeName, $host));
+            $context = $this->router->getContext();
+
+            throw new \LogicException(\sprintf('The route "%s" generates a URL with the host "%s" instead of a path, because its "host" or "schemes" requirement does not match the router context ("%s://%s"). It cannot be signed while the "sign_without_host" option is enabled: remove the "host" requirement from the route. If the route only requires a scheme, make sure the router context uses it: outside of an HTTP request, set "framework.router.default_uri" (e.g. "https://example.com").', $routeName, $host, $context->getScheme(), $context->getHost()));
         }
     }
 

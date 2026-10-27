@@ -222,7 +222,7 @@ final class VerifyEmailAcceptanceTest extends TestCase
         $testHelper = $kernel->getContainer()->get(VerifyEmailAcceptanceFixture::class);
 
         $this->expectException(\LogicException::class);
-        $this->expectExceptionMessage('The route "verify-test" generates a URL with the host "localhost" instead of a path');
+        $this->expectExceptionMessage('The route "verify-test" generates a URL with the host "localhost" instead of a path, because its "host" or "schemes" requirement does not match the router context ("http://localhost")');
 
         $testHelper->helper->generateSignature('verify-test', '1234', 'jr@rushlow.dev');
     }
@@ -273,7 +273,7 @@ final class VerifyEmailAcceptanceTest extends TestCase
         $testHelper = $kernel->getContainer()->get(VerifyEmailAcceptanceFixture::class);
 
         $this->expectException(\LogicException::class);
-        $this->expectExceptionMessage('The route "verify-test" generates a URL with the host "mail.example.com" instead of a path');
+        $this->expectExceptionMessage('The route "verify-test" generates a URL with the host "mail.example.com" instead of a path, because its "host" or "schemes" requirement does not match the router context ("http://localhost")');
 
         $testHelper->helper->generateSignature('verify-test', '1234', 'jr@rushlow.dev');
     }

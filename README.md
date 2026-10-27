@@ -290,8 +290,10 @@ Links are only accepted in the mode they were generated in. Changing the option 
 already sent fail validation, and links generated before the switch work again if you switch back
 before they expire.
 
-A route that declares `schemes` or `host` cannot be signed this way. The `UrlGenerator` returns more
-than a path for those, and `generateSignature()` throws a `LogicException`.
+A route that declares `host` cannot be signed this way, and neither can a route whose `schemes` don't
+include the scheme of the router context. The `UrlGenerator` returns more than a path for those, and
+`generateSignature()` throws a `LogicException`. In console commands and workers, set
+`framework.router.default_uri` to a URL with the scheme the route requires.
 
 ## Reserved Query Parameters
 
