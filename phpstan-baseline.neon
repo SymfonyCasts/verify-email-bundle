@@ -41,16 +41,6 @@ parameters:
 			path: src/Util/VerifyEmailQueryUtility.php
 
 		-
-			message: "#^Call to method check\\(\\) on an unknown class Symfony\\\\Component\\\\HttpKernel\\\\UriSigner\\.$#"
-			count: 1
-			path: src/VerifyEmailHelper.php
-
-		-
-			message: "#^Call to method sign\\(\\) on an unknown class Symfony\\\\Component\\\\HttpKernel\\\\UriSigner\\.$#"
-			count: 1
-			path: src/VerifyEmailHelper.php
-
-		-
 			message: "#^Method SymfonyCasts\\\\Bundle\\\\VerifyEmail\\\\VerifyEmailHelper\\:\\:__construct\\(\\) has parameter \\$uriSigner with no type specified\\.$#"
 			count: 1
 			path: src/VerifyEmailHelper.php
@@ -81,11 +71,6 @@ parameters:
 			path: src/VerifyEmailHelper.php
 
 		-
-			message: "#^Property SymfonyCasts\\\\Bundle\\\\VerifyEmail\\\\VerifyEmailHelper\\:\\:\\$uriSigner has unknown class Symfony\\\\Component\\\\HttpKernel\\\\UriSigner as its type\\.$#"
-			count: 1
-			path: src/VerifyEmailHelper.php
-
-		-
 			message: "#^Method SymfonyCasts\\\\Bundle\\\\VerifyEmail\\\\VerifyEmailHelperInterface\\:\\:generateSignature\\(\\) has parameter \\$extraParams with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/VerifyEmailHelperInterface.php
@@ -97,7 +82,7 @@ parameters:
 
 		-
 			message: "#^Call to method sign\\(\\) on an unknown class Symfony\\\\Component\\\\HttpKernel\\\\UriSigner\\.$#"
-			count: 1
+			count: 3
 			path: tests/AcceptanceTests/VerifyEmailAcceptanceTest.php
 
 		-
@@ -117,7 +102,7 @@ parameters:
 
 		-
 			message: "#^Call to method sign\\(\\) on an unknown class Symfony\\\\Component\\\\HttpKernel\\\\UriSigner\\.$#"
-			count: 1
+			count: 2
 			path: tests/FunctionalTests/VerifyEmailHelperFunctionalTest.php
 
 		-
@@ -214,11 +199,6 @@ parameters:
 			message: "#^Property SymfonyCasts\\\\Bundle\\\\VerifyEmail\\\\Tests\\\\UnitTests\\\\VerifyEmailHelperTest\\:\\:\\$tokenGenerator has no type specified\\.$#"
 			count: 1
 			path: tests/UnitTests/VerifyEmailHelperTest.php
-
-		-
-			message: "#^Method SymfonyCasts\\\\Bundle\\\\VerifyEmail\\\\Tests\\\\VerifyEmailTestKernel\\:\\:__construct\\(\\) has parameter \\$routes with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: tests/VerifyEmailTestKernel.php
 
 		-
 			message: "#^Property SymfonyCasts\\\\Bundle\\\\VerifyEmail\\\\Tests\\\\VerifyEmailTestKernel\\:\\:\\$builder has no type specified\\.$#"

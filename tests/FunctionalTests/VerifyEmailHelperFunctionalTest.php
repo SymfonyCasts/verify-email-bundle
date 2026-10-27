@@ -14,6 +14,7 @@ use Symfony\Bridge\PhpUnit\ClockMock;
 use Symfony\Component\HttpFoundation\UriSigner;
 use Symfony\Component\HttpKernel\UriSigner as LegacyUriSigner;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RequestContext;
 use SymfonyCasts\Bundle\VerifyEmail\Generator\VerifyEmailTokenGenerator;
 use SymfonyCasts\Bundle\VerifyEmail\Util\VerifyEmailQueryUtility;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelper;
@@ -67,6 +68,34 @@ final class VerifyEmailHelperFunctionalTest extends TestCase
      *
      * @group legacy
      */
+    public function testGenerateSignatureWithoutHostSignsThePathAndPrependsTheContextHost(): void
+    {
+        $token = $this->getTestToken();
+        $path = \sprintf('/verify?expires=%s&token=%s', $this->expiryTimestamp, urlencode($token));
+
+        $this->mockRouter
+            ->expects($this->once())
+            ->method('generate')
+            ->with('app_verify_route', ['expires' => $this->expiryTimestamp, 'token' => $token])
+            ->willReturn($path)
+        ;
+
+        $this->mockRouter
+            ->method('getContext')
+            ->willReturn(new RequestContext('', 'GET', 'example.com', 'https'))
+        ;
+
+        $actual = $this->getHelper(true)->generateSignature('app_verify_route', '1234', 'jr@rushlow.dev')->getSignedUrl();
+        $expected = 'https://example.com'.$this->uriSigner->sign($path);
+
+        self::assertSame($expected, $actual);
+    }
+
+    /**
+     * @legacy - Remove annotation in 2.0
+     *
+     * @group legacy
+     */
     public function testValidSignature(): void
     {
         $testSignature = $this->getTestSignedUri();
@@ -106,7 +135,7 @@ final class VerifyEmailHelperFunctionalTest extends TestCase
         return \sprintf('/verify?%s', $sortedParams);
     }
 
-    private function getHelper(): VerifyEmailHelperInterface
+    private function getHelper(bool $signWithoutHost = false): VerifyEmailHelperInterface
     {
         if (class_exists(UriSigner::class)) {
             $this->uriSigner = new UriSigner('foo', 'signature');
@@ -119,7 +148,8 @@ final class VerifyEmailHelperFunctionalTest extends TestCase
             $this->uriSigner,
             new VerifyEmailQueryUtility(),
             new VerifyEmailTokenGenerator('foo'),
-            3600
+            3600,
+            $signWithoutHost
         );
     }
 }
