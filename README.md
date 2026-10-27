@@ -286,7 +286,9 @@ tenants, because host, port and scheme stop being a trust boundary.
 In a console command or a queue worker, the router context has no request to take its values from.
 Set `framework.router.default_uri`, or the generated links point at `localhost`.
 
-Switching the option in either direction invalidates links that have already been sent.
+Links are only accepted in the mode they were generated in. Changing the option makes links
+already sent fail validation, and links generated before the switch work again if you switch back
+before they expire.
 
 A route that declares `schemes` or `host` cannot be signed this way. The `UrlGenerator` returns more
 than a path for those, and `generateSignature()` throws a `LogicException`.
