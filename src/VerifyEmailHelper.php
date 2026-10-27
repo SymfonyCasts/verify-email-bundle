@@ -44,6 +44,9 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
     /** @var bool */
     private $signWithoutHost;
 
+    /**
+     * @legacy - $signWithoutHost is optional for BC, make it required in 2.0
+     */
     public function __construct(UrlGeneratorInterface $router, /* no typehint for BC with legacy PHP */ $uriSigner, VerifyEmailQueryUtility $queryUtility, VerifyEmailTokenGenerator $generator, int $lifetime, bool $signWithoutHost = false)
     {
         $this->router = $router;
