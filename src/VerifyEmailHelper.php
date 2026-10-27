@@ -67,7 +67,7 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
         $generatedAt = time();
         $expiryTimestamp = $generatedAt + $this->lifetime;
 
-        $extraParams['token'] = $this->tokenGenerator->createToken($userId, $userEmail);
+        $extraParams['token'] = $this->tokenGenerator->createUrlEncodedToken($userId, $userEmail);
         $extraParams['expires'] = $expiryTimestamp;
 
         $signature = $this->signWithoutHost
@@ -92,9 +92,10 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
         }
 
         $knownToken = $this->tokenGenerator->createToken($userId, $userEmail);
+        $knownEncodedToken = $this->tokenGenerator->createUrlEncodedToken($userId, $userEmail);
         $userToken = $this->queryUtility->getTokenFromQuery($signedUrl);
 
-        if (!hash_equals($knownToken, $userToken)) {
+        if (!hash_equals($knownToken, $userToken) && !hash_equals($knownEncodedToken, $userToken)) {
             throw new WrongEmailVerifyException();
         }
     }
@@ -115,8 +116,12 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
         }
 
         $knownToken = $this->tokenGenerator->createToken($userId, $userEmail);
+        $knownEncodedToken = $this->tokenGenerator->createUrlEncodedToken($userId, $userEmail);
 
-        if (!hash_equals($knownToken, $request->query->getString('token'))) {
+        if (
+            !hash_equals($knownToken, $request->query->getString('token'))
+            && !hash_equals($knownEncodedToken, $request->query->getString('token'))
+        ) {
             throw new WrongEmailVerifyException();
         }
     }
