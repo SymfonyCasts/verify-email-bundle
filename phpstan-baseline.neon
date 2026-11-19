@@ -82,7 +82,7 @@ parameters:
 
 		-
 			message: "#^Call to method sign\\(\\) on an unknown class Symfony\\\\Component\\\\HttpKernel\\\\UriSigner\\.$#"
-			count: 3
+			count: 4
 			path: tests/AcceptanceTests/VerifyEmailAcceptanceTest.php
 
 		-

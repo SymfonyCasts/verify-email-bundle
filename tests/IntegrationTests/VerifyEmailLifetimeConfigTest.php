@@ -13,6 +13,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\UriSigner;
 use SymfonyCasts\Bundle\VerifyEmail\Tests\VerifyEmailTestKernel;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
 
@@ -58,6 +59,33 @@ final class VerifyEmailLifetimeConfigTest extends TestCase
         $helper = $this->bootKernelAndGetHelper(new VerifyEmailLifetimeTestKernel($this->createBuilder(), $this->routes()));
 
         $this->assertSignatureExpiresIn($helper, VerifyEmailLifetimeTestKernel::LIFETIME);
+    }
+
+    /**
+     * The "lifetime" config is the expiration the signer enforces too, since the signer embeds it
+     * in the URIs it signs (symfony/http-foundation 7.4+): it has to be the same instant "expires"
+     * carries, or a link would fall short of (or outlive) the lifetime the bundle reports.
+     */
+    public function testLifetimeConfiguredInUserlandIsPassedToTheSigner(): void
+    {
+        if (!method_exists(UriSigner::class, 'verify')) {
+            $this->markTestSkipped('Requires symfony/http-foundation 7.4+');
+        }
+
+        $helper = $this->bootKernelAndGetHelper(new VerifyEmailLifetimeTestKernel($this->createBuilder(), $this->routes()));
+
+        // The signature is generated from time(), so the expiration is bracketed between
+        // the seconds observed right before and right after the call.
+        $before = time();
+        $components = $helper->generateSignature('verify_email', '1234', 'jr@rushlow.dev');
+        $after = time();
+
+        $params = [];
+        parse_str((string) parse_url($components->getSignedUrl(), \PHP_URL_QUERY), $params);
+
+        self::assertSame($params['expires'], $params['_expiration'] ?? null);
+        self::assertGreaterThanOrEqual($before + VerifyEmailLifetimeTestKernel::LIFETIME, (int) $params['_expiration']);
+        self::assertLessThanOrEqual($after + VerifyEmailLifetimeTestKernel::LIFETIME, (int) $params['_expiration']);
     }
 
     /**

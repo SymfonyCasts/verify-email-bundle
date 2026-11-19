@@ -79,7 +79,7 @@ final class VerifyEmailHelperTest extends TestCase
         $this->mockSigner
             ->expects($this->once())
             ->method('sign')
-            ->with(\sprintf('/verify?expires=%s&token=hashedToken', $expires))
+            ->with(\sprintf('/verify?expires=%s&token=hashedToken', $expires), $expires)
             ->willReturn($expectedSignedUrl)
         ;
 
@@ -134,13 +134,43 @@ final class VerifyEmailHelperTest extends TestCase
         $this->mockSigner
             ->expects($this->once())
             ->method('sign')
-            ->with(\sprintf('/verify?expires=%s&token=hashedToken', $expires))
+            ->with(\sprintf('/verify?expires=%s&token=hashedToken', $expires), $expires)
             ->willReturn($signedPath)
         ;
 
         $helper = $this->getHelper(signWithoutHost: true);
         $components = $helper->generateSignature('app_verify_route', '1234', 'jr@rushlow.dev');
         self::assertSame($expectedSignedUrl, $components->getSignedUrl());
+    }
+
+    /**
+     * The expiry given to the signer is computed once, from the configured lifetime: computing it
+     * twice could make the signer enforce another instant than the "expires" query parameter does.
+     */
+    public function testTheSignerSignsWithTheExpiryDerivedFromTheLifetime(): void
+    {
+        /** @legacy - Remove conditional in 2.0 */
+        if (!class_exists(UriSigner::class)) {
+            $this->markTestSkipped('Requires symfony/http-foundation 6.4+');
+        }
+
+        $expires = time() + 7200;
+
+        $this->mockRouter
+            ->method('generate')
+            ->willReturn('/verify')
+        ;
+
+        $this->mockSigner
+            ->expects($this->once())
+            ->method('sign')
+            ->with('/verify', $expires)
+            ->willReturn('/verify?signature=1234')
+        ;
+
+        $helper = new VerifyEmailHelper($this->mockRouter, $this->mockSigner, $this->mockQueryUtility, $this->tokenGenerator, 7200);
+
+        $helper->generateSignature('app_verify_route', '1234', 'jr@rushlow.dev');
     }
 
     /** @group legacy */

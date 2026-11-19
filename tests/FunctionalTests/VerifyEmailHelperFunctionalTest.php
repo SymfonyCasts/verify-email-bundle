@@ -58,7 +58,7 @@ final class VerifyEmailHelperFunctionalTest extends TestCase
         ;
 
         $actual = $this->getHelper()->generateSignature('app_verify_route', '1234', 'jr@rushlow.dev')->getSignedUrl();
-        $expected = $this->uriSigner->sign(\sprintf('/verify?expires=%s&token=%s', $this->expiryTimestamp, urlencode($token)));
+        $expected = $this->uriSigner->sign(\sprintf('/verify?expires=%s&token=%s', $this->expiryTimestamp, urlencode($token)), $this->expiryTimestamp);
 
         self::assertSame($expected, $actual);
     }
@@ -86,7 +86,7 @@ final class VerifyEmailHelperFunctionalTest extends TestCase
         ;
 
         $actual = $this->getHelper(true)->generateSignature('app_verify_route', '1234', 'jr@rushlow.dev')->getSignedUrl();
-        $expected = 'https://example.com'.$this->uriSigner->sign($path);
+        $expected = 'https://example.com'.$this->uriSigner->sign($path, $this->expiryTimestamp);
 
         self::assertSame($expected, $actual);
     }
