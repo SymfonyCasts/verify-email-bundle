@@ -58,7 +58,8 @@ final class VerifyEmailHelperFunctionalTest extends TestCase
         ;
 
         $actual = $this->getHelper()->generateSignature('app_verify_route', '1234', 'jr@rushlow.dev')->getSignedUrl();
-        $expected = $this->uriSigner->sign(\sprintf('/verify?expires=%s&token=%s', $this->expiryTimestamp, urlencode($token)));
+        // the bundle gives the signer the expiry only when it can tell an expired link from a tampered one
+        $expected = $this->uriSigner->sign(\sprintf('/verify?expires=%s&token=%s', $this->expiryTimestamp, urlencode($token)), method_exists($this->uriSigner, 'verify') ? $this->expiryTimestamp : null);
 
         self::assertSame($expected, $actual);
     }
@@ -86,7 +87,8 @@ final class VerifyEmailHelperFunctionalTest extends TestCase
         ;
 
         $actual = $this->getHelper(true)->generateSignature('app_verify_route', '1234', 'jr@rushlow.dev')->getSignedUrl();
-        $expected = 'https://example.com'.$this->uriSigner->sign($path);
+        // the bundle gives the signer the expiry only when it can tell an expired link from a tampered one
+        $expected = 'https://example.com'.$this->uriSigner->sign($path, method_exists($this->uriSigner, 'verify') ? $this->expiryTimestamp : null);
 
         self::assertSame($expected, $actual);
     }

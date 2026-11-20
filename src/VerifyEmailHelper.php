@@ -9,6 +9,8 @@
 
 namespace SymfonyCasts\Bundle\VerifyEmail;
 
+use Symfony\Component\HttpFoundation\Exception\ExpiredSignedUriException;
+use Symfony\Component\HttpFoundation\Exception\SignedUriException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\UriSigner;
@@ -71,8 +73,8 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
         $extraParams['expires'] = $expiryTimestamp;
 
         $signature = $this->signWithoutHost
-            ? $this->signWithoutHost($routeName, $extraParams)
-            : $this->signWithHost($routeName, $extraParams);
+            ? $this->signWithoutHost($routeName, $extraParams, $expiryTimestamp)
+            : $this->signWithHost($routeName, $extraParams, $expiryTimestamp);
 
         /** @psalm-suppress PossiblyFalseArgument */
         return new VerifyEmailSignatureComponents(\DateTimeImmutable::createFromFormat('U', (string) $expiryTimestamp), $signature, $generatedAt);
@@ -83,7 +85,7 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
         /** @psalm-suppress UndefinedFunction */
         @trigger_deprecation('symfonycasts/verify-email-bundle', '1.17.0', '%s() is deprecated and will be removed in v2.0, use validateEmailConfirmationFromRequest() instead.', __METHOD__);
 
-        if (!$this->uriSigner->check($this->signWithoutHost ? self::pathAndQuery($signedUrl) : $signedUrl)) {
+        if (!$this->checkSignature($this->signWithoutHost ? self::pathAndQuery($signedUrl) : $signedUrl)) {
             throw new InvalidSignatureException();
         }
 
@@ -124,21 +126,43 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
     /**
      * @param array<string, mixed> $extraParams
      */
-    private function signWithoutHost(string $routeName, array $extraParams): string
+    private function signWithoutHost(string $routeName, array $extraParams, int $expiryTimestamp): string
     {
         $uri = $this->router->generate($routeName, $extraParams);
 
         $this->assertUriDoesNotContainAHost($routeName, $uri);
 
-        return $this->toAbsoluteUrl($this->uriSigner->sign($uri));
+        return $this->toAbsoluteUrl($this->sign($uri, $expiryTimestamp));
     }
 
     /**
      * @param array<string, mixed> $extraParams
      */
-    private function signWithHost(string $routeName, array $extraParams): string
+    private function signWithHost(string $routeName, array $extraParams, int $expiryTimestamp): string
     {
-        return $this->uriSigner->sign($this->router->generate($routeName, $extraParams, UrlGeneratorInterface::ABSOLUTE_URL));
+        return $this->sign($this->router->generate($routeName, $extraParams, UrlGeneratorInterface::ABSOLUTE_URL), $expiryTimestamp);
+    }
+
+    /**
+     * Signs with the expiry computed by generateSignature(), so the expiration the signer enforces is
+     * the exact instant the bundle advertises in the "expires" query parameter: giving the signer a
+     * duration instead, or a default expiration it would add to its own reading of "now", could make
+     * the two expirations drift apart.
+     *
+     * The expiry is only given to signers that can report an expired link as expired themselves
+     * (UriSigner::verify(), symfony/http-foundation 7.3+). sign() accepts it since 7.1, but on 7.1
+     * and 7.2 an expired URI fails check() with no way to tell "expired" from "tampered": the link
+     * would be reported invalid instead. Not passing it there keeps the expiry enforced from
+     * "expires" alone, and the deprecation of signing without an expiration starts with 8.2 only -
+     * the signer that will require one in 9.0 has verify(). Signers without the argument (the
+     * legacy Symfony\Component\HttpKernel\UriSigner, http-foundation < 7.1) ignore it anyway.
+     */
+    private function sign(string $uri, int $expiryTimestamp): string
+    {
+        // verify() (http-foundation 7.3+) is what lets the signer report an expired link as expired
+        return method_exists($this->uriSigner, 'verify')
+            ? $this->uriSigner->sign($uri, $expiryTimestamp)
+            : $this->uriSigner->sign($uri);
     }
 
     private function assertUriDoesNotContainAHost(string $routeName, string $uri): void
@@ -179,11 +203,41 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
     private function checkRequestSignature(Request $request): bool
     {
         if (!$this->signWithoutHost) {
-            return $this->uriSigner->checkRequest($request);
+            return $this->checkSignature($request);
         }
 
         $queryString = null !== ($query = $request->getQueryString()) ? '?'.$query : '';
 
-        return $this->uriSigner->check($request->getBaseUrl().$request->getPathInfo().$queryString);
+        return $this->checkSignature($request->getBaseUrl().$request->getPathInfo().$queryString);
+    }
+
+    /**
+     * Checks a signature the way the signer wants it checked, keeping an expired link reported as
+     * expired: since symfony/http-foundation 7.1, the signer enforces the expiration embedded at
+     * signing time itself, and reports an expired signature like a tampered one - verify() (7.3+)
+     * is asked which of the two happened. Signers without verify() (the legacy
+     * Symfony\Component\HttpKernel\UriSigner, http-foundation < 7.3) never embed an expiration on
+     * their own: for those, the expiry is left to the "expires" query parameter, checked by the
+     * callers.
+     *
+     * @param Request|string $uri The signed URI, or the Request it was requested with
+     *
+     * @throws ExpiredSignatureException When the signature is valid but has expired
+     */
+    private function checkSignature(Request|string $uri): bool
+    {
+        if (!method_exists($this->uriSigner, 'verify')) {
+            return \is_string($uri) ? $this->uriSigner->check($uri) : $this->uriSigner->checkRequest($uri);
+        }
+
+        try {
+            $this->uriSigner->verify($uri);
+
+            return true;
+        } catch (ExpiredSignedUriException) {
+            throw new ExpiredSignatureException();
+        } catch (SignedUriException) {
+            return false;
+        }
     }
 }

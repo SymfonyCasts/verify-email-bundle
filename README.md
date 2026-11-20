@@ -271,7 +271,12 @@ symfonycasts_verify_email:
 _Optional_ - Defaults to `3600` seconds
 
 This is the length of time a signed URL is valid for in seconds after it has
-been created.
+been created. The same expiry is also given to Symfony's `UriSigner` when the
+URL is signed - passing an expiration will be required by symfony/http-foundation
+9.0 - so, on symfony/http-foundation 7.3 and later, the signer rejects a URL
+once the lifetime has passed, even when the signature is checked outside of
+this bundle. On earlier versions the expiration is enforced from the `expires`
+query parameter alone, as it always was.
 
 #### `sign_without_host`
 
@@ -304,6 +309,12 @@ they will be overwritten by this bundle:
 - `token`
 - `expires`
 - `signature`
+
+On symfony/http-foundation 7.3 and later, the signed URL also carries an
+`_expiration` parameter, holding the same expiry as `expires`: the signer
+rejects the URL once it has passed. Do not use that name for an extra parameter
+either - since symfony/http-foundation 7.1, `UriSigner::sign()` refuses reserved
+names, whether or not the version you run embeds the expiration.
 
 ## Support
 

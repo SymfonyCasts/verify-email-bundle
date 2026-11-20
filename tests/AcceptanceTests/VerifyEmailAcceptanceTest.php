@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\UriSigner;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\HttpKernel\UriSigner as LegacyUriSigner;
 use Symfony\Component\Routing\Route;
+use SymfonyCasts\Bundle\VerifyEmail\Exception\ExpiredSignatureException;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\InvalidSignatureException;
 use SymfonyCasts\Bundle\VerifyEmail\Generator\VerifyEmailTokenGenerator;
 use SymfonyCasts\Bundle\VerifyEmail\Tests\VerifyEmailTestKernel;
@@ -46,11 +47,12 @@ final class VerifyEmailAcceptanceTest extends TestCase
         $components = $helper->generateSignature('verify-test', '1234', 'jr@rushlow.dev');
         $expiresAt = $components->getExpiresAt()->getTimestamp();
         $actual = $components->getSignedUrl();
+        // the bundle gives the signer the expiry only when it can tell an expired link from a tampered one
         $expected = $testHelper->uriSigner->sign(\sprintf(
             'http://localhost/verify/user?expires=%s&token=%s',
             $expiresAt,
             $testHelper->generator->createToken('1234', 'jr@rushlow.dev')
-        ));
+        ), method_exists($testHelper->uriSigner, 'verify') ? $expiresAt : null);
 
         self::assertSame($expected, $actual);
     }
@@ -135,11 +137,12 @@ final class VerifyEmailAcceptanceTest extends TestCase
         $components = $testHelper->helper->generateSignature('verify-test', '1234', 'jr@rushlow.dev');
         $expiresAt = $components->getExpiresAt()->getTimestamp();
         $actual = $components->getSignedUrl();
+        // the bundle gives the signer the expiry only when it can tell an expired link from a tampered one
         $expected = 'http://localhost'.$testHelper->uriSigner->sign(\sprintf(
             '/verify/user?expires=%s&token=%s',
             $expiresAt,
             $testHelper->generator->createToken('1234', 'jr@rushlow.dev')
-        ));
+        ), method_exists($testHelper->uriSigner, 'verify') ? $expiresAt : null);
 
         self::assertSame($expected, $actual);
     }
@@ -204,6 +207,56 @@ final class VerifyEmailAcceptanceTest extends TestCase
     }
 
     /**
+     * The signer embeds the expiration it is given at signing time: it has to be the same instant
+     * as "expires", or the link would fall short of (or outlive) the lifetime the bundle reports,
+     * depending on which of the two clocks did the adding.
+     */
+    public function testGenerateSignatureSignsTheAdvertisedExpiry(): void
+    {
+        if (!method_exists(UriSigner::class, 'verify')) {
+            $this->markTestSkipped('Requires symfony/http-foundation 7.3+');
+        }
+
+        /** @var VerifyEmailAcceptanceFixture $testHelper */
+        $testHelper = $this->getBootedKernel()->getContainer()->get(VerifyEmailAcceptanceFixture::class);
+
+        $components = $testHelper->helper->generateSignature('verify-test', '1234', 'jr@rushlow.dev');
+
+        $params = [];
+        parse_str((string) parse_url($components->getSignedUrl(), \PHP_URL_QUERY), $params);
+
+        self::assertSame($params['expires'], $params['_expiration'] ?? null);
+    }
+
+    /**
+     * An expired link is reported as expired, whichever side rejects it: the signer itself
+     * (symfony/http-foundation 7.3+) or, on earlier versions where the signer gets no expiration
+     * to enforce, the bundle's own "expires" check.
+     */
+    public function testValidateEmailSignatureFromRequestWithAnExpiredLink(): void
+    {
+        /** @legacy - Remove conditional in 2.0 */
+        if (!class_exists(UriSigner::class)) {
+            $this->markTestSkipped('Requires symfony/http-foundation 6.4+');
+        }
+
+        /** @var VerifyEmailAcceptanceFixture $testHelper */
+        $testHelper = $this->getBootedKernel()->getContainer()->get(VerifyEmailAcceptanceFixture::class);
+
+        // a link whose lifetime is already over, signed the way the bundle signs it
+        $expires = time() - 1;
+        $signedUrl = $testHelper->uriSigner->sign(\sprintf(
+            'http://localhost/verify/user?expires=%s&token=%s',
+            $expires,
+            $testHelper->generator->createToken('1234', 'jr@rushlow.dev')
+        ), method_exists($testHelper->uriSigner, 'verify') ? $expires : null);
+
+        $this->expectException(ExpiredSignatureException::class);
+
+        $testHelper->helper->validateEmailConfirmationFromRequest(Request::create($signedUrl), '1234', 'jr@rushlow.dev');
+    }
+
+    /**
      * The route forces https while the context is on http, so the generator returns an absolute
      * URL instead of a path.
      *
@@ -248,11 +301,12 @@ final class VerifyEmailAcceptanceTest extends TestCase
 
         $components = $testHelper->helper->generateSignature('verify-test', '1234', 'jr@rushlow.dev');
         // despite the host on the route, only the path is signed
+        // the bundle gives the signer the expiry only when it can tell an expired link from a tampered one
         $expected = 'http://localhost'.$testHelper->uriSigner->sign(\sprintf(
             '/verify/user?expires=%s&token=%s',
             $components->getExpiresAt()->getTimestamp(),
             $testHelper->generator->createToken('1234', 'jr@rushlow.dev')
-        ));
+        ), method_exists($testHelper->uriSigner, 'verify') ? $components->getExpiresAt()->getTimestamp() : null);
 
         self::assertSame($expected, $components->getSignedUrl());
     }
@@ -304,6 +358,11 @@ final class VerifyEmailAcceptanceTest extends TestCase
         yield 'another path' => ['/verify/user', '/verify/admin'];
         yield 'an extra query parameter' => ['&token=', '&role=admin&token='];
         yield 'a later expiry' => ['expires=', 'expires=9'];
+
+        if (method_exists(UriSigner::class, 'verify')) {
+            // the expiration the signer enforces itself since symfony/http-foundation 7.3
+            yield 'the expiry the signer enforces' => ['_expiration=', '_expiration=1'];
+        }
     }
 
     /**
@@ -334,6 +393,11 @@ final class VerifyEmailAcceptanceTest extends TestCase
         yield 'another path' => ['/verify/user', '/verify/admin'];
         yield 'an extra query parameter' => ['&token=', '&role=admin&token='];
         yield 'a later expiry' => ['expires=', 'expires=9'];
+
+        if (method_exists(UriSigner::class, 'verify')) {
+            // the expiration the signer enforces itself since symfony/http-foundation 7.3
+            yield 'the expiry the signer enforces' => ['_expiration=', '_expiration=1'];
+        }
     }
 
     /**

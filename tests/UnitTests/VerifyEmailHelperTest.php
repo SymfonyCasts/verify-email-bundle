@@ -11,6 +11,7 @@ namespace SymfonyCasts\Bundle\VerifyEmail\Tests\UnitTests;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Bridge\PhpUnit\ClockMock;
+use Symfony\Component\HttpFoundation\Exception\UnverifiedSignedUriException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\UriSigner;
 use Symfony\Component\HttpKernel\UriSigner as LegacyUriSigner;
@@ -76,10 +77,17 @@ final class VerifyEmailHelperTest extends TestCase
             ->willReturn(\sprintf('/verify?expires=%s&token=hashedToken', $expires))
         ;
 
+        $expectedSignArgs = [\sprintf('/verify?expires=%s&token=hashedToken', $expires)];
+
+        if (method_exists($this->mockSigner, 'verify')) {
+            // signers that can tell an expired link from a tampered one receive the expiry
+            $expectedSignArgs[] = $expires;
+        }
+
         $this->mockSigner
             ->expects($this->once())
             ->method('sign')
-            ->with(\sprintf('/verify?expires=%s&token=hashedToken', $expires))
+            ->with(...$expectedSignArgs)
             ->willReturn($expectedSignedUrl)
         ;
 
@@ -131,10 +139,17 @@ final class VerifyEmailHelperTest extends TestCase
             ->willReturn(\sprintf('/verify?expires=%s&token=hashedToken', $expires))
         ;
 
+        $expectedSignArgs = [\sprintf('/verify?expires=%s&token=hashedToken', $expires)];
+
+        if (method_exists($this->mockSigner, 'verify')) {
+            // signers that can tell an expired link from a tampered one receive the expiry
+            $expectedSignArgs[] = $expires;
+        }
+
         $this->mockSigner
             ->expects($this->once())
             ->method('sign')
-            ->with(\sprintf('/verify?expires=%s&token=hashedToken', $expires))
+            ->with(...$expectedSignArgs)
             ->willReturn($signedPath)
         ;
 
@@ -148,12 +163,21 @@ final class VerifyEmailHelperTest extends TestCase
     {
         $signedUrl = '/verify?expires=1&signature=1234%token=xyz';
 
-        $this->mockSigner
-            ->expects($this->once())
-            ->method('check')
-            ->with($signedUrl)
-            ->willReturn(false)
-        ;
+        if (method_exists($this->mockSigner, 'verify')) {
+            $this->mockSigner
+                ->expects($this->once())
+                ->method('verify')
+                ->with($signedUrl)
+                ->willThrowException(new UnverifiedSignedUriException())
+            ;
+        } else {
+            $this->mockSigner
+                ->expects($this->once())
+                ->method('check')
+                ->with($signedUrl)
+                ->willReturn(false)
+            ;
+        }
 
         $this->mockQueryUtility
             ->expects($this->never())
@@ -190,12 +214,21 @@ final class VerifyEmailHelperTest extends TestCase
         ]);
 
         // the generated path includes the base url, so the check has to keep it.
-        $this->mockSigner
-            ->expects($this->once())
-            ->method('check')
-            ->with('/index.php/verify?expires=1&signature=1234&token=xyz')
-            ->willReturn(false)
-        ;
+        if (method_exists($this->mockSigner, 'verify')) {
+            $this->mockSigner
+                ->expects($this->once())
+                ->method('verify')
+                ->with('/index.php/verify?expires=1&signature=1234&token=xyz')
+                ->willThrowException(new UnverifiedSignedUriException())
+            ;
+        } else {
+            $this->mockSigner
+                ->expects($this->once())
+                ->method('check')
+                ->with('/index.php/verify?expires=1&signature=1234&token=xyz')
+                ->willReturn(false)
+            ;
+        }
 
         $helper = $this->getHelper(signWithoutHost: true);
 
@@ -214,12 +247,21 @@ final class VerifyEmailHelperTest extends TestCase
         $path = '/verify?expires=1&signature=1234&token=xyz';
 
         // Not checkRequest(): that would rebuild the absolute URI the signature was never made over.
-        $this->mockSigner
-            ->expects($this->once())
-            ->method('check')
-            ->with($path)
-            ->willReturn(false)
-        ;
+        if (method_exists($this->mockSigner, 'verify')) {
+            $this->mockSigner
+                ->expects($this->once())
+                ->method('verify')
+                ->with($path)
+                ->willThrowException(new UnverifiedSignedUriException())
+            ;
+        } else {
+            $this->mockSigner
+                ->expects($this->once())
+                ->method('check')
+                ->with($path)
+                ->willReturn(false)
+            ;
+        }
 
         $this->mockSigner
             ->expects($this->never())
@@ -244,11 +286,18 @@ final class VerifyEmailHelperTest extends TestCase
         $timestamp = (new \DateTimeImmutable('-1 seconds'))->getTimestamp();
         $signedUrl = '/?expires='.$timestamp;
 
-        $this->mockSigner
-            ->expects($this->once())
-            ->method('check')
-            ->willReturn(true)
-        ;
+        if (method_exists($this->mockSigner, 'verify')) {
+            // a mocked verify() returns without throwing, the way a valid signature does
+            $this->mockSigner
+                ->method('verify')
+            ;
+        } else {
+            $this->mockSigner
+                ->expects($this->once())
+                ->method('check')
+                ->willReturn(true)
+            ;
+        }
 
         $this->mockQueryUtility
             ->expects($this->once())
@@ -268,12 +317,19 @@ final class VerifyEmailHelperTest extends TestCase
     {
         $signedUrl = '/verify?token=badToken';
 
-        $this->mockSigner
-            ->expects($this->once())
-            ->method('check')
-            ->with($signedUrl)
-            ->willReturn(true)
-        ;
+        if (method_exists($this->mockSigner, 'verify')) {
+            // a mocked verify() returns without throwing, the way a valid signature does
+            $this->mockSigner
+                ->method('verify')
+            ;
+        } else {
+            $this->mockSigner
+                ->expects($this->once())
+                ->method('check')
+                ->with($signedUrl)
+                ->willReturn(true)
+            ;
+        }
 
         $this->mockQueryUtility
             ->expects($this->once())
@@ -311,12 +367,21 @@ final class VerifyEmailHelperTest extends TestCase
 
         $request = Request::create('/verify?expires=1&signature=1234%token=xyz');
 
-        $this->mockSigner
-            ->expects($this->once())
-            ->method('checkRequest')
-            ->with($request)
-            ->willReturn(false)
-        ;
+        if (method_exists($this->mockSigner, 'verify')) {
+            $this->mockSigner
+                ->expects($this->once())
+                ->method('verify')
+                ->with($request)
+                ->willThrowException(new UnverifiedSignedUriException())
+            ;
+        } else {
+            $this->mockSigner
+                ->expects($this->once())
+                ->method('checkRequest')
+                ->with($request)
+                ->willReturn(false)
+            ;
+        }
 
         $this->tokenGenerator
             ->expects($this->never())
@@ -342,12 +407,19 @@ final class VerifyEmailHelperTest extends TestCase
 
         $request = Request::create($signedUrl);
 
-        $this->mockSigner
-            ->expects($this->once())
-            ->method('checkRequest')
-            ->with($request)
-            ->willReturn(true)
-        ;
+        if (method_exists($this->mockSigner, 'verify')) {
+            // a mocked verify() returns without throwing, the way a valid signature does
+            $this->mockSigner
+                ->method('verify')
+            ;
+        } else {
+            $this->mockSigner
+                ->expects($this->once())
+                ->method('checkRequest')
+                ->with($request)
+                ->willReturn(true)
+            ;
+        }
 
         $this->expectException(ExpiredSignatureException::class);
 
@@ -364,12 +436,19 @@ final class VerifyEmailHelperTest extends TestCase
 
         $request = Request::create('/verify?expires=99999999999999&token=badToken');
 
-        $this->mockSigner
-            ->expects($this->once())
-            ->method('checkRequest')
-            ->with($request)
-            ->willReturn(true)
-        ;
+        if (method_exists($this->mockSigner, 'verify')) {
+            // a mocked verify() returns without throwing, the way a valid signature does
+            $this->mockSigner
+                ->method('verify')
+            ;
+        } else {
+            $this->mockSigner
+                ->expects($this->once())
+                ->method('checkRequest')
+                ->with($request)
+                ->willReturn(true)
+            ;
+        }
 
         $this->tokenGenerator
             ->expects($this->once())
