@@ -69,7 +69,7 @@ final class VerifyEmailLifetimeConfigTest extends TestCase
     public function testLifetimeConfiguredInUserlandIsPassedToTheSigner(): void
     {
         if (!method_exists(UriSigner::class, 'verify')) {
-            $this->markTestSkipped('Requires symfony/http-foundation 7.4+');
+            $this->markTestSkipped('Requires symfony/http-foundation 7.3+');
         }
 
         $helper = $this->bootKernelAndGetHelper(new VerifyEmailLifetimeTestKernel($this->createBuilder(), $this->routes()));
